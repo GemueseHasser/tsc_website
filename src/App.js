@@ -129,11 +129,12 @@ export default function App() {
                 <Box sx={{ flexGrow: 1, pt: 10, pb: 10 }}>{renderContent()}</Box>
 
                 {/* Fixierter Footer */}
+                {/* Fixierter Footer */}
                 <Box
                     sx={{
                         bgcolor: "primary.main",
                         color: "white",
-                        py: { xs: 3, md: 2 },
+                        py: { xs: 1, md: 1.5 }, // Weniger vertikaler Platz
                         textAlign: "center",
                         position: "fixed",
                         bottom: 0,
@@ -141,21 +142,42 @@ export default function App() {
                         right: 0,
                     }}
                 >
-                    <Stack direction="row" spacing={3} justifyContent="center" sx={{ mb: 1 }}>
-                        <IconButton color="inherit" href="https://www.instagram.com/tsc.wuelfrath/" target="_blank" size={isMobile ? "large" : "medium"}>
-                            <Instagram />
+                    <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 0.5 }}>
+                        <IconButton
+                            color="inherit"
+                            href="https://www.instagram.com/tsc.wuelfrath/"
+                            target="_blank"
+                            size="small"
+                            sx={{ p: 0.5 }}
+                        >
+                            <Instagram fontSize="small" />
                         </IconButton>
-                        <IconButton color="inherit" href="https://www.facebook.com/tsc.wuelfrath/" target="_blank" size={isMobile ? "large" : "medium"}>
-                            <Facebook />
+                        <IconButton
+                            color="inherit"
+                            href="https://www.facebook.com/tsc.wuelfrath/"
+                            target="_blank"
+                            size="small"
+                            sx={{ p: 0.5 }}
+                        >
+                            <Facebook fontSize="small" />
                         </IconButton>
-                        <IconButton color="inherit" href="mailto:vorstand@tsc-wuelfrath.de" size={isMobile ? "large" : "medium"}>
-                            <Email />
+                        <IconButton
+                            color="inherit"
+                            href="mailto:vorstand@tsc-wuelfrath.de"
+                            size="small"
+                            sx={{ p: 0.5 }}
+                        >
+                            <Email fontSize="small" />
                         </IconButton>
                     </Stack>
-                    <Typography variant="body2" sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}>
+                    <Typography
+                        variant="caption"
+                        sx={{ fontSize: { xs: "0.7rem", md: "0.75rem" } }}
+                    >
                         © {new Date().getFullYear()} TSC Wülfrath e.V. – Alle Rechte vorbehalten.
                     </Typography>
                 </Box>
+
             </Box>
         </ThemeProvider>
     );
