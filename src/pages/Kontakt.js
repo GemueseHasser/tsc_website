@@ -1,7 +1,8 @@
 // src/pages/Kontakt.js
 import React from "react";
-import { Container, Box, Paper, Typography } from "@mui/material";
+import {Container, Box, Paper, Typography, IconButton, Stack} from "@mui/material";
 import { motion } from "framer-motion";
+import {Email, Facebook, Instagram} from "@mui/icons-material";
 
 export default function Kontakt() {
     return (
@@ -29,6 +30,17 @@ export default function Kontakt() {
                     </Typography>
                     <Typography variant="body1" sx={{ fontSize: "1.2rem", lineHeight: 1.9 }}>
                         Wende dich bitte per Insta, Mail oder Facebook an uns.
+                        <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 1 }}>
+                            <IconButton color="inherit" href="https://instagram.com" target="_blank">
+                                <Instagram />
+                            </IconButton>
+                            <IconButton color="inherit" href="https://facebook.com" target="_blank">
+                                <Facebook />
+                            </IconButton>
+                            <IconButton color="inherit" href="mailto:info@tsc-wuelfrath.de">
+                                <Email />
+                            </IconButton>
+                        </Stack>
                     </Typography>
                 </Paper>
             </Container>
