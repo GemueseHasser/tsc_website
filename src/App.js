@@ -9,8 +9,15 @@ import {
     Box,
     IconButton,
     Stack,
+    Drawer,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    useMediaQuery,
 } from "@mui/material";
-import { Instagram, Facebook, Email } from "@mui/icons-material";
+import { Instagram, Facebook, Email, Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
+
 import Start from "./pages/Start";
 import About from "./pages/About";
 import Training from "./pages/Training";
@@ -35,6 +42,10 @@ const theme = createTheme({
 
 export default function App() {
     const [activePage, setActivePage] = useState("Startseite");
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const isMobile = useMediaQuery("(max-width: 768px)");
+
+    const pages = ["Startseite", "Über uns", "Training", "Schnuppertauchen", "Ausbildung", "Kontakt"];
 
     const renderContent = () => {
         switch (activePage) {
@@ -53,30 +64,66 @@ export default function App() {
         }
     };
 
+    const handleNavClick = (item) => {
+        setActivePage(item);
+        setMobileOpen(false);
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
                 {/* Fixierte Kopfzeile */}
                 <AppBar position="fixed" elevation={3}>
-                    <Toolbar sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
-                        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+                    <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+                        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                             TSC Wülfrath e.V.
                         </Typography>
-                        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                            {["Startseite", "Über uns", "Training", "Schnuppertauchen", "Ausbildung", "Kontakt"].map((item) => (
-                                <Button
-                                    key={item}
-                                    color="inherit"
-                                    sx={{ mx: 1 }}
-                                    onClick={() => setActivePage(item)}
-                                >
-                                    {item}
-                                </Button>
-                            ))}
-                        </Box>
+
+                        {/* Desktop Navigation */}
+                        {!isMobile && (
+                            <Box>
+                                {pages.map((item) => (
+                                    <Button
+                                        key={item}
+                                        color="inherit"
+                                        sx={{ mx: 1 }}
+                                        onClick={() => handleNavClick(item)}
+                                    >
+                                        {item}
+                                    </Button>
+                                ))}
+                            </Box>
+                        )}
+
+                        {/* Mobile Navigation */}
+                        {isMobile && (
+                            <IconButton color="inherit" onClick={() => setMobileOpen(true)}>
+                                <MenuIcon />
+                            </IconButton>
+                        )}
                     </Toolbar>
                 </AppBar>
+
+                {/* Drawer für Mobilgeräte */}
+                <Drawer anchor="right" open={mobileOpen} onClose={() => setMobileOpen(false)}>
+                    <Box sx={{ width: 240, p: 2 }}>
+                        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                            <IconButton onClick={() => setMobileOpen(false)}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Box>
+                        <List>
+                            {pages.map((item) => (
+                                <ListItem key={item} disablePadding>
+                                    <ListItemButton onClick={() => handleNavClick(item)}>
+                                        <ListItemText primary={item} />
+                                    </ListItemButton>
+                                </ListItem>
+                            ))}
+                        </List>
+                    </Box>
+                </Drawer>
 
                 {/* Seiteninhalt */}
                 <Box sx={{ flexGrow: 1, pt: 10, pb: 10 }}>{renderContent()}</Box>
@@ -86,7 +133,7 @@ export default function App() {
                     sx={{
                         bgcolor: "primary.main",
                         color: "white",
-                        py: 2,
+                        py: { xs: 3, md: 2 },
                         textAlign: "center",
                         position: "fixed",
                         bottom: 0,
@@ -94,18 +141,18 @@ export default function App() {
                         right: 0,
                     }}
                 >
-                    <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 1 }}>
-                        <IconButton color="inherit" href="https://www.instagram.com/tsc.wuelfrath/" target="_blank">
+                    <Stack direction="row" spacing={3} justifyContent="center" sx={{ mb: 1 }}>
+                        <IconButton color="inherit" href="https://www.instagram.com/tsc.wuelfrath/" target="_blank" size={isMobile ? "large" : "medium"}>
                             <Instagram />
                         </IconButton>
-                        <IconButton color="inherit" href="https://www.facebook.com/tsc.wuelfrath/" target="_blank">
+                        <IconButton color="inherit" href="https://www.facebook.com/tsc.wuelfrath/" target="_blank" size={isMobile ? "large" : "medium"}>
                             <Facebook />
                         </IconButton>
-                        <IconButton color="inherit" href="mailto:vorstand@tsc-wuelfrath.de">
+                        <IconButton color="inherit" href="mailto:vorstand@tsc-wuelfrath.de" size={isMobile ? "large" : "medium"}>
                             <Email />
                         </IconButton>
                     </Stack>
-                    <Typography variant="body2">
+                    <Typography variant="body2" sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}>
                         © {new Date().getFullYear()} TSC Wülfrath e.V. – Alle Rechte vorbehalten.
                     </Typography>
                 </Box>

@@ -1,5 +1,6 @@
 {
   "name": "tsc_website",
+  "homepage": "http://jonas06.bplaced.net/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
