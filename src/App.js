@@ -95,13 +95,13 @@ export default function App() {
                     }}
                 >
                     <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 1 }}>
-                        <IconButton color="inherit" href="https://instagram.com" target="_blank">
+                        <IconButton color="inherit" href="https://www.instagram.com/tsc.wuelfrath/" target="_blank">
                             <Instagram />
                         </IconButton>
-                        <IconButton color="inherit" href="https://facebook.com" target="_blank">
+                        <IconButton color="inherit" href="https://www.facebook.com/tsc.wuelfrath/" target="_blank">
                             <Facebook />
                         </IconButton>
-                        <IconButton color="inherit" href="mailto:info@tsc-wuelfrath.de">
+                        <IconButton color="inherit" href="mailto:vorstand@tsc-wuelfrath.de">
                             <Email />
                         </IconButton>
                     </Stack>
