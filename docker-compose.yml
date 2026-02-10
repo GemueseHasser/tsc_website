@@ -1,0 +1,6 @@
+services:
+  tsc_website:
+    image: 'tsc_website:latest'
+    container_name: 'tsc_website_frontend'
+    ports:
+      - "3000:80/tcp"
