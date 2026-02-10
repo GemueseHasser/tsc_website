@@ -196,7 +196,7 @@ export default function Ausbildung() {
                                 hin zu anspruchsvollen CMAS-Stufen inklusive Spezialkursen. Theorie und Praxis planen unsere
                                 Tauchlehrerinnen und Tauchlehrer individuell und nach hohen Standards.
                             </Typography>
-                            <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", mt: 2 }}>
+                            <Stack direction="row" spacing={1} rowGap={1} sx={{ flexWrap: "wrap", mt: 2 }}>
                                 <Chip icon={<ChildCare />} label="ab 8 Jahren" />
                                 <Chip icon={<ScubaDiving />} label="CMAS* bis ***" />
                                 <Chip icon={<AutoAwesome />} label="Sonderbrevets" />
