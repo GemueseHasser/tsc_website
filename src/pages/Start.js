@@ -14,7 +14,7 @@ export default function Start() {
     useEffect(() => {
         fetch(process.env.PUBLIC_URL + "/resources/start/startImages.json")
             .then((res) => res.json())
-            .then((data) => setHeroImages(data.map((img) => `/resources/start/${img}`)))
+            .then((data) => setHeroImages(data.map((img) => process.env.PUBLIC_URL + `/resources/start/${img}`)))
             .catch(() => setHeroImages([]));
     }, []);
 
