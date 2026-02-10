@@ -370,7 +370,7 @@ export default function About() {
                                 Die Aufnahmegebühr entfällt seit Beschluss der Mitgliederversammlung am 22.03.2013.
                             </Typography>
 
-                            <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", mt: 1.5 }}>
+                            <Stack direction="row" rowGap={1} spacing={1} sx={{ flexWrap: "wrap", mt: 1.5 }}>
                                 <Chip label="Erwachsene: 12 €/Monat" />
                                 <Chip label="Jugend/Schüler/Studierende/Azubis: 7 €/Monat (Nachweis)" />
                                 <Chip label="Passiv: 4 €/Monat" />
