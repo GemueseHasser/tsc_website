@@ -82,6 +82,11 @@ export default function App() {
                   radial-gradient(900px 500px at 50% 110%, rgba(39,194,211,0.10), transparent 55%)
                 `,
                                 backgroundAttachment: "fixed",
+                                // Wichtig für Mobile: verhindert horizontales "Überstehen" durch z.B. Tabs/Chips
+                                overflowX: "hidden",
+                            },
+                            "#root": {
+                                overflowX: "hidden",
                             },
                             a: { color: "inherit" },
                         },

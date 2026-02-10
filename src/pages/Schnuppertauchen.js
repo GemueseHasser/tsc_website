@@ -14,10 +14,20 @@ export default function Schnuppertauchen() {
                 transition={{ duration: 0.6 }}
                 sx={{ mb: 3 }}
             >
-                <Typography variant="h3" sx={{ mb: 1 }}>
-                    Schnuppertauchen
-                </Typography>
-                <Typography sx={{ color: "text.secondary", maxWidth: 820, lineHeight: 1.8 }}>
+                <Box
+                    sx={{
+                        maxWidth: "100%",
+                        boxSizing: "border-box",
+                    }}
+                >
+                    <Typography
+                        variant="h4"
+                        sx={{ wordBreak: "break-word" }}
+                    >
+                        Schnuppertauchen
+                    </Typography>
+                </Box>
+                <Typography sx={{ color: "text.secondary", maxWidth: 820, lineHeight: 1.8, paddingTop: 1 }}>
                     Ein erster, sicherer Einstieg in die Unterwasserwelt – mit Anleitung durch erfahrene Tauchlehrer.
                     Ausrüstung stellen wir kostenlos.
                 </Typography>

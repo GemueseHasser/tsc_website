@@ -36,13 +36,18 @@ function PillTabs({ value, onChange, tabs }) {
     return (
         <Box
             sx={{
-                display: "inline-flex",
+                // Auf Mobile darf die Tab-Leiste nie die Seite breiter machen.
+                // Deshalb: volle Breite + Inhalt innerhalb der Leiste horizontal scrollen.
+                display: "flex",
+                width: "100%",
+                maxWidth: "100%",
                 p: 0.6,
                 borderRadius: 999,
                 border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
                 background: alpha("#fff", 0.75),
                 backdropFilter: "blur(12px)",
                 boxShadow: "0 14px 40px rgba(11,27,36,0.08)",
+                overflow: "hidden",
             }}
         >
             <Tabs
@@ -50,10 +55,18 @@ function PillTabs({ value, onChange, tabs }) {
                 onChange={onChange}
                 variant="scrollable"
                 scrollButtons="auto"
+                allowScrollButtonsMobile
                 TabIndicatorProps={{ style: { display: "none" } }}
                 sx={{
+                    width: "100%",
+                    minWidth: 0,
                     minHeight: 44,
-                    "& .MuiTabs-flexContainer": { gap: 6 },
+                    // sorgt dafür, dass die Tabs auf Mobile innerhalb der Leiste scrollen
+                    "& .MuiTabs-scroller": {
+                        overflowX: "auto !important",
+                        WebkitOverflowScrolling: "touch",
+                    },
+                    "& .MuiTabs-flexContainer": { gap: 6, flexWrap: "nowrap" },
                 }}
             >
                 {tabs.map((t) => (
