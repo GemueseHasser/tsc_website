@@ -12,14 +12,14 @@ export default function Start() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch("/resources/start/startImages.json")
+        fetch(process.env.PUBLIC_URL + "/resources/start/startImages.json")
             .then((res) => res.json())
             .then((data) => setHeroImages(data.map((img) => `/resources/start/${img}`)))
             .catch(() => setHeroImages([]));
     }, []);
 
     useEffect(() => {
-        fetch("/content/start.json")
+        fetch(process.env.PUBLIC_URL + "/content/start.json")
             .then((res) => {
                 if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/start.json`);
                 return res.json();
