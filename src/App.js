@@ -147,21 +147,34 @@ export default function App() {
 
             <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
                 {/* Header */}
-                <AppBar position="sticky" elevation={0}>
-                    <Toolbar sx={{ py: 1, justifyContent: "space-between" }}>
+                <AppBar position="sticky" elevation={0} color="transparent">
+                    <Toolbar sx={{ py: 1, justifyContent: "space-between", color: "text.primary" }}>
                         <Stack direction="row" spacing={1.2} alignItems="center">
                             <Box
                                 sx={{
-                                    width: 38,
-                                    height: 38,
+                                    width: 50,
+                                    height: 50,
                                     borderRadius: 999,
-                                    background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 1)}, ${alpha(
-                                        theme.palette.secondary.main,
-                                        1
-                                    )})`,
-                                    boxShadow: `0 10px 26px ${alpha(theme.palette.primary.main, 0.22)}`,
+                                    boxShadow: "0 10px 26px rgba(6,58,82,0.18)",
+                                    border: "1px solid rgba(11,27,36,0.10)",
+                                    background: "white",
+                                    display: "grid",
+                                    placeItems: "center",
+                                    overflow: "hidden",
                                 }}
-                            />
+                            >
+                                <Box
+                                    component="img"
+                                    src="https://www.tsc-wuelfrath.de/s/misc/logo.png?t=1766401057"
+                                    alt="TSC Wülfrath Logo"
+                                    sx={{
+                                        width: "78%",
+                                        height: "78%",
+                                        objectFit: "contain",
+                                        display: "block",
+                                    }}
+                                />
+                            </Box>
                             <Box>
                                 <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.1 }}>
                                     TSC Wülfrath e.V.

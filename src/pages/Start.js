@@ -1,8 +1,8 @@
 // src/pages/Start.js
 import React, { useEffect, useMemo, useState } from "react";
-import { Container, Box, Typography, IconButton, Stack, Button, alpha } from "@mui/material";
+import { Container, Box, Typography, Stack, Button, alpha } from "@mui/material";
 import { motion } from "framer-motion";
-import { ArrowBackIosNew, ArrowForwardIos, ArrowOutward } from "@mui/icons-material";
+import { ArrowOutward } from "@mui/icons-material";
 
 export default function Start() {
     const [heroImages, setHeroImages] = useState([]);
@@ -29,16 +29,6 @@ export default function Start() {
     }, []);
 
     const hasImages = heroImages.length > 0;
-
-    const handlePrev = () => {
-        if (!hasImages) return;
-        setCurrentImage((prev) => (prev === 0 ? heroImages.length - 1 : prev - 1));
-    };
-
-    const handleNext = () => {
-        if (!hasImages) return;
-        setCurrentImage((prev) => (prev === heroImages.length - 1 ? 0 : prev + 1));
-    };
 
     // Auto-Advance (dezent)
     useEffect(() => {
@@ -87,40 +77,6 @@ export default function Start() {
                         pointerEvents: "none",
                     }}
                 />
-
-                {/* Controls */}
-                <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{ position: "absolute", top: 18, right: 18, zIndex: 2 }}
-                >
-                    <IconButton
-                        onClick={handlePrev}
-                        disabled={!hasImages}
-                        sx={{
-                            color: "white",
-                            border: `1px solid ${alpha("#fff", 0.22)}`,
-                            background: alpha("#000", 0.18),
-                            backdropFilter: "blur(10px)",
-                            "&:hover": { background: alpha("#000", 0.28) },
-                        }}
-                    >
-                        <ArrowBackIosNew fontSize="small" />
-                    </IconButton>
-                    <IconButton
-                        onClick={handleNext}
-                        disabled={!hasImages}
-                        sx={{
-                            color: "white",
-                            border: `1px solid ${alpha("#fff", 0.22)}`,
-                            background: alpha("#000", 0.18),
-                            backdropFilter: "blur(10px)",
-                            "&:hover": { background: alpha("#000", 0.28) },
-                        }}
-                    >
-                        <ArrowForwardIos fontSize="small" />
-                    </IconButton>
-                </Stack>
 
                 <Container maxWidth="lg" sx={{ pb: { xs: 5, md: 7 }, position: "relative", zIndex: 2 }}>
                     <Box sx={{ maxWidth: 820 }}>
