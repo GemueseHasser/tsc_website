@@ -1,24 +1,22 @@
 // src/pages/Start.js
-import React, {useEffect, useState} from "react";
-import { Container, Box, IconButton, Paper, Typography } from "@mui/material";
+import React, { useEffect, useMemo, useState } from "react";
+import { Container, Box, Typography, IconButton, Stack, Button, alpha } from "@mui/material";
 import { motion } from "framer-motion";
-import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
+import { ArrowBackIosNew, ArrowForwardIos, ArrowOutward } from "@mui/icons-material";
 
 export default function Start() {
     const [heroImages, setHeroImages] = useState([]);
-
-    useEffect(() => {
-        fetch("/resources/start/startImages.json")
-            .then(res => res.json())
-            .then(data =>
-                setHeroImages(data.map(img => `/resources/start/${img}`))
-            );
-    }, []);
-
     const [currentImage, setCurrentImage] = useState(0);
 
     const [content, setContent] = useState(null);
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        fetch("/resources/start/startImages.json")
+            .then((res) => res.json())
+            .then((data) => setHeroImages(data.map((img) => `/resources/start/${img}`)))
+            .catch(() => setHeroImages([]));
+    }, []);
 
     useEffect(() => {
         fetch("/content/start.json")
@@ -30,20 +28,33 @@ export default function Start() {
             .catch((e) => setError(String(e)));
     }, []);
 
-    if (error) return <div style={{ padding: 16 }}>Fehler: {error}</div>;
-    if (!content) return <div style={{ padding: 16 }}>Lade Inhalte…</div>;
+    const hasImages = heroImages.length > 0;
 
     const handlePrev = () => {
+        if (!hasImages) return;
         setCurrentImage((prev) => (prev === 0 ? heroImages.length - 1 : prev - 1));
     };
 
     const handleNext = () => {
+        if (!hasImages) return;
         setCurrentImage((prev) => (prev === heroImages.length - 1 ? 0 : prev + 1));
     };
 
+    // Auto-Advance (dezent)
+    useEffect(() => {
+        if (!hasImages) return;
+        const t = setInterval(() => setCurrentImage((p) => (p + 1) % heroImages.length), 6500);
+        return () => clearInterval(t);
+    }, [hasImages, heroImages.length]);
+
+    const bgImage = useMemo(() => (hasImages ? heroImages[currentImage] : null), [hasImages, heroImages, currentImage]);
+
+    if (error) return <div style={{ padding: 16 }}>Fehler: {error}</div>;
+    if (!content) return <div style={{ padding: 16 }}>Lade Inhalte…</div>;
+
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1, overflow: "hidden" }}>
-            {/* Hero-Slider */}
+        <Box>
+            {/* Hero */}
             <Box
                 component={motion.div}
                 key={currentImage}
@@ -51,62 +62,155 @@ export default function Start() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
                 sx={{
-                    flexGrow: 1,
-                    backgroundImage: `url(${heroImages[currentImage]})`,
+                    position: "relative",
+                    minHeight: { xs: 480, md: 560 },
+                    display: "flex",
+                    alignItems: "flex-end",
+                    overflow: "hidden",
+                    borderRadius: { xs: 0, md: 6 },
+                    mx: { xs: 0, md: 3 },
+                    boxShadow: { xs: "none", md: "0 26px 70px rgba(6,58,82,0.20)" },
+                    background: bgImage
+                        ? `linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.62) 78%, rgba(0,0,0,0.72) 100%), url(${bgImage})`
+                        : `linear-gradient(135deg, rgba(6,58,82,1), rgba(39,194,211,1))`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    position: "relative",
-                    color: "white",
-                    textAlign: "center",
-                    minHeight: "40vh",
                 }}
             >
-                <IconButton onClick={handlePrev} sx={{ position: "absolute", left: 20, color: "white" }}>
-                    <ArrowBackIos />
-                </IconButton>
+                {/* Soft highlight */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        inset: 0,
+                        background:
+                            "radial-gradient(700px 400px at 20% 20%, rgba(39,194,211,0.25), transparent 55%)",
+                        pointerEvents: "none",
+                    }}
+                />
 
-                <Box sx={{ backgroundColor: "rgba(0,0,0,0.5)", p: 3, borderRadius: 3 }}>
-                    <Typography variant="h3" sx={{ fontWeight: "bold", mb: 2 }}>
-                        {content.headline}
-                    </Typography>
-                    <Typography variant="h6">
-                        {content.slogan}
-                    </Typography>
-                </Box>
+                {/* Controls */}
+                <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{ position: "absolute", top: 18, right: 18, zIndex: 2 }}
+                >
+                    <IconButton
+                        onClick={handlePrev}
+                        disabled={!hasImages}
+                        sx={{
+                            color: "white",
+                            border: `1px solid ${alpha("#fff", 0.22)}`,
+                            background: alpha("#000", 0.18),
+                            backdropFilter: "blur(10px)",
+                            "&:hover": { background: alpha("#000", 0.28) },
+                        }}
+                    >
+                        <ArrowBackIosNew fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                        onClick={handleNext}
+                        disabled={!hasImages}
+                        sx={{
+                            color: "white",
+                            border: `1px solid ${alpha("#fff", 0.22)}`,
+                            background: alpha("#000", 0.18),
+                            backdropFilter: "blur(10px)",
+                            "&:hover": { background: alpha("#000", 0.28) },
+                        }}
+                    >
+                        <ArrowForwardIos fontSize="small" />
+                    </IconButton>
+                </Stack>
 
-                <IconButton onClick={handleNext} sx={{ position: "absolute", right: 20, color: "white" }}>
-                    <ArrowForwardIos />
-                </IconButton>
+                <Container maxWidth="lg" sx={{ pb: { xs: 5, md: 7 }, position: "relative", zIndex: 2 }}>
+                    <Box sx={{ maxWidth: 820 }}>
+                        <Typography variant="h2" sx={{ color: "white", mb: 1.2, lineHeight: 1.05 }}>
+                            {content.headline}
+                        </Typography>
+                        <Typography variant="h6" sx={{ color: alpha("#fff", 0.86), mb: 2.6, fontWeight: 500 }}>
+                            {content.slogan}
+                        </Typography>
+
+                        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+                            <Button
+                                variant="contained"
+                                disableElevation
+                                endIcon={<ArrowOutward />}
+                                sx={{
+                                    px: 2.2,
+                                    py: 1.1,
+                                    background: "linear-gradient(135deg, #063A52, #27C2D3)",
+                                }}
+                                onClick={() => window.scrollTo({ top: 620, behavior: "smooth" })}
+                            >
+                                Mehr erfahren
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    px: 2.2,
+                                    py: 1.1,
+                                    color: "white",
+                                    borderColor: alpha("#fff", 0.28),
+                                    background: alpha("#000", 0.12),
+                                    "&:hover": { borderColor: alpha("#fff", 0.40), background: alpha("#000", 0.22) },
+                                }}
+                                onClick={() => window.location.href = "mailto:vorstand@tsc-wuelfrath.de"}
+                            >
+                                Kontakt aufnehmen
+                            </Button>
+                        </Stack>
+
+                        {/* Dots */}
+                        {hasImages && (
+                            <Stack direction="row" spacing={0.8} sx={{ mt: 3 }}>
+                                {heroImages.map((_, idx) => (
+                                    <Box
+                                        key={idx}
+                                        onClick={() => setCurrentImage(idx)}
+                                        sx={{
+                                            width: idx === currentImage ? 22 : 9,
+                                            height: 9,
+                                            borderRadius: 999,
+                                            cursor: "pointer",
+                                            background: idx === currentImage ? "white" : alpha("#fff", 0.38),
+                                            transition: "all 180ms ease",
+                                        }}
+                                    />
+                                ))}
+                            </Stack>
+                        )}
+                    </Box>
+                </Container>
             </Box>
 
-            {/* Textbereich */}
-            <Container sx={{ py: 4, flexShrink: 0, mb: 4 }}>
-                <Paper
+            {/* Content */}
+            <Container maxWidth="lg" sx={{ mt: { xs: 3, md: 5 } }}>
+                <Box
                     component={motion.div}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    elevation={8}
+                    transition={{ duration: 0.6 }}
                     sx={{
-                        p: 4,
+                        p: { xs: 2.2, md: 3.5 },
                         borderRadius: 4,
-                        textAlign: "center",
-                        background: "linear-gradient(to bottom right, rgba(0, 77, 115, 0.85), rgba(0, 188, 212, 0.85))",
-                        color: "white",
-                        boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-                        backdropFilter: "blur(8px)",
-                        border: "1px solid rgba(255,255,255,0.3)",
+                        background: alpha("#FFFFFF", 0.85),
+                        border: `1px solid ${alpha("#0B1B24", 0.10)}`,
+                        boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
+                        backdropFilter: "blur(12px)",
                     }}
                 >
-                    <Typography variant="body1" sx={{ fontSize: "1.2rem", lineHeight: 1.9 }}>
+                    <Typography variant="h4" sx={{ mb: 1.5 }}>
+                        Willkommen beim TSC Wülfrath
+                    </Typography>
+                    <Typography sx={{ color: "text.secondary", lineHeight: 1.9, fontSize: { xs: "1rem", md: "1.05rem" } }}>
                         {content.bodyText.map((line, i) => (
-                            <p key={i}>{line}</p>
+                            <Box key={i} component="p" sx={{ m: 0, mb: 1.2 }}>
+                                {line}
+                            </Box>
                         ))}
                     </Typography>
-                </Paper>
+                </Box>
             </Container>
         </Box>
     );

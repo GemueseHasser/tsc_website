@@ -1,49 +1,63 @@
 // src/pages/Schnuppertauchen.js
 import React from "react";
-import {Container, Box, Paper, Typography} from "@mui/material";
-import {motion} from "framer-motion";
+import { Container, Box, Typography, Paper, Stack, Chip, alpha } from "@mui/material";
+import { motion } from "framer-motion";
+import { ScubaDiving, CheckCircle, AccessTime } from "@mui/icons-material";
 
 export default function Schnuppertauchen() {
     return (
-        <Box sx={{display: "flex", flexDirection: "column", flexGrow: 1}}>
-            <Container sx={{py: 4, flexShrink: 0, mb: 8}}>
-                <Paper
-                    component={motion.div}
-                    initial={{opacity: 0, y: 20}}
-                    animate={{opacity: 1, y: 0}}
-                    transition={{duration: 0.8}}
-                    elevation={8}
-                    sx={{
-                        p: 4,
-                        borderRadius: 4,
-                        textAlign: "center",
-                        background: "linear-gradient(to bottom right, rgba(0, 77, 115, 0.85), rgba(0, 188, 212, 0.85))",
-                        color: "white",
-                        boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-                        backdropFilter: "blur(8px)",
-                        border: "1px solid rgba(255,255,255,0.3)",
-                    }}
-                >
-                    <Typography variant="h3" sx={{fontWeight: "bold", mb: 2}}>
-                        Schnuppertauchen
-                    </Typography>
-                    <Typography variant="body1" sx={{fontSize: "1.2rem", lineHeight: 1.9}}>
-                        Wer einmal in die schwerelose Unterwasserwelt eintauchen möchte, laden wir herzlich zum
-                        Schnuppertauchen oder Probetraining in unserer Wülfrather Wasserwelt ein.<br/>
-                        Nach Terminabsprache mit uns kann mit fachkundiger Anleitung eines Tauchlehrers im Hallenbad mit
-                        einem Tauchgerät probegetaucht werden.<br/>
-                        Minderjährige Schnuppertaucher benötigen die schriftliche Einverständniserklärung zumindest
-                        eines Erziehungsberechtigten (entsprechende Formulare sind vor Ort erhältlich!).<br/>
-                        Badebekleidung ist mitzubringen, die Tauchausrüstung wird selbstverständlich kostenlos zur
-                        Verfügung gestellt! Der Eintritt in die Wülfrather Wasserwelt ist natürlich ebenfalls
-                        kostenlos<br/>
-                        Schnuppertauchen oder Probetraining ist zu unseren Trainingszeiten Montags 16:00 - 17:00 Uhr und
-                        Donnerstags 20:30 - 21:30 Uhr möglich Bei den Trainingzeiten handelt es sich um die
-                        Wasserzeiten. Deshalb sollte mann sich eine halbe Stunde vorher an der Wülfrather Wasserwelt
-                        einfinden.
-                    </Typography>
-                </Paper>
-            </Container>
-        </Box>
+        <Container maxWidth="lg">
+            <Box
+                component={motion.div}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                sx={{ mb: 3 }}
+            >
+                <Typography variant="h3" sx={{ mb: 1 }}>
+                    Schnuppertauchen
+                </Typography>
+                <Typography sx={{ color: "text.secondary", maxWidth: 820, lineHeight: 1.8 }}>
+                    Ein erster, sicherer Einstieg in die Unterwasserwelt – mit Anleitung durch erfahrene Tauchlehrer.
+                    Ausrüstung stellen wir kostenlos.
+                </Typography>
+            </Box>
+
+            <Paper
+                component={motion.div}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.05 }}
+                elevation={0}
+                sx={{
+                    p: { xs: 2.2, md: 3.2 },
+                    borderRadius: 4,
+                    background: alpha("#FFFFFF", 0.86),
+                    border: `1px solid ${alpha("#0B1B24", 0.10)}`,
+                    boxShadow: "0 18px 55px rgba(11,27,36,0.10)",
+                    backdropFilter: "blur(12px)",
+                }}
+            >
+                <Stack direction={{ xs: "column", md: "row" }} spacing={1.1} sx={{ mb: 2 }}>
+                    <Chip icon={<ScubaDiving />} label="Kostenlose Ausrüstung" />
+                    <Chip icon={<CheckCircle />} label="Fachkundige Begleitung" />
+                    <Chip icon={<AccessTime />} label="Zu Trainingszeiten möglich" />
+                </Stack>
+
+                <Typography sx={{ color: "text.secondary", lineHeight: 1.9 }}>
+                    Wer einmal in die schwerelose Unterwasserwelt eintauchen möchte, ist herzlich eingeladen.
+                    Nach Terminabsprache kann im Hallenbad mit Gerät probegetaucht werden.
+                    Minderjährige benötigen die schriftliche Einverständniserklärung eines Erziehungsberechtigten.
+                    <br /><br />
+                    Bitte Badebekleidung mitbringen – Eintritt und Ausrüstung sind kostenlos.
+                    <br /><br />
+                    Möglich zu unseren Trainingszeiten:
+                    <br />
+                    <b>Montags 16:00 – 17:00 Uhr</b> (Kinder/Jugend) <br />
+                    <b>Donnerstags 20:30 – 21:30 Uhr</b> (Erwachsene) <br />
+                    (Wasserzeiten – bitte etwa <b>30 Minuten vorher</b> da sein.)
+                </Typography>
+            </Paper>
+        </Container>
     );
 }

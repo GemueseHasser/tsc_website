@@ -1,236 +1,478 @@
 // src/pages/About.js
-import React, {useState} from "react";
+import React, { useMemo, useState } from "react";
 import {
     Container,
     Box,
-    Paper,
     Typography,
+    Paper,
     Tabs,
-    Tab, List, ListItem
+    Tab,
+    Stack,
+    Divider,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Chip,
+    alpha,
+    useTheme,
 } from "@mui/material";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
+import {
+    HistoryEdu,
+    Groups,
+    Badge,
+    Savings,
+    Newspaper,
+    Handshake,
+    CheckCircle,
+    Person,
+    School,
+    Build,
+} from "@mui/icons-material";
+
+function PillTabs({ value, onChange, tabs }) {
+    const theme = useTheme();
+    return (
+        <Box
+            sx={{
+                display: "inline-flex",
+                p: 0.6,
+                borderRadius: 999,
+                border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
+                background: alpha("#fff", 0.75),
+                backdropFilter: "blur(12px)",
+                boxShadow: "0 14px 40px rgba(11,27,36,0.08)",
+            }}
+        >
+            <Tabs
+                value={value}
+                onChange={onChange}
+                variant="scrollable"
+                scrollButtons="auto"
+                TabIndicatorProps={{ style: { display: "none" } }}
+                sx={{
+                    minHeight: 44,
+                    "& .MuiTabs-flexContainer": { gap: 6 },
+                }}
+            >
+                {tabs.map((t) => (
+                    <Tab
+                        key={t.key}
+                        value={t.key}
+                        label={t.label}
+                        icon={t.icon}
+                        iconPosition="start"
+                        sx={{
+                            minHeight: 44,
+                            px: 1.6,
+                            borderRadius: 999,
+                            fontWeight: 750,
+                            color: "text.primary",
+                            "&.Mui-selected": {
+                                color: "white",
+                                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                                boxShadow: `0 14px 34px ${alpha(theme.palette.primary.main, 0.22)}`,
+                            },
+                        }}
+                    />
+                ))}
+            </Tabs>
+        </Box>
+    );
+}
+
+function GlassCard({ children, sx }) {
+    const theme = useTheme();
+    return (
+        <Paper
+            component={motion.div}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55 }}
+            elevation={0}
+            sx={{
+                p: { xs: 2.2, md: 3.2 },
+                borderRadius: 4,
+                background: alpha("#FFFFFF", 0.86),
+                border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
+                boxShadow: "0 18px 55px rgba(11,27,36,0.10)",
+                backdropFilter: "blur(12px)",
+                ...sx,
+            }}
+        >
+            {children}
+        </Paper>
+    );
+}
+
+function BulletList({ items }) {
+    return (
+        <List dense sx={{ mt: 0.5 }}>
+            {items.map((it, idx) => (
+                <ListItem key={idx} sx={{ px: 0, py: 0.35 }}>
+                    <ListItemIcon sx={{ minWidth: 34 }}>
+                        <CheckCircle fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={it}
+                        primaryTypographyProps={{ sx: { color: "text.secondary", lineHeight: 1.6 } }}
+                    />
+                </ListItem>
+            ))}
+        </List>
+    );
+}
 
 export default function About() {
-    const tabs = [
-        {label: "Über uns", key: "about"},
-        {label: "Ansprechpartner", key: "ansprechpartner"},
-        {label: "Mitgliedschaft", key: "mitgliedschaft"},
-        {label: "Presse", key: "presse"},
-        {label: "Förderung", key: "foerderung"},
-    ];
+    const theme = useTheme();
+
+    const tabs = useMemo(
+        () => [
+            { label: "Über uns", key: "about", icon: <HistoryEdu /> },
+            { label: "Ansprechpartner", key: "ansprechpartner", icon: <Badge /> },
+            { label: "Mitgliedschaft", key: "mitgliedschaft", icon: <Savings /> },
+            { label: "Presse", key: "presse", icon: <Newspaper /> },
+            { label: "Förderung", key: "foerderung", icon: <Handshake /> },
+        ],
+        []
+    );
+
     const [currentTab, setCurrentTab] = useState("about");
+
+    const SectionTitle = ({ icon, title, subtitle }) => (
+        <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1.2 }}>
+            <Box
+                sx={{
+                    width: 42,
+                    height: 42,
+                    borderRadius: 999,
+                    display: "grid",
+                    placeItems: "center",
+                    background: alpha(theme.palette.primary.main, 0.08),
+                    border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+                }}
+            >
+                {icon}
+            </Box>
+            <Box>
+                <Typography variant="h6" sx={{ fontWeight: 900, lineHeight: 1.15 }}>
+                    {title}
+                </Typography>
+                {subtitle && (
+                    <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                        {subtitle}
+                    </Typography>
+                )}
+            </Box>
+        </Stack>
+    );
 
     const renderTabContent = () => {
         switch (currentTab) {
             case "about":
                 return (
-                    <>
-                        <Typography variant="h5" sx={{fontWeight: "bold", mb: 2}}>
-                            Über uns
-                        </Typography>
-                        <Typography variant="body1" sx={{lineHeight: 1.7}}>
-                            Über 50 Jahre Tauchsport Club Wülfrath! Am 15.9.1972 trafen sich zehn begeisterte Taucher in
-                            den Privaträumen von Peter Stach in Wülfrath. An diesem Abend wurde der Tauchsport Club
-                            Niederberg gegründet.<br/>
-                            Angeregt durch Bücher und Filme und der damals sicherlich noch vorhandenen Vorstellung, dass
-                            das Tauchen ein Sport der Extreme verbunden mit einem Hauch von Abenteuer ist, haben sich
-                            1972 zehn Personen entschlossen, einen Tauchsportverein zu gründen. Der Verein wurde im
-                            Jahre 1973 als TSC Niederberg ins Vereinsregister eingetragen. Da aus der Kommunalreform
-                            keine neue Gemeinde namens Niederberg hervorgegangen ist, hat sich der Verein entschlossen,
-                            den Verein in TSC Wülfrath umzubenennen. Damit war der örtliche Bezug zur Heimatgemeinde
-                            hergestellt.<br/>
-                            Der Verein hat sich nie dem Leistungssport zugewandt. Im Vordergrund steht der Tauchsport in
-                            seiner ureigenen Form. Es geht darum, die Vielfalt der Unterwasserwelt verbunden mit dem uns
-                            Menschen ungewohnten Gefühl der Schwerelosigkeit zu erleben.<br/>
-                            Die Bewegung im Medium Wasser erfordert eine sehr gründliche Ausbildung und sehr viel
-                            Selbstdisziplin. Tauchschnellkurse entsprechen nicht unseren Prinzipien. Unser Verein ist
-                            mit seiner Ausbildungkonzeption den richtigen Weg gegangen, es stehen mehrere Tauchlehrer zu
-                            Verfügung, so dass Du in eine Vielzahl von Brevets wie zum Beispiel CMAS Bronze bis hin zu
-                            CMAS Gold in unserem Verein ausgebildet werden kannst. In den letzten Jahren hat sich auch
-                            eine große Jugendabteilung entwickelt, auch hier ist der Verein mit mehreren
-                            Kindertauchlehrern gut aufgestellt. Kinder und Jugendlichen können so schon frühzeitig an
-                            den Tauchsport herangeführt werden.
-                        </Typography>
-                    </>
-                )
+                    <Stack spacing={2}>
+                        <GlassCard>
+                            <SectionTitle
+                                icon={<Groups />}
+                                title="Tauchsport mit Haltung"
+                                subtitle="Gemeinschaft, Sicherheit und die Faszination Unterwasser"
+                            />
+                            <Typography sx={{ color: "text.secondary", lineHeight: 1.9 }}>
+                                Über 50 Jahre Tauchsport Club Wülfrath: Am 15.09.1972 trafen sich zehn begeisterte Taucher in den
+                                Privaträumen von Peter Stach in Wülfrath – der Startschuss für einen Verein, der bis heute für
+                                fundierte Ausbildung, Spaß am Sport und respektvollen Umgang mit der Natur steht.
+                            </Typography>
+                            <Divider sx={{ my: 2 }} />
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 16 }}>
+                                <Box
+                                    sx={{
+                                        p: 2.2,
+                                        borderRadius: 3,
+                                        background: alpha(theme.palette.primary.main, 0.04),
+                                        border: `1px solid ${alpha(theme.palette.primary.main, 0.10)}`,
+                                    }}
+                                >
+                                    <Typography sx={{ fontWeight: 900, mb: 0.6 }}>Unser Fokus</Typography>
+                                    <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
+                                        Kein Leistungssport – wir tauchen, um die Vielfalt der Unterwasserwelt und die Schwerelosigkeit zu
+                                        erleben. Sicherheit und saubere Technik sind dabei die Basis.
+                                    </Typography>
+                                </Box>
+                                <Box
+                                    sx={{
+                                        p: 2.2,
+                                        borderRadius: 3,
+                                        background: alpha(theme.palette.secondary.main, 0.08),
+                                        border: `1px solid ${alpha(theme.palette.secondary.main, 0.22)}`,
+                                    }}
+                                >
+                                    <Typography sx={{ fontWeight: 900, mb: 0.6 }}>Ausbildung</Typography>
+                                    <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
+                                        Wir setzen auf gründliche Ausbildung statt Schnellkurs: vom Einstieg bis zu höheren Brevets – mit
+                                        mehreren Tauchlehrern und starkem Jugendbereich.
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </GlassCard>
+
+                        <GlassCard>
+                            <SectionTitle icon={<HistoryEdu />} title="Kurzchronik" subtitle="Ein paar Meilensteine" />
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 16 }}>
+                                {[
+                                    { year: "1972", text: "Gründung durch zehn Taucher in Wülfrath." },
+                                    { year: "1973", text: "Eintragung als TSC Niederberg ins Vereinsregister." },
+                                    { year: "…", text: "Umbenennung zu TSC Wülfrath – klarer Bezug zur Heimatgemeinde." },
+                                ].map((t) => (
+                                    <Box
+                                        key={t.year}
+                                        sx={{
+                                            p: 2.2,
+                                            borderRadius: 3,
+                                            border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
+                                            background: alpha("#fff", 0.6),
+                                        }}
+                                    >
+                                        <Typography sx={{ fontWeight: 950, fontSize: 18 }}>{t.year}</Typography>
+                                        <Typography sx={{ color: "text.secondary", lineHeight: 1.7, mt: 0.6 }}>{t.text}</Typography>
+                                    </Box>
+                                ))}
+                            </Box>
+                        </GlassCard>
+                    </Stack>
+                );
+
             case "ansprechpartner":
                 return (
-                    <>
-                        <Typography variant="h5" sx={{fontWeight: "bold", mb: 2}}>
-                            Ansprechpartner
-                        </Typography>
-                        <Typography variant="body1" sx={{lineHeight: 1.7}}>
-                            Unser Team besteht ausschließlich aus qualifiziertem Personal, das zuverlässig und kompetent
-                            für Dich im Einsatz ist.
-                            <br/><br/>
-                            <strong>1. Vorsitzender</strong><br/>
-                            Marc Nußbaum<br/><br/>
-                            <strong>2. Vorsitzender</strong><br/>
-                            Luca Nicastro<br/><br/>
-                            <strong>Kassierer</strong><br/>
-                            Gunnar Brücken<br/><br/>
-                            <strong>Trainer und Tauchlehrer</strong><br/>
-                            Gunnar Brücken – TL***, Kinder-TL, Freediving-TL<br/>
-                            Benjamin Nawrath – TL**, Kinder-TL<br/><br/>
-                            <strong>Gerätewarte</strong><br/>
-                            1. Gerätewart: Jonas Lobe<br/>
-                            2. Gerätewart: Daniel Kus
-                        </Typography>
-                    </>
+                    <Stack spacing={2}>
+                        <GlassCard>
+                            <SectionTitle icon={<Badge />} title="Vorstand" subtitle="Deine Ansprechpartner im Verein" />
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 16 }}>
+                                {[
+                                    { title: "1. Vorsitzender", name: "Marc Nußbaum", icon: <Person /> },
+                                    { title: "2. Vorsitzender", name: "Luca Nicastro", icon: <Person /> },
+                                    { title: "Kassierer", name: "Gunnar Brücken", icon: <Person /> },
+                                ].map((p) => (
+                                    <Box
+                                        key={p.title}
+                                        sx={{
+                                            p: 2.2,
+                                            borderRadius: 3,
+                                            border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
+                                            background: alpha("#fff", 0.65),
+                                        }}
+                                    >
+                                        <Stack direction="row" spacing={1.1} alignItems="center" sx={{ mb: 0.8 }}>
+                                            <Box
+                                                sx={{
+                                                    width: 38,
+                                                    height: 38,
+                                                    borderRadius: 999,
+                                                    display: "grid",
+                                                    placeItems: "center",
+                                                    background: alpha(theme.palette.primary.main, 0.08),
+                                                    border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+                                                }}
+                                            >
+                                                {p.icon}
+                                            </Box>
+                                            <Box>
+                                                <Typography sx={{ fontWeight: 900, lineHeight: 1.15 }}>{p.name}</Typography>
+                                                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                                                    {p.title}
+                                                </Typography>
+                                            </Box>
+                                        </Stack>
+                                    </Box>
+                                ))}
+                            </Box>
+                        </GlassCard>
+
+                        <GlassCard>
+                            <SectionTitle icon={<School />} title="Trainer & Tauchlehrer" />
+                            <BulletList
+                                items={[
+                                    "Gunnar Brücken – TL***, Kinder-TL, Freediving-TL",
+                                    "Benjamin Nawrath – TL**, Kinder-TL",
+                                ]}
+                            />
+                            <Divider sx={{ my: 2 }} />
+                            <SectionTitle icon={<Build />} title="Gerätewarte" />
+                            <BulletList items={["1. Gerätewart: Jonas Lobe", "2. Gerätewart: Daniel Kus"]} />
+                        </GlassCard>
+                    </Stack>
                 );
+
             case "mitgliedschaft":
                 return (
-                    <>
-                        <Typography variant="h5" sx={{fontWeight: "bold", mb: 3}}>
-                            Mitgliedschaft
-                        </Typography>
+                    <Stack spacing={2}>
+                        <GlassCard>
+                            <SectionTitle icon={<Savings />} title="Mitgliedschaft" subtitle="Training, Community & Vorteile" />
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1.2fr 0.8fr" }, gap: 16 }}>
+                                <Box
+                                    sx={{
+                                        p: 2.2,
+                                        borderRadius: 3,
+                                        background: alpha(theme.palette.secondary.main, 0.08),
+                                        border: `1px solid ${alpha(theme.palette.secondary.main, 0.22)}`,
+                                    }}
+                                >
+                                    <Typography sx={{ fontWeight: 950, mb: 0.6 }}>Welche Vorteile bietet die Mitgliedschaft?</Typography>
+                                    <BulletList
+                                        items={[
+                                            "Teilnahme am regelmäßigen Training",
+                                            "Günstige Ausrüstungsausleihe für Anfänger & Gelegenheitstaucher",
+                                            "Zugriff auf eine große Buddy-Liste für gemeinsame Tauchgänge",
+                                            "Organisation von Tauchtouren zu spannenden Plätzen",
+                                            "Kostenlose Flaschenfüllung am Vereinskompressor",
+                                            "Jahrestauchgenehmigung am See Gut Widdauen 2 (50% vom Verein getragen)",
+                                        ]}
+                                    />
+                                </Box>
 
-                        {/* Vorteile */}
-                        <Typography variant="h6" sx={{fontWeight: "bold", mb: 1}}>
-                            Welche Vorteile bietet die Mitgliedschaft?
-                        </Typography>
-                        <List sx={{mb: 3, pl: 2}}>
-                            <ListItem disablePadding>• Teilnahme am regelmäßigen Training</ListItem>
-                            <ListItem disablePadding>• Günstige Ausrüstungsausleihe für Anfänger &
-                                Gelegenheitstaucher</ListItem>
-                            <ListItem disablePadding>• Zugriff auf eine große „Buddy-Liste“ für gemeinsame
-                                Tauchgänge</ListItem>
-                            <ListItem disablePadding>• Organisation von Tauchtouren zu spannenden Plätzen</ListItem>
-                            <ListItem disablePadding>• Kostenlose Flaschenfüllung am Vereinskompressor</ListItem>
-                            <ListItem disablePadding>• Jahrestauchgenehmigung am See Gut Widdauen 2 (50 % vom Verein
-                                getragen)</ListItem>
-                        </List>
+                                <Box
+                                    sx={{
+                                        p: 2.2,
+                                        borderRadius: 3,
+                                        background: alpha(theme.palette.primary.main, 0.04),
+                                        border: `1px solid ${alpha(theme.palette.primary.main, 0.10)}`,
+                                    }}
+                                >
+                                    <Typography sx={{ fontWeight: 950, mb: 0.8 }}>Wie wird man Mitglied?</Typography>
+                                    <BulletList
+                                        items={[
+                                            "Gültige Tauchtauglichkeitsuntersuchung",
+                                            "Aufnahmeantrag inkl. SEPA-Mandat & Satzung",
+                                            "Bei Ausbildung zum Bronzetaucher zusätzlich Ausbildungsvertrag",
+                                        ]}
+                                    />
+                                </Box>
+                            </Box>
+                        </GlassCard>
 
-                        {/* Mitglied werden */}
-                        <Typography variant="h6" sx={{fontWeight: "bold", mb: 1}}>
-                            Wie wird man Mitglied?
-                        </Typography>
-                        <List sx={{mb: 3, pl: 2}}>
-                            <ListItem disablePadding>1. Vorlage einer gültigen Tauchtauglichkeitsuntersuchung</ListItem>
-                            <ListItem disablePadding>2. Ausfüllen des Aufnahmeantrags inkl. SEPA-Mandat und
-                                Satzung</ListItem>
-                            <ListItem disablePadding>3. Bei Ausbildung zum Bronzetaucher zusätzlich Ausbildungsvertrag
-                                ausfüllen</ListItem>
-                        </List>
+                        <GlassCard>
+                            <SectionTitle icon={<Savings />} title="Mitgliedsbeiträge" />
+                            <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
+                                Die Aufnahmegebühr entfällt seit Beschluss der Mitgliederversammlung am 22.03.2013.
+                            </Typography>
 
-                        {/* Beiträge */}
-                        <Typography variant="h6" sx={{fontWeight: "bold", mb: 1}}>
-                            Mitgliedsbeiträge
-                        </Typography>
-                        <Typography variant="body2" sx={{mb: 1}}>
-                            Die Aufnahmegebühr entfällt seit Beschluss der Mitgliederversammlung am 22.03.2013.
-                        </Typography>
-                        <List sx={{pl: 2}}>
-                            <ListItem disablePadding>• Erwachsene: 12 €/Monat</ListItem>
-                            <ListItem disablePadding>• Jugendliche, Schüler, Studenten, Azubis: 7 €/Monat (Nachweis
-                                erforderlich)</ListItem>
-                            <ListItem disablePadding>• Passive Mitglieder: 4 €/Monat</ListItem>
-                        </List>
+                            <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", mt: 1.5 }}>
+                                <Chip label="Erwachsene: 12 €/Monat" />
+                                <Chip label="Jugend/Schüler/Studierende/Azubis: 7 €/Monat (Nachweis)" />
+                                <Chip label="Passiv: 4 €/Monat" />
+                            </Stack>
 
-                        <Typography variant="body2" sx={{mt: 2}}>
-                            Im Beitrag enthalten: Nutzung des Schwimmbads zweimal pro Woche, Versicherungsschutz sowie
-                            ein Abo der Tauchsport-Zeitschrift.
-                        </Typography>
-                    </>
+                            <Box
+                                sx={{
+                                    mt: 2,
+                                    p: 2,
+                                    borderRadius: 3,
+                                    border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
+                                    background: alpha("#fff", 0.65),
+                                }}
+                            >
+                                <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
+                                    Im Beitrag enthalten: Nutzung des Schwimmbads zweimal pro Woche, Versicherungsschutz sowie ein Abo der
+                                    Tauchsport-Zeitschrift.
+                                </Typography>
+                            </Box>
+                        </GlassCard>
+                    </Stack>
                 );
+
             case "presse":
                 return (
-                    <>
-                        <Typography variant="h5" sx={{fontWeight: "bold", mb: 2}}>
-                            Presse
+                    <GlassCard>
+                        <SectionTitle icon={<Newspaper />} title="Presse" subtitle="Material & Infos für Medien" />
+                        <Typography sx={{ color: "text.secondary", lineHeight: 1.9 }}>
+                            Pressemitteilungen oder Bildmaterialien für Medien findest du hier. (Wenn du Inhalte hast, können wir das
+                            als Download-Bereich mit sauberen Cards & Dateilisten aufbauen.)
                         </Typography>
-                        <Typography variant="body1" sx={{lineHeight: 1.7}}>
-                            Pressemitteilungen oder Bildmaterialien für Medien findest du hier.
-                        </Typography>
-                    </>
+                    </GlassCard>
                 );
+
             case "foerderung":
                 return (
-                    <>
-                        <Typography variant="h5" sx={{fontWeight: "bold", mb: 2}}>
-                            Förderung
-                        </Typography>
-                        <Typography variant="body1" sx={{lineHeight: 1.7}}>
-                            Liebe Mitglieder, Unterstützer und Freunde des Vereins,<br/><br/>
-                            wir freuen uns, Ihnen mitteilen zu können, dass der TSC durch die großzügige Förderung der
-                            Europäischen Union im Rahmen des Programms REACT-EU und der Landesregierung
-                            Nordrhein-Westfalen eine bedeutende Chance erhält, die Digitalisierung in unserem Verein
-                            voranzutreiben.<br/><br/>
-                            Unsere Vision ist es, unseren Verein fit für die Zukunft zu machen und unsere Mitglieder
-                            sowie die Gemeinschaft noch besser zu unterstützen. In Zeiten zunehmender Digitalisierung
-                            ist es essentiell, die modernen Technologien und Möglichkeiten zu nutzen, um unsere
-                            Vereinsarbeit effizienter und zugänglicher zu gestalten.<br/><br/>
-                            Dank der Unterstützung von REACT-EU und der Landesregierung NRW werden wir in der Lage sein,
-                            innovative Maßnahmen umzusetzen:<br/><br/>
-                            Verbesserte Finanzorganisation: Mit einem leistungsfähigen Laptop können wir unsere Finanzen
-                            effizienter organisieren. Die Buchhaltung und Verwaltung von Einnahmen und Ausgaben wird
-                            weiter digitalisiert, was zu einer transparenten und nachvollziehbaren Finanzführung
-                            führt.<br/><br/>
-                            Wir sind davon überzeugt, dass diese Schritte uns als Verein voranbringen und unsere
-                            positive Wirkung auf die Gemeinschaft erheblich verstärken werden. Die Förderung durch die
-                            Europäische Union im Rahmen des REACT-EU-Programms und die Unterstützung der Landesregierung
-                            NRW zeigen uns, dass unser Engagement und unsere Ziele wahrgenommen und wertgeschätzt
-                            werden.<br/><br/>
-                            Gemeinsam werden wir die digitale Zukunft unseres Vereins gestalten und unsere Mission
-                            weiterhin erfolgreich verfolgen. Wir bedanken uns herzlich bei der Europäischen Union und
-                            der Landesregierung Nordrhein-Westfalen für diese einzigartige Möglichkeit.<br/><br/>
-                            Ihr TSC-Vorstand
-                        </Typography>
-                    </>
+                    <Stack spacing={2}>
+                        <GlassCard>
+                            <SectionTitle icon={<Handshake />} title="Förderung" subtitle="REACT-EU & Digitalisierung" />
+                            <Typography sx={{ color: "text.secondary", lineHeight: 1.95 }}>
+                                Liebe Mitglieder, Unterstützer und Freunde des Vereins,
+                                <br />
+                                <br />
+                                wir freuen uns, Ihnen mitteilen zu können, dass der TSC durch die großzügige Förderung der Europäischen
+                                Union im Rahmen des Programms REACT-EU und der Landesregierung Nordrhein-Westfalen eine bedeutende
+                                Chance erhält, die Digitalisierung in unserem Verein voranzutreiben.
+                                <br />
+                                <br />
+                                Unsere Vision ist es, unseren Verein fit für die Zukunft zu machen und unsere Mitglieder sowie die
+                                Gemeinschaft noch besser zu unterstützen. In Zeiten zunehmender Digitalisierung ist es essentiell, die
+                                modernen Technologien und Möglichkeiten zu nutzen, um unsere Vereinsarbeit effizienter und zugänglicher
+                                zu gestalten.
+                            </Typography>
+                        </GlassCard>
+
+                        <GlassCard
+                            sx={{
+                                background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.06)}, ${alpha(
+                                    theme.palette.secondary.main,
+                                    0.10
+                                )})`,
+                            }}
+                        >
+                            <Typography sx={{ fontWeight: 950, mb: 0.8 }}>Was wird konkret verbessert?</Typography>
+                            <BulletList
+                                items={[
+                                    "Verbesserte Finanzorganisation durch digitale Prozesse",
+                                    "Transparente, nachvollziehbare Buchhaltung und Verwaltung",
+                                    "Bessere Unterstützung der Vereinsarbeit durch moderne Ausstattung",
+                                ]}
+                            />
+                            <Divider sx={{ my: 2 }} />
+                            <Typography sx={{ color: "text.secondary", lineHeight: 1.9 }}>
+                                Wir bedanken uns herzlich bei der Europäischen Union und der Landesregierung NRW für diese Möglichkeit.
+                                <br />
+                                <br />
+                                Ihr TSC-Vorstand
+                            </Typography>
+                        </GlassCard>
+                    </Stack>
                 );
+
             default:
                 return null;
         }
     };
 
     return (
-        <Box sx={{display: "flex", flexDirection: "column", flexGrow: 1}}>
-            <Container sx={{py: 4, flexShrink: 0, mb: 8}}>
-                <Paper
-                    component={motion.div}
-                    initial={{opacity: 0, y: 20}}
-                    animate={{opacity: 1, y: 0}}
-                    transition={{duration: 0.8}}
-                    elevation={8}
-                    sx={{
-                        p: 4,
-                        borderRadius: 4,
-                        background:
-                            "linear-gradient(to bottom right, rgba(0, 77, 115, 0.85), rgba(0, 188, 212, 0.85))",
-                        color: "white",
-                        boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-                        backdropFilter: "blur(8px)",
-                        border: "1px solid rgba(255,255,255,0.3)",
-                    }}
-                >
-                    <Typography variant="h3" sx={{fontWeight: "bold", mb: 3}}>
-                        Über uns
-                    </Typography>
+        <Container maxWidth="lg">
+            {/* Header */}
+            <Box
+                component={motion.div}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                sx={{ mb: 3 }}
+            >
+                <Typography variant="h3" sx={{ mb: 1 }}>
+                    Über uns
+                </Typography>
+                <Typography sx={{ color: "text.secondary", maxWidth: 860, lineHeight: 1.8 }}>
+                    Ein Verein mit Tradition – und mit modernem Anspruch an Ausbildung, Sicherheit und Gemeinschaft.
+                </Typography>
 
-                    {/* Unterseiten-Navigation */}
-                    <Tabs
+                <Box sx={{ mt: 2.2 }}>
+                    <PillTabs
                         value={currentTab}
-                        onChange={(_, newValue) => setCurrentTab(newValue)}
-                        textColor="secondary"
-                        indicatorColor="secondary"
-                        variant="scrollable"
-                        scrollButtons="auto"
-                        sx={{mb: 3}}
-                    >
-                        {tabs.map((tab) => (
-                            <Tab
-                                key={tab.key}
-                                value={tab.key}
-                                label={tab.label}
-                                sx={{color: "white"}}
-                            />
-                        ))}
-                    </Tabs>
+                        onChange={(_, v) => setCurrentTab(v)}
+                        tabs={tabs}
+                    />
+                </Box>
+            </Box>
 
-                    {/* Unterseiten-Inhalt */}
-                    <Box>{renderTabContent()}</Box>
-                </Paper>
-            </Container>
-        </Box>
+            {/* Content */}
+            <Box sx={{ pb: 2 }}>{renderTabContent()}</Box>
+        </Container>
     );
 }
