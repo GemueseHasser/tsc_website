@@ -1,17 +1,20 @@
 // src/pages/Start.js
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Container, Box, IconButton, Paper, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 
-// Lokale Bilder importieren
-import diver from "../res/diver.jpg";
-import test1 from "../res/bg1.jpg";
-import test2 from "../res/bg2.jpg";
-
-const heroImages = [diver, test1, test2];
-
 export default function Start() {
+    const [heroImages, setHeroImages] = useState([]);
+
+    useEffect(() => {
+        fetch("/resources/start/startImages.json")
+            .then(res => res.json())
+            .then(data =>
+                setHeroImages(data.map(img => `/resources/start/${img}`))
+            );
+    }, []);
+
     const [currentImage, setCurrentImage] = useState(0);
 
     const handlePrev = () => {
