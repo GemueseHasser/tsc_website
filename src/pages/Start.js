@@ -17,6 +17,22 @@ export default function Start() {
 
     const [currentImage, setCurrentImage] = useState(0);
 
+    const [content, setContent] = useState(null);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        fetch("/content/start.json")
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/start.json`);
+                return res.json();
+            })
+            .then(setContent)
+            .catch((e) => setError(String(e)));
+    }, []);
+
+    if (error) return <div style={{ padding: 16 }}>Fehler: {error}</div>;
+    if (!content) return <div style={{ padding: 16 }}>Lade Inhalte…</div>;
+
     const handlePrev = () => {
         setCurrentImage((prev) => (prev === 0 ? heroImages.length - 1 : prev - 1));
     };
@@ -54,10 +70,10 @@ export default function Start() {
 
                 <Box sx={{ backgroundColor: "rgba(0,0,0,0.5)", p: 3, borderRadius: 3 }}>
                     <Typography variant="h3" sx={{ fontWeight: "bold", mb: 2 }}>
-                        Willkommen beim TSC Wülfrath
+                        {content.headline}
                     </Typography>
                     <Typography variant="h6">
-                        Dein Tauchverein für Abenteuer, Ausbildung und Gemeinschaft
+                        {content.slogan}
                     </Typography>
                 </Box>
 
@@ -86,14 +102,9 @@ export default function Start() {
                     }}
                 >
                     <Typography variant="body1" sx={{ fontSize: "1.2rem", lineHeight: 1.9 }}>
-                        Du möchtest einfach einmal ohne Verpflichtung in der Wülfrather Wasserwelt abtauchen und schauen,
-                        ob der Tauchsport etwas für Dich ist? <br />
-                        Du warst im Urlaub schon einmal kurz unter Wasser und möchtest nun Deinen Tauchschein machen?
-                        <br />
-                        Du bist ausgebildeter Taucher und suchst nach Gleichgesinnten, mit denen Du tauchen gehen und
-                        auch sonst eine Menge Spaß haben kannst? <br />
-                        Dann bist Du bei uns genau richtig! Stöbere einfach ein wenig auf unserer Seite und lerne mehr
-                        über den Tauchsport in und um Wülfrath!
+                        {content.bodyText.map((line, i) => (
+                            <p key={i}>{line}</p>
+                        ))}
                     </Typography>
                 </Paper>
             </Container>
