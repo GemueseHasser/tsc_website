@@ -1,9 +1,25 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Container, Box, Typography, Paper, Stack, Chip, Divider, alpha } from "@mui/material";
 import { motion } from "framer-motion";
 import { Gavel, Email, AccountBalance, Groups } from "@mui/icons-material";
 
 export default function Impressum() {
+    const [content, setContent] = useState(null);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        fetch(process.env.PUBLIC_URL + "/content/impressum.json")
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/impressum.json`);
+                return res.json();
+            })
+            .then(setContent)
+            .catch((e) => setError(String(e)));
+    }, []);
+
+    if (error) return <div style={{ padding: 16 }}>Fehler: {error}</div>;
+    if (!content) return <div style={{ padding: 16 }}>Lade Inhalte…</div>;
+
     return (
         <Container maxWidth="lg">
             <Box
@@ -52,8 +68,8 @@ export default function Impressum() {
                     </Typography>
                     <Typography sx={{ color: "text.secondary", lineHeight: 1.9 }}>
                         Vertreten durch:<br />
-                        Marc Nußbaum (1. Vorsitzender)<br />
-                        E-Mail: <b>vorstand@tsc-wuelfrath.de</b>
+                        {content.verantwortlicher}<br />
+                        E-Mail: <b>{content.email}</b>
                     </Typography>
                 </Box>
 
@@ -63,8 +79,11 @@ export default function Impressum() {
                         Mitgliedschaften
                     </Typography>
                     <Typography sx={{ color: "text.secondary", lineHeight: 1.9 }}>
-                        International Diving Association (IDA) – Nr. 0705-16<br />
-                        Verband Deutscher Sporttaucher (VDST) – Nr. 080050
+                        {content.mitgliedschaften.map((line, i) => (
+                            <Box key={i} component="p" sx={{ m: 0, mb: 1.2 }}>
+                                {line}
+                            </Box>
+                        ))}
                     </Typography>
                 </Box>
 
@@ -85,11 +104,11 @@ export default function Impressum() {
                         Bankverbindung
                     </Typography>
                     <Typography sx={{ color: "text.secondary", lineHeight: 1.9 }}>
-                        Kreissparkasse Düsseldorf<br />
-                        IBAN: DE09 3015 0200 0003 5798 44<br />
-                        BIC: WELADED1KSD<br />
-                        BLZ: 301 502 00<br />
-                        Konto-Nr.: 3 579 844
+                        {content.bankverbindung.name}<br />
+                        IBAN: {content.bankverbindung.iban}<br />
+                        BIC: {content.bankverbindung.bic}<br />
+                        BLZ: {content.bankverbindung.blz}<br />
+                        Konto-Nr.: {content.bankverbindung.kontoNr}
                     </Typography>
                 </Box>
 
