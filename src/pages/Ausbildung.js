@@ -424,6 +424,7 @@ export default function Ausbildung() {
                             <Bullet>Trockentauchen</Bullet>
                             <Bullet>Tieftauchen</Bullet>
                             <Bullet>Sidemount-Tauchen</Bullet>
+                            <Bullet>Nitrox</Bullet>
                         </List>
                     </GlassCard>
                 );

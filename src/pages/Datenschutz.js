@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
     Container,
     Box,
@@ -14,6 +14,22 @@ import { motion } from "framer-motion";
 import { PrivacyTip, Storage, Lock, Email } from "@mui/icons-material";
 
 export default function Datenschutz() {
+    const [links, setLinks] = useState(null);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        fetch(process.env.PUBLIC_URL + "/content/links.json")
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/links.json`);
+                return res.json();
+            })
+            .then(setLinks)
+            .catch((e) => setError(String(e)));
+    }, []);
+
+    if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
+    if (!links) return <div style={{padding: 16}}>Lade Links…</div>;
+
     return (
         <Container maxWidth="lg">
             {/* Head */}
@@ -229,8 +245,8 @@ export default function Datenschutz() {
                     </Typography>
 
                     <Typography sx={{fontWeight: 900}}>
-                        <Link href="mailto:vorstand@tsc-wuelfrath.de" underline="hover">
-                            vorstand@tsc-wuelfrath.de
+                        <Link href={"mailto:" + links.email} underline="hover">
+                            {links.email}
                         </Link>
                     </Typography>
 

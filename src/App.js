@@ -154,6 +154,22 @@ export default function App() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [activePage]);
 
+    const [links, setLinks] = useState(null);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        fetch(process.env.PUBLIC_URL + "/content/links.json")
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/links.json`);
+                return res.json();
+            })
+            .then(setLinks)
+            .catch((e) => setError(String(e)));
+    }, []);
+
+    if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
+    if (!links) return <div style={{padding: 16}}>Lade Links…</div>;
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -313,13 +329,13 @@ export default function App() {
                                 Schnellkontakt
                             </Typography>
                             <Stack direction="row" spacing={1}>
-                                <IconButton size="small" href="https://www.instagram.com/tsc.wuelfrath/" target="_blank">
+                                <IconButton size="small" href={links.instagram} target="_blank">
                                     <Instagram fontSize="small" />
                                 </IconButton>
-                                <IconButton size="small" href="https://www.facebook.com/tsc.wuelfrath/" target="_blank">
+                                <IconButton size="small" href={links.facebook} target="_blank">
                                     <Facebook fontSize="small" />
                                 </IconButton>
-                                <IconButton size="small" href="mailto:vorstand@tsc-wuelfrath.de">
+                                <IconButton size="small" href={"mailto:" + links.email}>
                                     <Email fontSize="small" />
                                 </IconButton>
                             </Stack>
@@ -383,7 +399,7 @@ export default function App() {
                             <Stack direction="row" spacing={1} alignItems="center">
                                 <Button
                                     component="a"
-                                    href="mailto:vorstand@tsc-wuelfrath.de"
+                                    href={"mailto:" + links.email}
                                     variant="outlined"
                                     endIcon={<ArrowOutward />}
                                     sx={{
@@ -396,13 +412,13 @@ export default function App() {
                                 >
                                     Anfragen
                                 </Button>
-                                <IconButton href="https://www.instagram.com/tsc.wuelfrath/" target="_blank">
+                                <IconButton href={links.instagram} target="_blank">
                                     <Instagram />
                                 </IconButton>
-                                <IconButton href="https://www.facebook.com/tsc.wuelfrath/" target="_blank">
+                                <IconButton href={links.facebook} target="_blank">
                                     <Facebook />
                                 </IconButton>
-                                <IconButton href="mailto:vorstand@tsc-wuelfrath.de">
+                                <IconButton href={"mailto:" + links.email}>
                                     <Email />
                                 </IconButton>
                             </Stack>

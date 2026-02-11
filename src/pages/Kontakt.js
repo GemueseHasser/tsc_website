@@ -1,10 +1,26 @@
 // src/pages/Kontakt.js
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Container, Box, Typography, Paper, Stack, IconButton, Button, alpha } from "@mui/material";
 import { motion } from "framer-motion";
 import { Email, Facebook, Instagram, ArrowOutward } from "@mui/icons-material";
 
 export default function Kontakt() {
+    const [links, setLinks] = useState(null);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        fetch(process.env.PUBLIC_URL + "/content/links.json")
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/links.json`);
+                return res.json();
+            })
+            .then(setLinks)
+            .catch((e) => setError(String(e)));
+    }, []);
+
+    if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
+    if (!links) return <div style={{padding: 16}}>Lade Links…</div>;
+
     return (
         <Container maxWidth="lg">
             <Box
@@ -43,26 +59,26 @@ export default function Kontakt() {
                         disableElevation
                         endIcon={<ArrowOutward />}
                         sx={{ background: "linear-gradient(135deg, #063A52, #27C2D3)", py: 1.1 }}
-                        onClick={() => (window.location.href = "mailto:vorstand@tsc-wuelfrath.de")}
+                        onClick={() => (window.location.href = "mailto:" + links.email)}
                     >
                         Mail an den Vorstand
                     </Button>
 
                     <Stack direction="row" spacing={1}>
-                        <IconButton href="https://www.instagram.com/tsc.wuelfrath/" target="_blank">
+                        <IconButton href={links.instagram} target="_blank">
                             <Instagram />
                         </IconButton>
-                        <IconButton href="https://www.facebook.com/tsc.wuelfrath/" target="_blank">
+                        <IconButton href={links.facebook} target="_blank">
                             <Facebook />
                         </IconButton>
-                        <IconButton href="mailto:vorstand@tsc-wuelfrath.de">
+                        <IconButton href={"mailto:" + links.email}>
                             <Email />
                         </IconButton>
                     </Stack>
                 </Stack>
 
                 <Box sx={{ mt: 2, p: 2, borderRadius: 3, background: alpha("#063A52", 0.04), border: `1px solid ${alpha("#063A52", 0.10)}` }}>
-                    <Typography sx={{ fontWeight: 900, mb: 0.4 }}>vorstand@tsc-wuelfrath.de</Typography>
+                    <Typography sx={{ fontWeight: 900, mb: 0.4 }}>{links.email}</Typography>
                     <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
                         Alternativ erreichst du uns über Instagram oder Facebook.
                     </Typography>
