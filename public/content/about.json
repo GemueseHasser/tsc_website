@@ -9,5 +9,26 @@
       "Gunnar Brücken – TL***, Kinder-TL, Freediving-TL",
       "Benjamin Nawrath – TL**, Kinder-TL"
     ]
+  },
+  "mitgliedschaft": {
+    "vorteile": [
+      "Teilnahme am regelmäßigen Training",
+      "Günstige Ausrüstungsausleihe für Anfänger & Gelegenheitstaucher",
+      "Zugriff auf eine große Buddy-Liste für gemeinsame Tauchgänge",
+      "Organisation von Tauchtouren zu spannenden Plätzen",
+      "Kostenlose Flaschenfüllung am Vereinskompressor",
+      "Jahrestauchgenehmigung am See Gut Widdauen 2 (50% vom Verein getragen)",
+      "Tauchsport-Versicherung über den VDST"
+    ],
+    "wieWirdManMitglied": [
+      "Gültige Tauchtauglichkeitsuntersuchung",
+      "Aufnahmeantrag inkl. SEPA-Mandat & Satzung",
+      "Bei Ausbildung zum Bronzetaucher zusätzlich Ausbildungsvertrag"
+    ],
+    "beitraege": {
+      "kinder": "Jugend/Schüler/Studierende/Azubis: 7 €/Monat (Nachweis)",
+      "erwachsene": "Erwachsene: 12 €/Monat",
+      "passiv": "Passiv: 4 €/Monat"
+    }
   }
 }

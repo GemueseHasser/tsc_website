@@ -350,15 +350,7 @@ export default function About() {
                                 >
                                     <Typography sx={{ fontWeight: 950, mb: 0.6 }}>Welche Vorteile bietet die Mitgliedschaft?</Typography>
                                     <BulletList
-                                        items={[
-                                            "Teilnahme am regelmäßigen Training",
-                                            "Günstige Ausrüstungsausleihe für Anfänger & Gelegenheitstaucher",
-                                            "Zugriff auf eine große Buddy-Liste für gemeinsame Tauchgänge",
-                                            "Organisation von Tauchtouren zu spannenden Plätzen",
-                                            "Kostenlose Flaschenfüllung am Vereinskompressor",
-                                            "Jahrestauchgenehmigung am See Gut Widdauen 2 (50% vom Verein getragen)",
-                                            "Tauchsport-Versicherung über den VDST"
-                                        ]}
+                                        items={content.mitgliedschaft.vorteile}
                                     />
                                 </Box>
 
@@ -372,11 +364,7 @@ export default function About() {
                                 >
                                     <Typography sx={{ fontWeight: 950, mb: 0.8 }}>Wie wird man Mitglied?</Typography>
                                     <BulletList
-                                        items={[
-                                            "Gültige Tauchtauglichkeitsuntersuchung",
-                                            "Aufnahmeantrag inkl. SEPA-Mandat & Satzung",
-                                            "Bei Ausbildung zum Bronzetaucher zusätzlich Ausbildungsvertrag",
-                                        ]}
+                                        items={content.mitgliedschaft.wieWirdManMitglied}
                                     />
                                 </Box>
                             </Box>
@@ -389,9 +377,9 @@ export default function About() {
                             </Typography>
 
                             <Stack direction="row" rowGap={1} spacing={1} sx={{ flexWrap: "wrap", mt: 1.5 }}>
-                                <Chip label="Erwachsene: 12 €/Monat" />
-                                <Chip label="Jugend/Schüler/Studierende/Azubis: 7 €/Monat (Nachweis)" />
-                                <Chip label="Passiv: 4 €/Monat" />
+                                <Chip label={content.mitgliedschaft.beitraege.erwachsene} />
+                                <Chip label={content.mitgliedschaft.beitraege.kinder} />
+                                <Chip label={content.mitgliedschaft.beitraege.passiv} />
                             </Stack>
 
                             <Box
