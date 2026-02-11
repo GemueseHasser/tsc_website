@@ -33,16 +33,20 @@ import Training from "./pages/Training";
 import Schnuppertauchen from "./pages/Schnuppertauchen";
 import Ausbildung from "./pages/Ausbildung";
 import Kontakt from "./pages/Kontakt";
+import Impressum from "./pages/Impressum";
+import Datenschutz from "./pages/Datenschutz";
 
 export default function App() {
     const [activePage, setActivePage] = useState("Startseite");
     const [mobileOpen, setMobileOpen] = useState(false);
-    const isMobile = useMediaQuery("(max-width: 900px)");
+    const isMobile = useMediaQuery("(max-width: 1200px)");
 
     const pages = useMemo(
         () => ["Startseite", "Über uns", "Training", "Schnuppertauchen", "Ausbildung", "Kontakt"],
         []
     );
+
+    const legalPages = useMemo(() => ["Impressum", "Datenschutz"], []);
 
     const theme = useMemo(
         () =>
@@ -131,6 +135,10 @@ export default function App() {
                 return <Ausbildung />;
             case "Kontakt":
                 return <Kontakt />;
+            case "Impressum":
+                return <Impressum />;
+            case "Datenschutz":
+                return <Datenschutz />;
             default:
                 return <Start />;
         }
@@ -217,9 +225,41 @@ export default function App() {
                                         </Button>
                                     );
                                 })}
+
+                                {/* dezente Legal-Links (Desktop) */}
+                                <Divider
+                                    orientation="vertical"
+                                    flexItem
+                                    sx={{ mx: 0.8, borderColor: alpha("#0B1B24", 0.10) }}
+                                />
+
+                                <Stack direction="row" spacing={0.2} alignItems="center">
+                                    {legalPages.map((item) => (
+                                        <Button
+                                            key={item}
+                                            onClick={() => handleNavClick(item)}
+                                            variant="text"
+                                            size="small"
+                                            sx={{
+                                                px: 1,
+                                                color: alpha(theme.palette.text.primary, 0.72),
+                                                fontWeight: 700,
+                                                "&:hover": {
+                                                    background: alpha(theme.palette.primary.main, 0.06),
+                                                    color: "text.primary",
+                                                },
+                                            }}
+                                        >
+                                            {item}
+                                        </Button>
+                                    ))}
+                                </Stack>
                             </Stack>
                         ) : (
-                            <IconButton onClick={() => setMobileOpen(true)} sx={{ border: `1px solid ${alpha("#0B1B24", 0.12)}` }}>
+                            <IconButton
+                                onClick={() => setMobileOpen(true)}
+                                sx={{ border: `1px solid ${alpha("#0B1B24", 0.12)}` }}
+                            >
                                 <MenuIcon />
                             </IconButton>
                         )}
@@ -228,7 +268,7 @@ export default function App() {
 
                 {/* Drawer Mobile */}
                 <Drawer anchor="right" open={mobileOpen} onClose={() => setMobileOpen(false)}>
-                    <Box sx={{ width: 320, p: 2 }}>
+                    <Box sx={{ width: 320, p: 2, display: "flex", flexDirection: "column", height: "100%" }}>
                         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
                             <Typography sx={{ fontWeight: 800 }}>Navigation</Typography>
                             <IconButton onClick={() => setMobileOpen(false)}>
@@ -236,6 +276,7 @@ export default function App() {
                             </IconButton>
                         </Stack>
                         <Divider sx={{ mb: 1 }} />
+
                         <List sx={{ p: 0 }}>
                             {pages.map((item) => (
                                 <ListItem key={item} disablePadding>
@@ -244,7 +285,8 @@ export default function App() {
                                         sx={{
                                             borderRadius: 2,
                                             my: 0.5,
-                                            background: item === activePage ? alpha(theme.palette.primary.main, 0.06) : "transparent",
+                                            background:
+                                                item === activePage ? alpha(theme.palette.primary.main, 0.06) : "transparent",
                                         }}
                                     >
                                         <ListItemText
@@ -282,6 +324,37 @@ export default function App() {
                                 </IconButton>
                             </Stack>
                         </Box>
+
+                        {/* Spacer damit Legal-Links unten landen */}
+                        <Box sx={{ flexGrow: 1 }} />
+
+                        <Divider sx={{ my: 1.6 }} />
+
+                        <List sx={{ p: 0 }}>
+                            {legalPages.map((item) => (
+                                <ListItem key={item} disablePadding>
+                                    <ListItemButton
+                                        onClick={() => handleNavClick(item)}
+                                        sx={{
+                                            borderRadius: 2,
+                                            my: 0.4,
+                                            background:
+                                                item === activePage ? alpha(theme.palette.primary.main, 0.06) : "transparent",
+                                        }}
+                                    >
+                                        <ListItemText
+                                            primary={item}
+                                            primaryTypographyProps={{
+                                                sx: {
+                                                    fontWeight: item === activePage ? 800 : 700,
+                                                    color: alpha(theme.palette.text.primary, 0.78),
+                                                },
+                                            }}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            ))}
+                        </List>
                     </Box>
                 </Drawer>
 
@@ -315,7 +388,10 @@ export default function App() {
                                     endIcon={<ArrowOutward />}
                                     sx={{
                                         borderColor: alpha("#0B1B24", 0.16),
-                                        "&:hover": { borderColor: alpha("#0B1B24", 0.26), background: alpha("#0B1B24", 0.03) },
+                                        "&:hover": {
+                                            borderColor: alpha("#0B1B24", 0.26),
+                                            background: alpha("#0B1B24", 0.03),
+                                        },
                                     }}
                                 >
                                     Anfragen
