@@ -16,7 +16,7 @@ import {
     ListItemText,
     Chip,
     alpha,
-    useTheme,
+    useTheme, Grow, Popper, ClickAwayListener,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import {
@@ -160,6 +160,84 @@ export default function About() {
             .catch(() => setAnspImages({}));
     }, []);
 
+    const initialsFromName = (name) => {
+        if (!name) return "?";
+        const parts = String(name).trim().split(/\s+/).filter(Boolean);
+        const a = parts[0]?.[0] || "?";
+        const b = parts.length > 1 ? parts[parts.length - 1][0] : "";
+        return (a + b).toUpperCase();
+    };
+
+    // macht Chips aus "TL***, Kinder-TL, Freediving-TL"
+    const roleToChips = (role) => {
+        if (!role) return [];
+        const raw = String(role)
+            .split(",")
+            .map((x) => x.trim())
+            .filter(Boolean);
+
+        // optional: kleine Normalisierung (einheitlicher Gedankenstrich o.Ä. brauchst du nicht)
+        return raw;
+    };
+
+    const AvatarCircle = ({ src, alt, size = 54, label, icon }) => {
+        if (src) {
+            return (
+                <Box
+                    sx={{
+                        width: size,
+                        height: size,
+                        borderRadius: 999,
+                        p: "2px",
+                        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.9)}, ${alpha(
+                            theme.palette.secondary.main,
+                            0.9
+                        )})`,
+                        flex: "0 0 auto",
+                    }}
+                >
+                    <Box
+                        component="img"
+                        src={src}
+                        alt={alt}
+                        loading="lazy"
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: 999,
+                            objectFit: "cover",
+                            background: alpha("#000", 0.04),
+                            border: `1px solid ${alpha("#fff", 0.7)}`,
+                        }}
+                    />
+                </Box>
+            );
+        }
+
+        return (
+            <Box
+                sx={{
+                    width: size,
+                    height: size,
+                    borderRadius: 999,
+                    display: "grid",
+                    placeItems: "center",
+                    background: alpha(theme.palette.primary.main, 0.08),
+                    border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+                    flex: "0 0 auto",
+                }}
+            >
+                {label ? (
+                    <Typography sx={{ fontWeight: 950, letterSpacing: 0.5 }}>
+                        {label}
+                    </Typography>
+                ) : (
+                    icon || <Person />
+                )}
+            </Box>
+        );
+    };
+
     const slugify = (s) => {
         if (!s) return "";
         return String(s)
@@ -179,82 +257,198 @@ export default function About() {
     };
 
     const PersonCard = ({ name, role, imgKey, icon }) => {
+        const [open, setOpen] = React.useState(false);
+        const anchorRef = React.useRef(null);
+
         const src = imgKey ? anspImgUrl(imgKey) : null;
+        const initials = initialsFromName(name);
+        const chips = roleToChips(role);
+
+        const toggle = () => setOpen((v) => !v);
+        const close = () => setOpen(false);
 
         return (
-            <Box
-                sx={{
-                    p: 2.2,
-                    borderRadius: 3,
-                    border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
-                    background: alpha("#fff", 0.65),
-                    height: "100%",
-                    transition: "transform 160ms ease, box-shadow 160ms ease",
-                    "&:hover": {
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 18px 45px rgba(11,27,36,0.10)",
-                    },
-                }}
-            >
-                <Stack direction="row" spacing={1.2} alignItems="center">
-                    {/* Avatar */}
-                    {src ? (
-                        <Box
-                            sx={{
-                                width: 54,
-                                height: 54,
-                                borderRadius: 999,
-                                p: "2px",
-                                background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.9)}, ${alpha(
-                                    theme.palette.secondary.main,
-                                    0.9
-                                )})`,
-                                flex: "0 0 auto",
-                            }}
-                        >
-                            <Box
-                                component="img"
+            <ClickAwayListener onClickAway={close}>
+                <Box sx={{ position: "relative" }}>
+                    {/* Card */}
+                    <Box
+                        ref={anchorRef}
+                        onClick={toggle}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") toggle();
+                            if (e.key === "Escape") close();
+                        }}
+                        sx={{
+                            cursor: "pointer",
+                            userSelect: "none",
+                            p: 2.2,
+                            borderRadius: 3,
+                            border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
+                            background: alpha("#fff", 0.65),
+                            height: "100%",
+                            transition: "transform 160ms ease, box-shadow 160ms ease, background 160ms ease",
+                            "&:hover": {
+                                transform: "translateY(-2px)",
+                                boxShadow: "0 18px 45px rgba(11,27,36,0.10)",
+                                background: alpha("#fff", 0.72),
+                            },
+                            outline: "none",
+                        }}
+                    >
+                        <Stack direction="row" spacing={1.2} alignItems="center">
+                            <AvatarCircle
                                 src={src}
                                 alt={name}
-                                loading="lazy"
-                                sx={{
-                                    width: "100%",
-                                    height: "100%",
-                                    borderRadius: 999,
-                                    objectFit: "cover",
-                                    background: alpha("#000", 0.04),
-                                    border: `1px solid ${alpha("#fff", 0.7)}`,
-                                }}
+                                size={54}
+                                label={!src ? initials : undefined}
+                                icon={icon}
                             />
-                        </Box>
-                    ) : (
-                        <Box
-                            sx={{
-                                width: 54,
-                                height: 54,
-                                borderRadius: 999,
-                                display: "grid",
-                                placeItems: "center",
-                                background: alpha(theme.palette.primary.main, 0.08),
-                                border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
-                                flex: "0 0 auto",
-                            }}
-                        >
-                            {icon || <Person />}
-                        </Box>
-                    )}
 
-                    {/* Text */}
-                    <Box sx={{ minWidth: 0 }}>
-                        <Typography sx={{ fontWeight: 950, lineHeight: 1.15 }} noWrap>
-                            {name}
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.35 }}>
-                            {role}
-                        </Typography>
+                            <Box sx={{ minWidth: 0, flex: 1 }}>
+                                <Typography sx={{ fontWeight: 950, lineHeight: 1.15 }} noWrap>
+                                    {name}
+                                </Typography>
+
+                                {/* role teaser: 2 Zeilen clamp */}
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: "text.secondary",
+                                        lineHeight: 1.35,
+                                        display: "-webkit-box",
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: "vertical",
+                                        overflow: "hidden",
+                                    }}
+                                >
+                                    {role}
+                                </Typography>
+                            </Box>
+
+                            {/* kleine Chevron */}
+                            <Box
+                                sx={{
+                                    width: 34,
+                                    height: 34,
+                                    borderRadius: 999,
+                                    display: "grid",
+                                    placeItems: "center",
+                                    border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
+                                    background: alpha("#fff", 0.7),
+                                    transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                                    transition: "transform 160ms ease",
+                                    flex: "0 0 auto",
+                                }}
+                                aria-hidden
+                            >
+                                <Box
+                                    sx={{
+                                        width: 0,
+                                        height: 0,
+                                        borderLeft: "6px solid transparent",
+                                        borderRight: "6px solid transparent",
+                                        borderTop: `7px solid ${alpha(theme.palette.text.primary, 0.55)}`,
+                                    }}
+                                />
+                            </Box>
+                        </Stack>
                     </Box>
-                </Stack>
-            </Box>
+
+                    {/* Popover / Lightbox direkt unter der Karte */}
+                    <Popper
+                        open={open}
+                        anchorEl={anchorRef.current}
+                        placement="bottom-start"
+                        disablePortal={false}
+                        modifiers={[
+                            { name: "offset", options: { offset: [0, 10] } },
+                            { name: "preventOverflow", options: { padding: 12 } },
+                        ]}
+                        style={{ zIndex: 1500 }}
+                    >
+                        <Grow in={open} timeout={170}>
+                            <Box
+                                sx={{
+                                    width: { xs: "calc(100vw - 32px)", sm: 420 },
+                                    maxWidth: 520,
+                                    borderRadius: 4,
+                                    p: 2,
+                                    background: alpha("#FFFFFF", 0.92),
+                                    border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
+                                    boxShadow: "0 24px 80px rgba(11,27,36,0.22)",
+                                    backdropFilter: "blur(12px)",
+                                }}
+                            >
+                                <Stack direction="row" spacing={1.4} alignItems="center">
+                                    {/* Initialen-Kreis (immer, auch wenn Bild existiert) */}
+                                    <Box
+                                        sx={{
+                                            width: 44,
+                                            height: 44,
+                                            borderRadius: 999,
+                                            display: "grid",
+                                            placeItems: "center",
+                                            background: alpha(theme.palette.primary.main, 0.08),
+                                            border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+                                            flex: "0 0 auto",
+                                        }}
+                                    >
+                                        <Typography sx={{ fontWeight: 950, letterSpacing: 0.5 }}>
+                                            {initials}
+                                        </Typography>
+                                    </Box>
+
+                                    <Box sx={{ minWidth: 0 }}>
+                                        <Typography variant="h6" sx={{ fontWeight: 950, lineHeight: 1.15 }}>
+                                            {name}
+                                        </Typography>
+
+                                        {/* Chips oder Rolle */}
+                                        {chips.length > 0 ? (
+                                            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ mt: 0.7 }}>
+                                                {chips.map((c) => (
+                                                    <Chip
+                                                        key={c}
+                                                        size="small"
+                                                        label={c}
+                                                        sx={{
+                                                            fontWeight: 750,
+                                                            background: alpha(theme.palette.primary.main, 0.08),
+                                                            border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+                                                        }}
+                                                    />
+                                                ))}
+                                            </Stack>
+                                        ) : (
+                                            <Typography sx={{ color: "text.secondary", lineHeight: 1.5 }}>
+                                                {role}
+                                            </Typography>
+                                        )}
+                                    </Box>
+                                </Stack>
+
+                                <Box
+                                    sx={{
+                                        mt: 2,
+                                        display: "flex",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <AvatarCircle
+                                        src={src}
+                                        alt={name}
+                                        size={150} // <-- einfach größer als oben
+                                        label={!src ? initials : undefined}
+                                        icon={icon}
+                                    />
+                                </Box>
+                            </Box>
+                        </Grow>
+                    </Popper>
+                </Box>
+            </ClickAwayListener>
         );
     };
 
