@@ -1,6 +1,6 @@
 // src/pages/About.js
-import React, {useEffect, useMemo, useState} from "react";
-import ReactMarkdown from 'react-markdown';
+import React, { useEffect, useMemo, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import {
     Container,
     Box,
@@ -37,8 +37,6 @@ function PillTabs({ value, onChange, tabs }) {
     return (
         <Box
             sx={{
-                // Auf Mobile darf die Tab-Leiste nie die Seite breiter machen.
-                // Deshalb: volle Breite + Inhalt innerhalb der Leiste horizontal scrollen.
                 display: "flex",
                 width: "100%",
                 maxWidth: "100%",
@@ -62,7 +60,6 @@ function PillTabs({ value, onChange, tabs }) {
                     width: "100%",
                     minWidth: 0,
                     minHeight: 44,
-                    // sorgt dafür, dass die Tabs auf Mobile innerhalb der Leiste scrollen
                     "& .MuiTabs-scroller": {
                         overflowX: "auto !important",
                         WebkitOverflowScrolling: "touch",
@@ -141,6 +138,10 @@ function BulletList({ items }) {
 export default function About() {
     const [content, setContent] = useState(null);
     const [error, setError] = useState("");
+    const theme = useTheme();
+
+    // Bilder-Mapping laden (wie Start.js)
+    const [anspImages, setAnspImages] = useState({});
 
     useEffect(() => {
         fetch(process.env.PUBLIC_URL + "/content/about.json")
@@ -152,7 +153,110 @@ export default function About() {
             .catch((e) => setError(String(e)));
     }, []);
 
-    const theme = useTheme();
+    useEffect(() => {
+        fetch(process.env.PUBLIC_URL + "/resources/ansprechpartner/ansprechpartnerImages.json")
+            .then((res) => (res.ok ? res.json() : {}))
+            .then((data) => setAnspImages(data || {}))
+            .catch(() => setAnspImages({}));
+    }, []);
+
+    const slugify = (s) => {
+        if (!s) return "";
+        return String(s)
+            .toLowerCase()
+            .trim()
+            .replace(/ä/g, "ae")
+            .replace(/ö/g, "oe")
+            .replace(/ü/g, "ue")
+            .replace(/ß/g, "ss")
+            .replace(/[^a-z0-9]+/g, "_")
+            .replace(/^_+|_+$/g, "");
+    };
+
+    const anspImgUrl = (key) => {
+        const file = anspImages?.[key];
+        return file ? process.env.PUBLIC_URL + `/resources/ansprechpartner/${file}` : null;
+    };
+
+    const PersonCard = ({ name, role, imgKey, icon }) => {
+        const src = imgKey ? anspImgUrl(imgKey) : null;
+
+        return (
+            <Box
+                sx={{
+                    p: 2.2,
+                    borderRadius: 3,
+                    border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
+                    background: alpha("#fff", 0.65),
+                    height: "100%",
+                    transition: "transform 160ms ease, box-shadow 160ms ease",
+                    "&:hover": {
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 18px 45px rgba(11,27,36,0.10)",
+                    },
+                }}
+            >
+                <Stack direction="row" spacing={1.2} alignItems="center">
+                    {/* Avatar */}
+                    {src ? (
+                        <Box
+                            sx={{
+                                width: 54,
+                                height: 54,
+                                borderRadius: 999,
+                                p: "2px",
+                                background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.9)}, ${alpha(
+                                    theme.palette.secondary.main,
+                                    0.9
+                                )})`,
+                                flex: "0 0 auto",
+                            }}
+                        >
+                            <Box
+                                component="img"
+                                src={src}
+                                alt={name}
+                                loading="lazy"
+                                sx={{
+                                    width: "100%",
+                                    height: "100%",
+                                    borderRadius: 999,
+                                    objectFit: "cover",
+                                    background: alpha("#000", 0.04),
+                                    border: `1px solid ${alpha("#fff", 0.7)}`,
+                                }}
+                            />
+                        </Box>
+                    ) : (
+                        <Box
+                            sx={{
+                                width: 54,
+                                height: 54,
+                                borderRadius: 999,
+                                display: "grid",
+                                placeItems: "center",
+                                background: alpha(theme.palette.primary.main, 0.08),
+                                border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+                                flex: "0 0 auto",
+                            }}
+                        >
+                            {icon || <Person />}
+                        </Box>
+                    )}
+
+                    {/* Text */}
+                    <Box sx={{ minWidth: 0 }}>
+                        <Typography sx={{ fontWeight: 950, lineHeight: 1.15 }} noWrap>
+                            {name}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.35 }}>
+                            {role}
+                        </Typography>
+                    </Box>
+                </Stack>
+            </Box>
+        );
+    };
 
     const tabs = useMemo(
         () => [
@@ -166,18 +270,17 @@ export default function About() {
     );
 
     const [currentTab, setCurrentTab] = useState("about");
-
-    const [markdown, setMarkdown] = useState('');
+    const [markdown, setMarkdown] = useState("");
 
     useEffect(() => {
         fetch(process.env.PUBLIC_URL + "/content/aktuelles.md")
             .then((response) => response.text())
             .then((text) => setMarkdown(text))
-            .catch((error) => console.error('Fehler beim Laden der MD-Datei:', error));
+            .catch((error) => console.error("Fehler beim Laden der MD-Datei:", error));
     }, []);
 
-    if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
-    if (!content) return <div style={{padding: 16}}>Lade Inhalte…</div>;
+    if (error) return <div style={{ padding: 16 }}>Fehler: {error}</div>;
+    if (!content) return <div style={{ padding: 16 }}>Lade Inhalte…</div>;
 
     const SectionTitle = ({ icon, title, subtitle }) => (
         <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1.2 }}>
@@ -198,11 +301,11 @@ export default function About() {
                 <Typography variant="h6" sx={{ fontWeight: 900, lineHeight: 1.15 }}>
                     {title}
                 </Typography>
-                {subtitle && (
+                {subtitle ? (
                     <Typography variant="body2" sx={{ color: "text.secondary" }}>
                         {subtitle}
                     </Typography>
-                )}
+                ) : null}
             </Box>
         </Stack>
     );
@@ -282,67 +385,98 @@ export default function About() {
                     </Stack>
                 );
 
-            case "ansprechpartner":
+            case "ansprechpartner": {
+                const vorstand = [
+                    {
+                        key: "vorsitzender1",
+                        role: "1. Vorsitzender",
+                        name: content.ansprechpartner.vorsitzender1,
+                        icon: <Person />,
+                    },
+                    {
+                        key: "vorsitzender2",
+                        role: "2. Vorsitzender",
+                        name: content.ansprechpartner.vorsitzender2,
+                        icon: <Person />,
+                    },
+                    {
+                        key: "kassierer",
+                        role: "Kassierer",
+                        name: content.ansprechpartner.kassierer,
+                        icon: <Person />,
+                    },
+                ];
+
+                const splitTrainer = (s) => {
+                    const parts = String(s).split("–"); // Gedankenstrich
+                    const name = parts[0]?.trim() || String(s).trim();
+                    const details = parts.slice(1).join("–").trim(); // Rest (Qualifikationen)
+                    return { name, details };
+                };
+
+                const trainer =
+                    (content.ansprechpartner.trainerUndTl || []).map((line) => {
+                        const { name, details } = splitTrainer(line);
+                        return {
+                            name,
+                            role: details ? details : "Trainer / Tauchlehrer",
+                            key: `trainer_${slugify(name)}`,
+                            icon: <School />,
+                        };
+                    }) || [];
+
+                const geraetewarte = [
+                    {
+                        key: "geraetewart1",
+                        role: "1. Gerätewart",
+                        name: content.ansprechpartner.geraetewart1,
+                        icon: <Build />,
+                    },
+                    {
+                        key: "geraetewart2",
+                        role: "2. Gerätewart",
+                        name: content.ansprechpartner.geraetewart2,
+                        icon: <Build />,
+                    },
+                ];
+
                 return (
                     <Stack spacing={2}>
                         <GlassCard>
-                            <SectionTitle icon={<Badge/>} title="Vorstand" subtitle="Deine Ansprechpartner im Verein"/>
-                            <Box sx={{display: "grid", gridTemplateColumns: {xs: "1fr", md: "1fr 1fr 1fr"}, gap: 16}}>
-                                {[
-                                    {title: "1. Vorsitzender", name: content.ansprechpartner.vorsitzender1, icon: <Person/>},
-                                    {title: "2. Vorsitzender", name: content.ansprechpartner.vorsitzender2, icon: <Person/>},
-                                    {title: "Kassierer", name: content.ansprechpartner.kassierer, icon: <Person/>},
-                                ].map((p) => (
-                                    <Box
-                                        key={p.title}
-                                        sx={{
-                                            p: 2.2,
-                                            borderRadius: 3,
-                                            border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
-                                            background: alpha("#fff", 0.65),
-                                        }}
-                                    >
-                                        <Stack direction="row" spacing={1.1} alignItems="center" sx={{mb: 0.8}}>
-                                            <Box
-                                                sx={{
-                                                    width: 38,
-                                                    height: 38,
-                                                    borderRadius: 999,
-                                                    display: "grid",
-                                                    placeItems: "center",
-                                                    background: alpha(theme.palette.primary.main, 0.08),
-                                                    border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
-                                                }}
-                                            >
-                                                {p.icon}
-                                            </Box>
-                                            <Box>
-                                                <Typography
-                                                    sx={{fontWeight: 900, lineHeight: 1.15}}>{p.name}</Typography>
-                                                <Typography variant="body2" sx={{color: "text.secondary"}}>
-                                                    {p.title}
-                                                </Typography>
-                                            </Box>
-                                        </Stack>
-                                    </Box>
+                            <SectionTitle icon={<Badge />} title="Vorstand" subtitle="Deine Ansprechpartner im Verein" />
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 16 }}>
+                                {vorstand.map((p) => (
+                                    <PersonCard key={p.key} name={p.name} role={p.role} imgKey={p.key} icon={p.icon} />
                                 ))}
                             </Box>
                         </GlassCard>
 
                         <GlassCard>
-                            <SectionTitle icon={<School/>} title="Trainer & Tauchlehrer"/>
-                            <BulletList
-                                items={content.ansprechpartner.trainerUndTl}
-                            />
-                            <Divider sx={{my: 2}}/>
-                            <SectionTitle icon={<Build/>} title="Gerätewarte"/>
-                            <BulletList items={[
-                                "1. Gerätewart: " + content.ansprechpartner.geraetewart1,
-                                "2. Gerätewart: " + content.ansprechpartner.geraetewart2
-                            ]}/>
+                            <SectionTitle icon={<School />} title="Trainer & Tauchlehrer" subtitle="Ausbildung & Training" />
+                            <Box
+                                sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                                    gap: 16,
+                                }}
+                            >
+                                {trainer.map((p) => (
+                                    <PersonCard key={p.key} name={p.name} role={p.role} imgKey={p.key} icon={p.icon} />
+                                ))}
+                            </Box>
+
+                            <Divider sx={{ my: 2.4 }} />
+
+                            <SectionTitle icon={<Build />} title="Gerätewarte" subtitle="Technik & Material" />
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 16 }}>
+                                {geraetewarte.map((p) => (
+                                    <PersonCard key={p.key} name={p.name} role={p.role} imgKey={p.key} icon={p.icon} />
+                                ))}
+                            </Box>
                         </GlassCard>
                     </Stack>
                 );
+            }
 
             case "mitgliedschaft":
                 return (
@@ -359,9 +493,7 @@ export default function About() {
                                     }}
                                 >
                                     <Typography sx={{ fontWeight: 950, mb: 0.6 }}>Welche Vorteile bietet die Mitgliedschaft?</Typography>
-                                    <BulletList
-                                        items={content.mitgliedschaft.vorteile}
-                                    />
+                                    <BulletList items={content.mitgliedschaft.vorteile} />
                                 </Box>
 
                                 <Box
@@ -373,9 +505,7 @@ export default function About() {
                                     }}
                                 >
                                     <Typography sx={{ fontWeight: 950, mb: 0.8 }}>Wie wird man Mitglied?</Typography>
-                                    <BulletList
-                                        items={content.mitgliedschaft.wieWirdManMitglied}
-                                    />
+                                    <BulletList items={content.mitgliedschaft.wieWirdManMitglied} />
                                 </Box>
                             </Box>
                         </GlassCard>
@@ -413,10 +543,10 @@ export default function About() {
             case "aktuelles":
                 return (
                     <GlassCard>
-                        <SectionTitle icon={<Newspaper />} title="Aktuelles" subtitle="Aktuelle Informationen über den Verein" />
-                        <div>
+                        <SectionTitle icon={<Newspaper />} title="Aktuelles" subtitle="Neuigkeiten aus dem Verein" />
+                        <Box sx={{ color: "text.secondary", lineHeight: 1.9 }}>
                             <ReactMarkdown>{markdown}</ReactMarkdown>
-                        </div>
+                        </Box>
                     </GlassCard>
                 );
 
@@ -491,11 +621,7 @@ export default function About() {
                 </Typography>
 
                 <Box sx={{ mt: 2.2 }}>
-                    <PillTabs
-                        value={currentTab}
-                        onChange={(_, v) => setCurrentTab(v)}
-                        tabs={tabs}
-                    />
+                    <PillTabs value={currentTab} onChange={(_, v) => setCurrentTab(v)} tabs={tabs} />
                 </Box>
             </Box>
 
