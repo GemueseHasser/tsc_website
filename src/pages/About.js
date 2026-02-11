@@ -1,5 +1,6 @@
 // src/pages/About.js
 import React, {useEffect, useMemo, useState} from "react";
+import ReactMarkdown from 'react-markdown';
 import {
     Container,
     Box,
@@ -158,13 +159,22 @@ export default function About() {
             { label: "Über uns", key: "about", icon: <HistoryEdu /> },
             { label: "Ansprechpartner", key: "ansprechpartner", icon: <Badge /> },
             { label: "Mitgliedschaft", key: "mitgliedschaft", icon: <Savings /> },
-            { label: "Presse", key: "presse", icon: <Newspaper /> },
+            { label: "Aktuelles", key: "aktuelles", icon: <Newspaper /> },
             { label: "Förderung", key: "foerderung", icon: <Handshake /> },
         ],
         []
     );
 
     const [currentTab, setCurrentTab] = useState("about");
+
+    const [markdown, setMarkdown] = useState('');
+
+    useEffect(() => {
+        fetch(process.env.PUBLIC_URL + "/content/aktuelles.md")
+            .then((response) => response.text())
+            .then((text) => setMarkdown(text))
+            .catch((error) => console.error('Fehler beim Laden der MD-Datei:', error));
+    }, []);
 
     if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
     if (!content) return <div style={{padding: 16}}>Lade Inhalte…</div>;
@@ -400,14 +410,13 @@ export default function About() {
                     </Stack>
                 );
 
-            case "presse":
+            case "aktuelles":
                 return (
                     <GlassCard>
-                        <SectionTitle icon={<Newspaper />} title="Presse" subtitle="Material & Infos für Medien" />
-                        <Typography sx={{ color: "text.secondary", lineHeight: 1.9 }}>
-                            Pressemitteilungen oder Bildmaterialien für Medien findest du hier. (Wenn du Inhalte hast, können wir das
-                            als Download-Bereich mit sauberen Cards & Dateilisten aufbauen.)
-                        </Typography>
+                        <SectionTitle icon={<Newspaper />} title="Aktuelles" subtitle="Aktuelle Informationen über den Verein" />
+                        <div>
+                            <ReactMarkdown>{markdown}</ReactMarkdown>
+                        </div>
                     </GlassCard>
                 );
 
