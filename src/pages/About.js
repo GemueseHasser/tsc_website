@@ -340,6 +340,7 @@ export default function About() {
                                             "Organisation von Tauchtouren zu spannenden Plätzen",
                                             "Kostenlose Flaschenfüllung am Vereinskompressor",
                                             "Jahrestauchgenehmigung am See Gut Widdauen 2 (50% vom Verein getragen)",
+                                            "Tauchsport-Versicherung über den VDST"
                                         ]}
                                     />
                                 </Box>

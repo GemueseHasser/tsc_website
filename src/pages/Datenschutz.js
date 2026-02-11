@@ -24,9 +24,19 @@ export default function Datenschutz() {
                 transition={{duration: 0.6}}
                 sx={{mb: 3}}
             >
-                <Typography variant="h3" sx={{mb: 1}}>
-                    Datenschutzerklärung
-                </Typography>
+                <Box
+                    sx={{
+                        maxWidth: "100%",
+                        boxSizing: "border-box",
+                    }}
+                >
+                    <Typography
+                        variant="h4"
+                        sx={{ wordBreak: "break-word" }}
+                    >
+                        Datenschutzerklärung
+                    </Typography>
+                </Box>
                 <Typography sx={{color: "text.secondary", maxWidth: 980, lineHeight: 1.8}}>
                     Verantwortliche Stelle im Sinne der Datenschutzgesetze, insbesondere der
                     EU-Datenschutzgrundverordnung (DSGVO),
@@ -102,7 +112,7 @@ export default function Datenschutz() {
                             target="_blank"
                             rel="noreferrer"
                             underline="hover"
-                            sx={{fontWeight: 700}}
+                            sx={{fontWeight: 700, wordBreak: 'break-word'}}
                         >
                             https://www.bfdi.bund.de/DE/Infothek/Anschriften_Links/anschriften_links-node.html
                         </Link>
