@@ -1,5 +1,5 @@
 // src/pages/About.js
-import React, { useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {
     Container,
     Box,
@@ -138,6 +138,19 @@ function BulletList({ items }) {
 }
 
 export default function About() {
+    const [content, setContent] = useState(null);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        fetch(process.env.PUBLIC_URL + "/content/about.json")
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/about.json`);
+                return res.json();
+            })
+            .then(setContent)
+            .catch((e) => setError(String(e)));
+    }, []);
+
     const theme = useTheme();
 
     const tabs = useMemo(
@@ -152,6 +165,9 @@ export default function About() {
     );
 
     const [currentTab, setCurrentTab] = useState("about");
+
+    if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
+    if (!content) return <div style={{padding: 16}}>Lade Inhalte…</div>;
 
     const SectionTitle = ({ icon, title, subtitle }) => (
         <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1.2 }}>
@@ -260,12 +276,12 @@ export default function About() {
                 return (
                     <Stack spacing={2}>
                         <GlassCard>
-                            <SectionTitle icon={<Badge />} title="Vorstand" subtitle="Deine Ansprechpartner im Verein" />
-                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 16 }}>
+                            <SectionTitle icon={<Badge/>} title="Vorstand" subtitle="Deine Ansprechpartner im Verein"/>
+                            <Box sx={{display: "grid", gridTemplateColumns: {xs: "1fr", md: "1fr 1fr 1fr"}, gap: 16}}>
                                 {[
-                                    { title: "1. Vorsitzender", name: "Marc Nußbaum", icon: <Person /> },
-                                    { title: "2. Vorsitzender", name: "Luca Nicastro", icon: <Person /> },
-                                    { title: "Kassierer", name: "Gunnar Brücken", icon: <Person /> },
+                                    {title: "1. Vorsitzender", name: content.ansprechpartner.vorsitzender1, icon: <Person/>},
+                                    {title: "2. Vorsitzender", name: content.ansprechpartner.vorsitzender2, icon: <Person/>},
+                                    {title: "Kassierer", name: content.ansprechpartner.kassierer, icon: <Person/>},
                                 ].map((p) => (
                                     <Box
                                         key={p.title}
@@ -276,7 +292,7 @@ export default function About() {
                                             background: alpha("#fff", 0.65),
                                         }}
                                     >
-                                        <Stack direction="row" spacing={1.1} alignItems="center" sx={{ mb: 0.8 }}>
+                                        <Stack direction="row" spacing={1.1} alignItems="center" sx={{mb: 0.8}}>
                                             <Box
                                                 sx={{
                                                     width: 38,
@@ -291,8 +307,9 @@ export default function About() {
                                                 {p.icon}
                                             </Box>
                                             <Box>
-                                                <Typography sx={{ fontWeight: 900, lineHeight: 1.15 }}>{p.name}</Typography>
-                                                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                                                <Typography
+                                                    sx={{fontWeight: 900, lineHeight: 1.15}}>{p.name}</Typography>
+                                                <Typography variant="body2" sx={{color: "text.secondary"}}>
                                                     {p.title}
                                                 </Typography>
                                             </Box>
@@ -303,16 +320,16 @@ export default function About() {
                         </GlassCard>
 
                         <GlassCard>
-                            <SectionTitle icon={<School />} title="Trainer & Tauchlehrer" />
+                            <SectionTitle icon={<School/>} title="Trainer & Tauchlehrer"/>
                             <BulletList
-                                items={[
-                                    "Gunnar Brücken – TL***, Kinder-TL, Freediving-TL",
-                                    "Benjamin Nawrath – TL**, Kinder-TL",
-                                ]}
+                                items={content.ansprechpartner.trainerUndTl}
                             />
-                            <Divider sx={{ my: 2 }} />
-                            <SectionTitle icon={<Build />} title="Gerätewarte" />
-                            <BulletList items={["1. Gerätewart: Jonas Lobe", "2. Gerätewart: Daniel Kus"]} />
+                            <Divider sx={{my: 2}}/>
+                            <SectionTitle icon={<Build/>} title="Gerätewarte"/>
+                            <BulletList items={[
+                                "1. Gerätewart: " + content.ansprechpartner.geraetewart1,
+                                "2. Gerätewart: " + content.ansprechpartner.geraetewart2
+                            ]}/>
                         </GlassCard>
                     </Stack>
                 );
