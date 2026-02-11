@@ -4,6 +4,77 @@ import { Container, Box, Typography, Stack, Button, alpha } from "@mui/material"
 import { motion } from "framer-motion";
 import { ArrowOutward } from "@mui/icons-material";
 
+function InstagramAktuelles() {
+    const [enabled, setEnabled] = React.useState(false);
+
+    React.useEffect(() => {
+        if (!enabled) return;
+
+        // Script nur einmal laden
+        if (!window.instgrm) {
+            const script = document.createElement("script");
+            script.src = "https://www.instagram.com/embed.js";
+            script.async = true;
+            script.onload = () => window.instgrm?.Embeds?.process?.();
+            document.body.appendChild(script);
+        } else {
+            window.instgrm?.Embeds?.process?.();
+        }
+    }, [enabled]);
+
+    return (
+        <Box
+            sx={{
+                p: { xs: 2.2, md: 3.5 },
+                borderRadius: 4,
+                background: alpha("#FFFFFF", 0.85),
+                border: `1px solid ${alpha("#0B1B24", 0.10)}`,
+                boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
+                backdropFilter: "blur(12px)",
+                height: "100%",
+            }}
+        >
+            <Typography variant="h4" sx={{ mb: 1.5 }}>
+                Aktuelles
+            </Typography>
+
+            {!enabled ? (
+                <>
+                    <Typography sx={{ color: "text.secondary", mb: 2, lineHeight: 1.8 }}>
+                        Neuigkeiten und Eindrücke aus unserem Instagram-Account.
+                    </Typography>
+                    <Button variant="contained" disableElevation onClick={() => setEnabled(true)}>
+                        Instagram-Inhalte laden
+                    </Button>
+                </>
+            ) : (
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        // Instagram-Embed mag fixe Breiten — wir zentrieren und begrenzen
+                        "& .instagram-media": {
+                            margin: "0 !important",
+                            maxWidth: "540px",
+                            width: "100%",
+                        },
+                    }}
+                >
+                    <blockquote
+                        className="instagram-media"
+                        data-instgrm-permalink="https://www.instagram.com/tsc.wuelfrath/"
+                        data-instgrm-version="14"
+                        style={{
+                            background: "#FFF",
+                            border: 0,
+                        }}
+                    />
+                </Box>
+            )}
+        </Box>
+    );
+}
+
 export default function Start() {
     const [heroImages, setHeroImages] = useState([]);
     const [currentImage, setCurrentImage] = useState(0);
@@ -140,32 +211,65 @@ export default function Start() {
                 </Container>
             </Box>
 
-            {/* Content */}
+            {/* Content + Aktuelles (Grid 2/3 - 1/3) */}
             <Container maxWidth="lg" sx={{ mt: { xs: 3, md: 5 } }}>
                 <Box
-                    component={motion.div}
-                    initial={{ opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
                     sx={{
-                        p: { xs: 2.2, md: 3.5 },
-                        borderRadius: 4,
-                        background: alpha("#FFFFFF", 0.85),
-                        border: `1px solid ${alpha("#0B1B24", 0.10)}`,
-                        boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
-                        backdropFilter: "blur(12px)",
+                        display: "grid",
+                        gridTemplateColumns: { xs: "1fr", md: "2fr 1fr" },
+                        gap: { xs: 2, md: 3 },
+                        alignItems: "stretch",
                     }}
                 >
-                    <Typography variant="h4" sx={{ mb: 1.5 }}>
-                        Willkommen beim TSC Wülfrath
-                    </Typography>
-                    <Typography sx={{ color: "text.secondary", lineHeight: 1.9, fontSize: { xs: "1rem", md: "1.05rem" } }}>
-                        {content.bodyText.map((line, i) => (
-                            <Box key={i} component="p" sx={{ m: 0, mb: 1.2 }}>
-                                {line}
-                            </Box>
-                        ))}
-                    </Typography>
+                    {/* Content */}
+                    <Box
+                        component={motion.div}
+                        initial={{ opacity: 0, y: 14 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        sx={{
+                            p: { xs: 2.2, md: 3.5 },
+                            borderRadius: 4,
+                            background: alpha("#FFFFFF", 0.85),
+                            border: `1px solid ${alpha("#0B1B24", 0.10)}`,
+                            boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
+                            backdropFilter: "blur(12px)",
+                        }}
+                    >
+                        <Typography variant="h4" sx={{ mb: 1.5 }}>
+                            Willkommen beim TSC Wülfrath
+                        </Typography>
+
+                        <Typography
+                            sx={{
+                                color: "text.secondary",
+                                lineHeight: 1.9,
+                                fontSize: { xs: "1rem", md: "1.05rem" },
+                            }}
+                        >
+                            {content.bodyText.map((line, i) => (
+                                <Box key={i} component="p" sx={{ m: 0, mb: 1.2 }}>
+                                    {line}
+                                </Box>
+                            ))}
+                        </Typography>
+                    </Box>
+
+                    {/* Instagram */}
+                    <Box
+                        component={motion.div}
+                        initial={{ opacity: 0, y: 14 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.06 }}
+                        sx={{
+                            height: "100%",
+                            position: { md: "sticky" },
+                            top: { md: 90 },
+                            alignSelf: { md: "start" },
+                        }}
+                    >
+                        <InstagramAktuelles />
+                    </Box>
                 </Box>
             </Container>
         </Box>
