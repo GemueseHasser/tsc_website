@@ -75,7 +75,7 @@ function InstagramAktuelles() {
     );
 }
 
-export default function Start() {
+export default function Start({onNavigate}) {
     const [heroImages, setHeroImages] = useState([]);
     const [currentImage, setCurrentImage] = useState(0);
 
@@ -182,7 +182,7 @@ export default function Start() {
                                     background: alpha("#000", 0.12),
                                     "&:hover": { borderColor: alpha("#fff", 0.40), background: alpha("#000", 0.22) },
                                 }}
-                                onClick={() => window.location.href = "mailto:vorstand@tsc-wuelfrath.de"}
+                                onClick={() => onNavigate?.("Kontakt")}
                             >
                                 Kontakt aufnehmen
                             </Button>

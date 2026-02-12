@@ -123,6 +123,11 @@ export default function App() {
         []
     );
 
+    const handleNavClick = (item) => {
+        setActivePage(item);
+        setMobileOpen(false);
+    };
+
     const renderContent = () => {
         switch (activePage) {
             case "Über uns":
@@ -140,13 +145,8 @@ export default function App() {
             case "Datenschutz":
                 return <Datenschutz />;
             default:
-                return <Start />;
+                return <Start onNavigate={handleNavClick} />;
         }
-    };
-
-    const handleNavClick = (item) => {
-        setActivePage(item);
-        setMobileOpen(false);
     };
 
     // Kleine Premium-UX: beim Seitenwechsel nach oben
