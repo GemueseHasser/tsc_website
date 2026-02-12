@@ -40,6 +40,22 @@ export default function Kontakt() {
         height: "100%",
     };
 
+    const [links, setLinks] = useState(null);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        fetch(process.env.PUBLIC_URL + "/content/links.json")
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/links.json`);
+                return res.json();
+            })
+            .then(setLinks)
+            .catch((e) => setError(String(e)));
+    }, []);
+
+    if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
+    if (!links) return <div style={{padding: 16}}>Lade Links…</div>;
+
     return (
         <Container maxWidth="lg">
             <Box
@@ -91,7 +107,7 @@ export default function Kontakt() {
                                 py: 1.1,
                             }}
                             onClick={() =>
-                                (window.location.href = "mailto:vorstand@tsc-wuelfrath.de")
+                                (window.location.href = "mailto:" + links.email)
                             }
                         >
                             Mail an den Vorstand
@@ -99,7 +115,7 @@ export default function Kontakt() {
 
                         <Stack direction="row" spacing={1}>
                             <IconButton
-                                href="https://www.instagram.com/tsc.wuelfrath/"
+                                href={links.instagram}
                                 target="_blank"
                                 rel="noreferrer"
                                 aria-label="Instagram"
@@ -107,7 +123,7 @@ export default function Kontakt() {
                                 <Instagram />
                             </IconButton>
                             <IconButton
-                                href="https://www.facebook.com/tsc.wuelfrath/"
+                                href={links.facebook}
                                 target="_blank"
                                 rel="noreferrer"
                                 aria-label="Facebook"
@@ -115,7 +131,7 @@ export default function Kontakt() {
                                 <Facebook />
                             </IconButton>
                             <IconButton
-                                href="mailto:vorstand@tsc-wuelfrath.de"
+                                href={"mailto:" + links.email}
                                 aria-label="E-Mail"
                             >
                                 <Email />
