@@ -1,31 +1,24 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { ThemeProvider, createTheme, alpha } from "@mui/material/styles";
+import React, {useEffect, useMemo, useState} from "react";
+import {alpha, createTheme, ThemeProvider} from "@mui/material/styles";
 import {
-    CssBaseline,
     AppBar,
-    Toolbar,
-    Typography,
-    Button,
     Box,
-    IconButton,
-    Stack,
+    Button,
+    Container,
+    CssBaseline,
+    Divider,
     Drawer,
+    IconButton,
     List,
     ListItem,
     ListItemButton,
     ListItemText,
-    Container,
-    Divider,
+    Stack,
+    Toolbar,
+    Typography,
     useMediaQuery,
 } from "@mui/material";
-import {
-    Instagram,
-    Facebook,
-    Email,
-    Menu as MenuIcon,
-    Close as CloseIcon,
-    ArrowOutward,
-} from "@mui/icons-material";
+import {ArrowOutward, Close as CloseIcon, Email, Facebook, Instagram, Menu as MenuIcon,} from "@mui/icons-material";
 
 import Start from "./pages/Start";
 import About from "./pages/About";
@@ -37,7 +30,15 @@ import Impressum from "./pages/Impressum";
 import Datenschutz from "./pages/Datenschutz";
 
 export default function App() {
-    const [activePage, setActivePage] = useState("Startseite");
+    const getPageFromHash = () => {
+        const hash = window.location.hash.replace("#", "");
+        if (!hash) return "Startseite";
+
+        return hash.charAt(0).toUpperCase() + hash.slice(1);
+    };
+
+    const [activePage, setActivePage] = useState(() => getPageFromHash());
+
     const [mobileOpen, setMobileOpen] = useState(false);
     const isMobile = useMediaQuery("(max-width: 1200px)");
 
@@ -124,8 +125,11 @@ export default function App() {
     );
 
     const handleNavClick = (item) => {
+        if (item === activePage) return;
+
         setActivePage(item);
         setMobileOpen(false);
+        window.history.pushState(null, "", `#${item.toLowerCase()}`);
     };
 
     const renderContent = () => {
@@ -165,6 +169,16 @@ export default function App() {
             })
             .then(setLinks)
             .catch((e) => setError(String(e)));
+    }, []);
+
+    useEffect(() => {
+        const onHashChange = () => {
+            const page = getPageFromHash();
+            setActivePage((prev) => (prev !== page ? page : prev));
+        };
+
+        window.addEventListener("hashchange", onHashChange);
+        return () => window.removeEventListener("hashchange", onHashChange);
     }, []);
 
     if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
