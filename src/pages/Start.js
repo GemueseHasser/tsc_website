@@ -1,8 +1,8 @@
 // src/pages/Start.js
-import React, { useEffect, useMemo, useState } from "react";
-import { Container, Box, Typography, Stack, Button, alpha } from "@mui/material";
-import { motion } from "framer-motion";
-import { ArrowOutward } from "@mui/icons-material";
+import React, {useEffect, useMemo, useState} from "react";
+import {Container, Box, Typography, Stack, Button, alpha} from "@mui/material";
+import {motion, useScroll, useTransform, useSpring} from "framer-motion";
+import {ArrowOutward} from "@mui/icons-material";
 
 function InstagramAktuelles() {
     const [enabled, setEnabled] = React.useState(false);
@@ -25,7 +25,7 @@ function InstagramAktuelles() {
     return (
         <Box
             sx={{
-                p: { xs: 2.2, md: 3.5 },
+                p: {xs: 2.2, md: 3.5},
                 borderRadius: 4,
                 background: alpha("#FFFFFF", 0.85),
                 border: `1px solid ${alpha("#0B1B24", 0.10)}`,
@@ -34,13 +34,13 @@ function InstagramAktuelles() {
                 height: "100%",
             }}
         >
-            <Typography variant="h4" sx={{ mb: 1.5 }}>
+            <Typography variant="h4" sx={{mb: 1.5}}>
                 Aktuelles
             </Typography>
 
             {!enabled ? (
                 <>
-                    <Typography sx={{ color: "text.secondary", mb: 2, lineHeight: 1.8 }}>
+                    <Typography sx={{color: "text.secondary", mb: 2, lineHeight: 1.8}}>
                         Neuigkeiten und Eindrücke aus unserem Instagram-Account.
                     </Typography>
                     <Button variant="contained" disableElevation onClick={() => setEnabled(true)}>
@@ -79,8 +79,17 @@ export default function Start({onNavigate}) {
     const [heroImages, setHeroImages] = useState([]);
     const [currentImage, setCurrentImage] = useState(0);
 
+    const contentRef = React.useRef(null);
+    const [highlightContent, setHighlightContent] = React.useState(false);
+
     const [content, setContent] = useState(null);
     const [error, setError] = useState("");
+
+    const {scrollY} = useScroll();
+
+    // Parallax: leichte Verschiebung, nicht übertreiben
+    const parallaxRaw = useTransform(scrollY, [0, 700], [0, 80]); // 0px -> 80px
+    const parallaxY = useSpring(parallaxRaw, {stiffness: 120, damping: 20, mass: 0.2});
 
     useEffect(() => {
         fetch(process.env.PUBLIC_URL + "/resources/start/startImages.json")
@@ -110,35 +119,60 @@ export default function Start({onNavigate}) {
 
     const bgImage = useMemo(() => (hasImages ? heroImages[currentImage] : null), [hasImages, heroImages, currentImage]);
 
-    if (error) return <div style={{ padding: 16 }}>Fehler: {error}</div>;
-    if (!content) return <div style={{ padding: 16 }}>Lade Inhalte…</div>;
+    if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
+    if (!content) return <div style={{padding: 16}}>Lade Inhalte…</div>;
 
     return (
         <Box>
             {/* Hero */}
             <Box
-                component={motion.div}
-                key={currentImage}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
                 sx={{
                     position: "relative",
-                    minHeight: { xs: 480, md: 560 },
+                    minHeight: {xs: 480, md: 560},
                     display: "flex",
                     alignItems: "flex-end",
                     overflow: "hidden",
-                    borderRadius: { xs: 0, md: 6 },
-                    mx: { xs: 0, md: 3 },
-                    boxShadow: { xs: "none", md: "0 26px 70px rgba(6,58,82,0.20)" },
-                    background: bgImage
-                        ? `linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.62) 78%, rgba(0,0,0,0.72) 100%), url(${bgImage})`
-                        : `linear-gradient(135deg, rgba(6,58,82,1), rgba(39,194,211,1))`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    borderRadius: {xs: 0, md: 6},
+                    mx: {xs: 0, md: 3},
+                    boxShadow: {xs: "none", md: "0 26px 70px rgba(6,58,82,0.20)"},
                 }}
             >
-                {/* Soft highlight */}
+                {/* Parallax Background Layer */}
+                <Box
+                    component={motion.div}
+                    key={currentImage}
+                    initial={{opacity: 0}}
+                    animate={{opacity: 1}}
+                    transition={{duration: 0.8}}
+                    style={{
+                        y: parallaxY,
+                    }}
+                    sx={{
+                        position: "absolute",
+                        inset: 0,
+                        transform: "scale(1.06)", // verhindert sichtbare Kanten
+                        background: bgImage
+                            ? `url(${bgImage})`
+                            : `linear-gradient(135deg, rgba(6,58,82,1), rgba(39,194,211,1))`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        willChange: "transform",
+                    }}
+                />
+
+                {/* Gradient Overlay */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        inset: 0,
+                        background:
+                            "linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.62) 78%, rgba(0,0,0,0.72) 100%)",
+                        pointerEvents: "none",
+                        zIndex: 1,
+                    }}
+                />
+
+                {/* Soft Highlight */}
                 <Box
                     sx={{
                         position: "absolute",
@@ -146,32 +180,67 @@ export default function Start({onNavigate}) {
                         background:
                             "radial-gradient(700px 400px at 20% 20%, rgba(39,194,211,0.25), transparent 55%)",
                         pointerEvents: "none",
+                        zIndex: 2,
                     }}
                 />
 
-                <Container maxWidth="lg" sx={{ pb: { xs: 5, md: 7 }, position: "relative", zIndex: 2 }}>
-                    <Box sx={{ maxWidth: 820 }}>
-                        <Typography variant="h2" sx={{ color: "white", mb: 1.2, lineHeight: 1.05 }}>
+                {/* Content */}
+                <Container
+                    maxWidth="lg"
+                    sx={{
+                        pb: {xs: 5, md: 7},
+                        position: "relative",
+                        zIndex: 3,
+                    }}
+                >
+                    <Box sx={{maxWidth: 820}}>
+                        <Typography
+                            variant="h2"
+                            sx={{
+                                color: "white",
+                                mb: 1.2,
+                                lineHeight: 1.05,
+                            }}
+                        >
                             {content.headline}
                         </Typography>
-                        <Typography variant="h6" sx={{ color: alpha("#fff", 0.86), mb: 2.6, fontWeight: 500 }}>
+
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                color: alpha("#fff", 0.86),
+                                mb: 2.6,
+                                fontWeight: 500,
+                            }}
+                        >
                             {content.slogan}
                         </Typography>
 
-                        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+                        <Stack direction={{xs: "column", sm: "row"}} spacing={1.2}>
                             <Button
                                 variant="contained"
                                 disableElevation
-                                endIcon={<ArrowOutward />}
+                                endIcon={<ArrowOutward/>}
                                 sx={{
                                     px: 2.2,
                                     py: 1.1,
                                     background: "linear-gradient(135deg, #063A52, #27C2D3)",
                                 }}
-                                onClick={() => window.scrollTo({ top: 620, behavior: "smooth" })}
+                                onClick={() => {
+                                    contentRef.current?.scrollIntoView({behavior: "smooth"});
+
+                                    setTimeout(() => {
+                                        setHighlightContent(true);
+
+                                        setTimeout(() => {
+                                            setHighlightContent(false);
+                                        }, 900); // Dauer des Glow-Effekts
+                                    }, 400); // leicht verzögert nach Scroll
+                                }}
                             >
                                 Mehr erfahren
                             </Button>
+
                             <Button
                                 variant="outlined"
                                 sx={{
@@ -180,7 +249,10 @@ export default function Start({onNavigate}) {
                                     color: "white",
                                     borderColor: alpha("#fff", 0.28),
                                     background: alpha("#000", 0.12),
-                                    "&:hover": { borderColor: alpha("#fff", 0.40), background: alpha("#000", 0.22) },
+                                    "&:hover": {
+                                        borderColor: alpha("#fff", 0.40),
+                                        background: alpha("#000", 0.22),
+                                    },
                                 }}
                                 onClick={() => onNavigate?.("Kontakt")}
                             >
@@ -190,7 +262,7 @@ export default function Start({onNavigate}) {
 
                         {/* Dots */}
                         {hasImages && (
-                            <Stack direction="row" spacing={0.8} sx={{ mt: 3 }}>
+                            <Stack direction="row" spacing={0.8} sx={{mt: 3}}>
                                 {heroImages.map((_, idx) => (
                                     <Box
                                         key={idx}
@@ -200,7 +272,10 @@ export default function Start({onNavigate}) {
                                             height: 9,
                                             borderRadius: 999,
                                             cursor: "pointer",
-                                            background: idx === currentImage ? "white" : alpha("#fff", 0.38),
+                                            background:
+                                                idx === currentImage
+                                                    ? "white"
+                                                    : alpha("#fff", 0.38),
                                             transition: "all 180ms ease",
                                         }}
                                     />
@@ -212,23 +287,42 @@ export default function Start({onNavigate}) {
             </Box>
 
             {/* Content + Aktuelles (Grid 2/3 - 1/3) */}
-            <Container maxWidth="lg" sx={{ mt: { xs: 3, md: 5 } }}>
+            <Container
+                ref={contentRef}
+                maxWidth="lg"
+                component={motion.div}
+                initial={false}
+                animate={{
+                    y: highlightContent ? -2 : 0, // 👈 minimaler Lift
+                    background: highlightContent
+                        ? "radial-gradient(600px 300px at 50% 0%, rgba(39,194,211,0.22), transparent 70%)"
+                        : "radial-gradient(600px 300px at 50% 0%, rgba(39,194,211,0), transparent 70%)",
+                }}
+                transition={{
+                    y: {duration: 0.35, ease: "easeOut"},
+                    background: {duration: 0.6, ease: "easeOut"},
+                }}
+                sx={{
+                    mt: {xs: 3, md: 5},
+                    borderRadius: 6, // etwas runder
+                }}
+            >
                 <Box
                     sx={{
                         display: "grid",
-                        gridTemplateColumns: { xs: "1fr", md: "2fr 1fr" },
-                        gap: { xs: 2, md: 3 },
+                        gridTemplateColumns: {xs: "1fr", md: "2fr 1fr"},
+                        gap: {xs: 2, md: 3},
                         alignItems: "stretch",
                     }}
                 >
                     {/* Content */}
                     <Box
                         component={motion.div}
-                        initial={{ opacity: 0, y: 14 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
+                        initial={{opacity: 0, y: 14}}
+                        animate={{opacity: 1, y: 0}}
+                        transition={{duration: 0.6}}
                         sx={{
-                            p: { xs: 2.2, md: 3.5 },
+                            p: {xs: 2.2, md: 3.5},
                             borderRadius: 4,
                             background: alpha("#FFFFFF", 0.85),
                             border: `1px solid ${alpha("#0B1B24", 0.10)}`,
@@ -236,7 +330,7 @@ export default function Start({onNavigate}) {
                             backdropFilter: "blur(12px)",
                         }}
                     >
-                        <Typography variant="h4" sx={{ mb: 1.5 }}>
+                        <Typography variant="h4" sx={{mb: 1.5}}>
                             Willkommen beim TSC Wülfrath
                         </Typography>
 
@@ -244,11 +338,11 @@ export default function Start({onNavigate}) {
                             sx={{
                                 color: "text.secondary",
                                 lineHeight: 1.9,
-                                fontSize: { xs: "1rem", md: "1.05rem" },
+                                fontSize: {xs: "1rem", md: "1.05rem"},
                             }}
                         >
                             {content.bodyText.map((line, i) => (
-                                <Box key={i} component="p" sx={{ m: 0, mb: 1.2 }}>
+                                <Box key={i} component="p" sx={{m: 0, mb: 1.2}}>
                                     {line}
                                 </Box>
                             ))}
@@ -258,17 +352,17 @@ export default function Start({onNavigate}) {
                     {/* Instagram */}
                     <Box
                         component={motion.div}
-                        initial={{ opacity: 0, y: 14 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.06 }}
+                        initial={{opacity: 0, y: 14}}
+                        animate={{opacity: 1, y: 0}}
+                        transition={{duration: 0.6, delay: 0.06}}
                         sx={{
                             height: "100%",
-                            position: { md: "sticky" },
-                            top: { md: 90 },
-                            alignSelf: { md: "start" },
+                            position: {md: "sticky"},
+                            top: {md: 90},
+                            alignSelf: {md: "start"},
                         }}
                     >
-                        <InstagramAktuelles />
+                        <InstagramAktuelles/>
                     </Box>
                 </Box>
             </Container>
