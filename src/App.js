@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState, Suspense} from "react";
 import {alpha, createTheme, ThemeProvider} from "@mui/material/styles";
 import {
     AppBar,
@@ -12,22 +12,92 @@ import {
     List,
     ListItem,
     ListItemButton,
-    ListItemText,
+    ListItemText, Skeleton,
     Stack,
     Toolbar,
     Typography,
     useMediaQuery,
 } from "@mui/material";
 import {ArrowOutward, Close as CloseIcon, Email, Facebook, Instagram, Menu as MenuIcon,} from "@mui/icons-material";
+import { motion } from "framer-motion";
 
-import Start from "./pages/Start";
-import About from "./pages/About";
-import Training from "./pages/Training";
-import Schnuppertauchen from "./pages/Schnuppertauchen";
-import Ausbildung from "./pages/Ausbildung";
-import Kontakt from "./pages/Kontakt";
-import Impressum from "./pages/Impressum";
-import Datenschutz from "./pages/Datenschutz";
+const Start = React.lazy(() => import("./pages/Start"));
+const About = React.lazy(() => import("./pages/About"));
+const Ausbildung = React.lazy(() => import("./pages/Ausbildung"));
+const Training = React.lazy(() => import("./pages/Training"));
+const Schnuppertauchen = React.lazy(() => import("./pages/Schnuppertauchen"));
+const Kontakt = React.lazy(() => import("./pages/Kontakt"));
+const Datenschutz = React.lazy(() => import("./pages/Datenschutz"));
+const Impressum = React.lazy(() => import("./pages/Impressum"));
+
+function PageLoader() {
+    return (
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                mt: 2,
+            }}
+        >
+            <Box
+                component={motion.div}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25 }}
+                sx={{
+                    width: "90%",
+                    maxWidth: 720,
+                    p: { xs: 2.5, md: 3.5 },
+                    borderRadius: 4,
+                    background: "rgba(255,255,255,0.88)",
+                    border: "1px solid rgba(11,27,36,0.10)",
+                    boxShadow: "0 22px 60px rgba(11,27,36,0.12)",
+                    backdropFilter: "blur(14px)",
+                }}
+            >
+                <Skeleton
+                    variant="text"
+                    width="40%"
+                    height={42}
+                    sx={{
+                        mb: 2,
+                        bgcolor: "rgba(6,58,82,0.15)", // Brand dark
+                        "&::after": {
+                            background: "linear-gradient(90deg, transparent, rgba(39,194,211,0.4), transparent)",
+                        },
+                    }}
+                />
+
+                {[...Array(3)].map((_, i) => (
+                    <Skeleton
+                        key={i}
+                        variant="text"
+                        width={`${88 - i * 4}%`}
+                        sx={{
+                            bgcolor: "rgba(6,58,82,0.12)",
+                            "&::after": {
+                                background: "linear-gradient(90deg, transparent, rgba(39,194,211,0.35), transparent)",
+                            },
+                        }}
+                    />
+                ))}
+
+                <Skeleton
+                    variant="rectangular"
+                    height={180}
+                    sx={{
+                        mt: 2,
+                        borderRadius: 3,
+                        bgcolor: "rgba(6,58,82,0.12)",
+                        "&::after": {
+                            background: "linear-gradient(90deg, transparent, rgba(39,194,211,0.35), transparent)",
+                        },
+                    }}
+                />
+            </Box>
+        </Box>
+    );
+}
 
 export default function App() {
     const getPageFromHash = () => {
@@ -389,7 +459,20 @@ export default function App() {
                 </Drawer>
 
                 {/* Content */}
-                <Box sx={{ flexGrow: 1, py: { xs: 3, md: 5 } }}>{renderContent()}</Box>
+                <Box sx={{ flexGrow: 1, py: { xs: 3, md: 5 } }}>
+                    <Suspense fallback={<PageLoader />}>
+                        <Box
+                            component={motion.div}
+                            key={activePage}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.28, ease: "easeOut" }}
+                        >
+                            {renderContent()}
+                        </Box>
+                    </Suspense>
+                </Box>
 
                 {/* Footer (nicht fixed, wirkt deutlich hochwertiger) */}
                 <Box sx={{ borderTop: `1px solid ${alpha("#0B1B24", 0.08)}`, py: 4 }}>
