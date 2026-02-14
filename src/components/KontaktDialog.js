@@ -114,17 +114,20 @@ export default function KontaktDialog({ open, onClose, onNavigate }) {
             onClose={handleClose}
             fullWidth
             maxWidth="sm"
+            scroll="paper"
             PaperProps={{
                 sx: {
                     borderRadius: 3,
                     background: alpha("#FFFFFF", 0.96),
                     backdropFilter: "blur(16px)",
                     boxShadow: "0 35px 80px rgba(11,27,36,0.25)",
-                    overflow: "hidden",
+                    maxHeight: "90vh", // 👈 wichtig für mobile
+                    display: "flex",
+                    flexDirection: "column",
                 },
             }}
         >
-            <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait">
                 {!success ? (
                     <motion.div
                         key="form"
@@ -136,7 +139,12 @@ export default function KontaktDialog({ open, onClose, onNavigate }) {
                             Probetraining / Schnuppertauchen vereinbaren
                         </DialogTitle>
 
-                        <DialogContent>
+                        <DialogContent
+                            dividers
+                            sx={{
+                                overflowY: "auto",
+                            }}
+                        >
                             <Stack spacing={2} sx={{ mt: 1 }}>
                                 <TextField
                                     label="Name"
