@@ -130,7 +130,7 @@ export default function Kontakt({ onNavigate }) {
                         </Typography>
                     </Box>
 
-                    {/* 🟢 Neues schlichtes Formular-CTA */}
+                    {/* Neues schlichtes Formular-CTA */}
                     <Box
                         sx={{
                             mt: 3,
@@ -168,6 +168,48 @@ export default function Kontakt({ onNavigate }) {
                             Probetraining / Schnuppertauchen vereinbaren
                         </Button>
                     </Box>
+
+                    <Box
+                        sx={{
+                            mt: 4,
+                            p: { xs: 2.5, md: 3.5 },
+                            borderRadius: 4,
+                            background: "rgba(255,255,255,0.85)",
+                            border: "1px solid rgba(11,27,36,0.10)",
+                            boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
+                            backdropFilter: "blur(12px)",
+                        }}
+                    >
+                        <Typography variant="h4" sx={{ mb: 1.5 }}>
+                            Mitglied werden
+                        </Typography>
+
+                        <Typography sx={{ color: "text.secondary", mb: 2, lineHeight: 1.8 }}>
+                            Du möchtest dem TSC Wülfrath beitreten?
+                            Unser Online-Mitgliedsantrag steht dir hier zur Verfügung.
+                        </Typography>
+
+                        <Button
+                            variant="contained"
+                            size="large"
+                            disableElevation
+                            onClick={() =>
+                                window.open(
+                                    "https://web.meinverein.de/profile/75580",
+                                    "_blank",
+                                    "noopener,noreferrer"
+                                )
+                            }
+                            sx={{
+                                px: 3,
+                                py: 1.2,
+                                background: "linear-gradient(135deg, #063A52, #27C2D3)",
+                            }}
+                        >
+                            Zum Online-Mitgliedsantrag
+                        </Button>
+                    </Box>
+
                 </Paper>
 
                 {/* Maps-Card */}
