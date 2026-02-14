@@ -1,12 +1,13 @@
 // src/pages/Training.js
 import React from "react";
-import { Container, Box, Typography, Paper, Stack, Chip, alpha } from "@mui/material";
+import { Container, Box, Typography, Paper, Stack, Chip, alpha, Divider } from "@mui/material";
 import { motion } from "framer-motion";
-import { Pool, AccessTime, LocationOn } from "@mui/icons-material";
+import { Pool, AccessTime, LocationOn, ScubaDiving, CheckCircle } from "@mui/icons-material";
 
 export default function Training() {
     return (
         <Container maxWidth="lg">
+            {/* Header */}
             <Box
                 component={motion.div}
                 initial={{ opacity: 0, y: 14 }}
@@ -23,6 +24,7 @@ export default function Training() {
                 </Typography>
             </Box>
 
+            {/* Training Card */}
             <Paper
                 component={motion.div}
                 initial={{ opacity: 0, y: 12 }}
@@ -77,6 +79,46 @@ export default function Training() {
                 <Typography sx={{ mt: 2.2, color: "text.secondary", lineHeight: 1.8 }}>
                     Tipp: Bitte ca. <b>30 Minuten vorher</b> da sein, damit wir entspannt starten können.
                 </Typography>
+
+                {/* Divider / Übergang zu Schnuppertauchen */}
+                <Divider sx={{ my: { xs: 2.2, md: 2.6 }, borderColor: alpha("#0B1B24", 0.10) }} />
+
+                {/* Schnuppertauchen (integriert) */}
+                <Box>
+                    <Typography variant="h4" sx={{ mb: 1 }}>
+                        Schnuppertauchen
+                    </Typography>
+
+                    <Typography sx={{ color: "text.secondary", maxWidth: 820, lineHeight: 1.8, mb: 2 }}>
+                        Ein erster, sicherer Einstieg in die Unterwasserwelt – mit Anleitung durch erfahrene Tauchlehrer.
+                        Ausrüstung stellen wir kostenlos.
+                    </Typography>
+
+                    <Stack direction={{ xs: "column", md: "row" }} spacing={1.1} sx={{ mb: 2 }}>
+                        <Chip icon={<ScubaDiving />} label="Kostenlose Ausrüstung" />
+                        <Chip icon={<CheckCircle />} label="Fachkundige Begleitung" />
+                        <Chip icon={<AccessTime />} label="Zu Trainingszeiten möglich" />
+                    </Stack>
+
+                    <Box
+                        sx={{
+                            p: 2.2,
+                            borderRadius: 3,
+                            background: alpha("#0B1B24", 0.03),
+                            border: `1px solid ${alpha("#0B1B24", 0.08)}`,
+                        }}
+                    >
+                        <Typography sx={{ color: "text.secondary", lineHeight: 1.9 }}>
+                            Wer einmal in die schwerelose Unterwasserwelt eintauchen möchte, ist herzlich eingeladen.
+                            Nach Terminabsprache kann im Hallenbad mit Gerät probegetaucht werden.
+                            Minderjährige benötigen die schriftliche Einverständniserklärung eines Erziehungsberechtigten.
+                            <br /><br />
+                            Bitte Badebekleidung mitbringen – Eintritt und Ausrüstung sind kostenlos.
+                            <br /><br />
+                            Das Schnuppertauchen ist zu unseren Trainingszeiten möglich.
+                        </Typography>
+                    </Box>
+                </Box>
             </Paper>
         </Container>
     );

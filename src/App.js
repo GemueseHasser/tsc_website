@@ -25,7 +25,6 @@ const Start = React.lazy(() => import("./pages/Start"));
 const About = React.lazy(() => import("./pages/About"));
 const Ausbildung = React.lazy(() => import("./pages/Ausbildung"));
 const Training = React.lazy(() => import("./pages/Training"));
-const Schnuppertauchen = React.lazy(() => import("./pages/Schnuppertauchen"));
 const Kontakt = React.lazy(() => import("./pages/Kontakt"));
 const Datenschutz = React.lazy(() => import("./pages/Datenschutz"));
 const Impressum = React.lazy(() => import("./pages/Impressum"));
@@ -113,7 +112,7 @@ export default function App() {
     const isMobile = useMediaQuery("(max-width: 1200px)");
 
     const pages = useMemo(
-        () => ["Startseite", "Über uns", "Training", "Schnuppertauchen", "Ausbildung", "Kontakt"],
+        () => ["Startseite", "Über uns", "Training", "Ausbildung", "Kontakt"],
         []
     );
 
@@ -208,8 +207,6 @@ export default function App() {
                 return <About />;
             case "Training":
                 return <Training />;
-            case "Schnuppertauchen":
-                return <Schnuppertauchen />;
             case "Ausbildung":
                 return <Ausbildung />;
             case "Kontakt":
