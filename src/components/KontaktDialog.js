@@ -1,5 +1,5 @@
 // src/components/KontaktDialog.js
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -12,11 +12,14 @@ import {
     Typography,
     alpha,
     Box,
+    FormControlLabel,
+    Checkbox,
+    FormHelperText,
 } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle } from "@mui/icons-material";
 
-export default function KontaktDialog({ open, onClose }) {
+export default function KontaktDialog({ open, onClose, onNavigate }) {
     const [form, setForm] = useState({
         name: "",
         age: "",
@@ -24,6 +27,7 @@ export default function KontaktDialog({ open, onClose }) {
         type: "Probetraining",
         message: "",
         website: "", // 🔐 Honeypot
+        consent: false, // ✅ DSGVO
     });
 
     const [errors, setErrors] = useState({});
@@ -36,11 +40,22 @@ export default function KontaktDialog({ open, onClose }) {
     useEffect(() => {
         if (open) {
             setOpenedAt(Date.now());
+            setErrors({});
+            setSuccess(false);
         }
     }, [open]);
 
+    // Wenn Alter < 18 und Schnuppertauchen ausgewählt war -> automatisch zurück
+    useEffect(() => {
+        if (!isAdult && form.type === "Schnuppertauchen") {
+            setForm((p) => ({ ...p, type: "Probetraining" }));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAdult]);
+
     const handleChange = (field) => (e) => {
-        setForm({ ...form, [field]: e.target.value });
+        const val = field === "consent" ? e.target.checked : e.target.value;
+        setForm((p) => ({ ...p, [field]: val }));
     };
 
     const validate = () => {
@@ -49,6 +64,7 @@ export default function KontaktDialog({ open, onClose }) {
         if (!form.age) newErrors.age = "Alter erforderlich";
         if (!form.email) newErrors.email = "E-Mail erforderlich";
         if (!form.message) newErrors.message = "Bitte Nachricht eingeben";
+        if (!form.consent) newErrors.consent = "Bitte bestätige die Datenschutzerklärung.";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -58,17 +74,17 @@ export default function KontaktDialog({ open, onClose }) {
 
         // Honeypot Check
         if (form.website) {
-            console.warn("Spam erkannt (Honeypot)");
+            console.warn("Spam erkannt (Honeypot).");
             return;
         }
 
         // Time Check (mindestens 4 Sekunden)
         if (openedAt && Date.now() - openedAt < 4000) {
-            console.warn("Spam erkannt (zu schnell abgeschickt)");
+            console.warn("Spam erkannt (zu schnell abgeschickt).");
             return;
         }
 
-        // Hier später Backend anschließen
+        // Hier später Backend / Service anbinden
         console.log("Form valid:", form);
 
         setSuccess(true);
@@ -83,14 +99,19 @@ export default function KontaktDialog({ open, onClose }) {
                 type: "Probetraining",
                 message: "",
                 website: "",
+                consent: false,
             });
         }, 2200);
+    };
+
+    const handleClose = () => {
+        onClose();
     };
 
     return (
         <Dialog
             open={open}
-            onClose={onClose}
+            onClose={handleClose}
             fullWidth
             maxWidth="sm"
             PaperProps={{
@@ -170,7 +191,59 @@ export default function KontaktDialog({ open, onClose }) {
                                     helperText={errors.message}
                                 />
 
-                                {/* 🔐 Honeypot Feld (unsichtbar für Nutzer) */}
+                                {/* DSGVO Checkbox */}
+                                <Box
+                                    sx={{
+                                        mt: 0.5,
+                                        p: 1.4,
+                                        borderRadius: 3,
+                                        background: alpha("#0B1B24", 0.03),
+                                        border: `1px solid ${alpha("#0B1B24", 0.08)}`,
+                                    }}
+                                >
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={form.consent}
+                                                onChange={handleChange("consent")}
+                                            />
+                                        }
+                                        label={
+                                            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                                                Ich habe die{" "}
+                                                <Box
+                                                    component="span"
+                                                    onClick={() => {
+                                                        onClose();
+                                                        onNavigate?.("Datenschutz");
+                                                    }}
+                                                    sx={{
+                                                        color: "#063A52",
+                                                        fontWeight: 800,
+                                                        cursor: "pointer",
+                                                        "&:hover": { textDecoration: "underline" },
+                                                    }}
+                                                >
+                                                    Datenschutzerklärung
+                                                </Box>{" "}
+                                                gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage zu.
+                                            </Typography>
+                                        }
+                                    />
+                                    {errors.consent && (
+                                        <FormHelperText sx={{ color: "error.main", mt: -0.5 }}>
+                                            {errors.consent}
+                                        </FormHelperText>
+                                    )}
+                                </Box>
+
+                                {!isAdult && form.age && (
+                                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                        Schnuppertauchen ist nur ab 18 Jahren möglich.
+                                    </Typography>
+                                )}
+
+                                {/* 🔐 Honeypot Feld (unsichtbar) */}
                                 <TextField
                                     name="website"
                                     value={form.website}
@@ -184,17 +257,11 @@ export default function KontaktDialog({ open, onClose }) {
                                     autoComplete="off"
                                     tabIndex={-1}
                                 />
-
-                                {!isAdult && form.age && (
-                                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                                        Schnuppertauchen ist nur ab 18 Jahren möglich.
-                                    </Typography>
-                                )}
                             </Stack>
                         </DialogContent>
 
                         <DialogActions sx={{ px: 3, pb: 2 }}>
-                            <Button onClick={onClose}>Abbrechen</Button>
+                            <Button onClick={handleClose}>Abbrechen</Button>
                             <Button
                                 variant="contained"
                                 disableElevation
@@ -228,12 +295,7 @@ export default function KontaktDialog({ open, onClose }) {
                                 animate={{ scale: 1 }}
                                 transition={{ type: "spring", stiffness: 160 }}
                             >
-                                <CheckCircle
-                                    sx={{
-                                        fontSize: 70,
-                                        color: "#27C2D3",
-                                    }}
-                                />
+                                <CheckCircle sx={{ fontSize: 70, color: "#27C2D3" }} />
                             </motion.div>
 
                             <Typography variant="h5" sx={{ mt: 2, fontWeight: 900 }}>

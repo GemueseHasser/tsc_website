@@ -19,7 +19,7 @@ import {
     useMediaQuery,
 } from "@mui/material";
 import {ArrowOutward, Close as CloseIcon, Email, Facebook, Instagram, Menu as MenuIcon,} from "@mui/icons-material";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 
 const Start = React.lazy(() => import("./pages/Start"));
 const About = React.lazy(() => import("./pages/About"));
@@ -40,13 +40,13 @@ function PageLoader() {
         >
             <Box
                 component={motion.div}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25 }}
+                initial={{opacity: 0, y: 10}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.25}}
                 sx={{
                     width: "90%",
                     maxWidth: 720,
-                    p: { xs: 2.5, md: 3.5 },
+                    p: {xs: 2.5, md: 3.5},
                     borderRadius: 4,
                     background: "rgba(255,255,255,0.88)",
                     border: "1px solid rgba(11,27,36,0.10)",
@@ -123,8 +123,8 @@ export default function App() {
             createTheme({
                 palette: {
                     mode: "light",
-                    primary: { main: "#063A52" }, // Deep Ocean
-                    secondary: { main: "#27C2D3" }, // Aqua Accent
+                    primary: {main: "#063A52"}, // Deep Ocean
+                    secondary: {main: "#27C2D3"}, // Aqua Accent
                     background: {
                         default: "#F6FAFC",
                         paper: "#FFFFFF",
@@ -134,14 +134,14 @@ export default function App() {
                         secondary: alpha("#0B1B24", 0.72),
                     },
                 },
-                shape: { borderRadius: 18 },
+                shape: {borderRadius: 18},
                 typography: {
                     fontFamily: `"Inter", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif`,
-                    h1: { fontFamily: `"Playfair Display", "Inter", serif`, fontWeight: 700, letterSpacing: -0.6 },
-                    h2: { fontFamily: `"Playfair Display", "Inter", serif`, fontWeight: 700, letterSpacing: -0.4 },
-                    h3: { fontFamily: `"Playfair Display", "Inter", serif`, fontWeight: 700, letterSpacing: -0.3 },
-                    h4: { fontFamily: `"Playfair Display", "Inter", serif`, fontWeight: 700, letterSpacing: -0.2 },
-                    button: { textTransform: "none", fontWeight: 650, letterSpacing: 0.1 },
+                    h1: {fontFamily: `"Playfair Display", "Inter", serif`, fontWeight: 700, letterSpacing: -0.6},
+                    h2: {fontFamily: `"Playfair Display", "Inter", serif`, fontWeight: 700, letterSpacing: -0.4},
+                    h3: {fontFamily: `"Playfair Display", "Inter", serif`, fontWeight: 700, letterSpacing: -0.3},
+                    h4: {fontFamily: `"Playfair Display", "Inter", serif`, fontWeight: 700, letterSpacing: -0.2},
+                    button: {textTransform: "none", fontWeight: 650, letterSpacing: 0.1},
                 },
                 components: {
                     MuiCssBaseline: {
@@ -162,7 +162,7 @@ export default function App() {
                             "#root": {
                                 overflowX: "hidden",
                             },
-                            a: { color: "inherit" },
+                            a: {color: "inherit"},
                         },
                     },
                     MuiAppBar: {
@@ -204,25 +204,25 @@ export default function App() {
     const renderContent = () => {
         switch (activePage) {
             case "Über uns":
-                return <About />;
+                return <About/>;
             case "Training":
-                return <Training />;
+                return <Training onNavigate={handleNavClick}/>;
             case "Ausbildung":
-                return <Ausbildung />;
+                return <Ausbildung/>;
             case "Kontakt":
-                return <Kontakt />;
+                return <Kontakt onNavigate={handleNavClick}/>;
             case "Impressum":
-                return <Impressum />;
+                return <Impressum/>;
             case "Datenschutz":
-                return <Datenschutz />;
+                return <Datenschutz/>;
             default:
-                return <Start onNavigate={handleNavClick} />;
+                return <Start onNavigate={handleNavClick}/>;
         }
     };
 
     // Kleine Premium-UX: beim Seitenwechsel nach oben
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({top: 0, behavior: "smooth"});
     }, [activePage]);
 
     const [links, setLinks] = useState(null);
@@ -253,12 +253,12 @@ export default function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline />
+            <CssBaseline/>
 
-            <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+            <Box sx={{minHeight: "100vh", display: "flex", flexDirection: "column"}}>
                 {/* Header */}
                 <AppBar position="sticky" elevation={0} color="transparent">
-                    <Toolbar sx={{ py: 1, justifyContent: "space-between", color: "text.primary" }}>
+                    <Toolbar sx={{py: 1, justifyContent: "space-between", color: "text.primary"}}>
                         <Stack direction="row" spacing={1.2} alignItems="center">
                             <Box
                                 sx={{
@@ -286,10 +286,10 @@ export default function App() {
                                 />
                             </Box>
                             <Box>
-                                <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.1 }}>
+                                <Typography variant="subtitle1" sx={{fontWeight: 800, lineHeight: 1.1}}>
                                     TSC Wülfrath e.V.
                                 </Typography>
-                                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                <Typography variant="caption" sx={{color: "text.secondary"}}>
                                     Tauchsport · Ausbildung · Gemeinschaft
                                 </Typography>
                             </Box>
@@ -327,7 +327,7 @@ export default function App() {
                                 <Divider
                                     orientation="vertical"
                                     flexItem
-                                    sx={{ mx: 0.8, borderColor: alpha("#0B1B24", 0.10) }}
+                                    sx={{mx: 0.8, borderColor: alpha("#0B1B24", 0.10)}}
                                 />
 
                                 <Stack direction="row" spacing={0.2} alignItems="center">
@@ -355,9 +355,9 @@ export default function App() {
                         ) : (
                             <IconButton
                                 onClick={() => setMobileOpen(true)}
-                                sx={{ border: `1px solid ${alpha("#0B1B24", 0.12)}` }}
+                                sx={{border: `1px solid ${alpha("#0B1B24", 0.12)}`}}
                             >
-                                <MenuIcon />
+                                <MenuIcon/>
                             </IconButton>
                         )}
                     </Toolbar>
@@ -365,16 +365,16 @@ export default function App() {
 
                 {/* Drawer Mobile */}
                 <Drawer anchor="right" open={mobileOpen} onClose={() => setMobileOpen(false)}>
-                    <Box sx={{ width: 320, p: 2, display: "flex", flexDirection: "column", height: "100%" }}>
-                        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
-                            <Typography sx={{ fontWeight: 800 }}>Navigation</Typography>
+                    <Box sx={{width: 320, p: 2, display: "flex", flexDirection: "column", height: "100%"}}>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{mb: 1}}>
+                            <Typography sx={{fontWeight: 800}}>Navigation</Typography>
                             <IconButton onClick={() => setMobileOpen(false)}>
-                                <CloseIcon />
+                                <CloseIcon/>
                             </IconButton>
                         </Stack>
-                        <Divider sx={{ mb: 1 }} />
+                        <Divider sx={{mb: 1}}/>
 
-                        <List sx={{ p: 0 }}>
+                        <List sx={{p: 0}}>
                             {pages.map((item) => (
                                 <ListItem key={item} disablePadding>
                                     <ListItemButton
@@ -389,7 +389,7 @@ export default function App() {
                                         <ListItemText
                                             primary={item}
                                             primaryTypographyProps={{
-                                                sx: { fontWeight: item === activePage ? 800 : 650 },
+                                                sx: {fontWeight: item === activePage ? 800 : 650},
                                             }}
                                         />
                                     </ListItemButton>
@@ -406,28 +406,28 @@ export default function App() {
                                 background: alpha("#FFFFFF", 0.8),
                             }}
                         >
-                            <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 0.5 }}>
+                            <Typography variant="subtitle2" sx={{fontWeight: 800, mb: 0.5}}>
                                 Schnellkontakt
                             </Typography>
                             <Stack direction="row" spacing={1}>
                                 <IconButton size="small" href={links.instagram} target="_blank">
-                                    <Instagram fontSize="small" />
+                                    <Instagram fontSize="small"/>
                                 </IconButton>
                                 <IconButton size="small" href={links.facebook} target="_blank">
-                                    <Facebook fontSize="small" />
+                                    <Facebook fontSize="small"/>
                                 </IconButton>
                                 <IconButton size="small" href={"mailto:" + links.email}>
-                                    <Email fontSize="small" />
+                                    <Email fontSize="small"/>
                                 </IconButton>
                             </Stack>
                         </Box>
 
                         {/* Spacer damit Legal-Links unten landen */}
-                        <Box sx={{ flexGrow: 1 }} />
+                        <Box sx={{flexGrow: 1}}/>
 
-                        <Divider sx={{ my: 1.6 }} />
+                        <Divider sx={{my: 1.6}}/>
 
-                        <List sx={{ p: 0 }}>
+                        <List sx={{p: 0}}>
                             {legalPages.map((item) => (
                                 <ListItem key={item} disablePadding>
                                     <ListItemButton
@@ -456,15 +456,15 @@ export default function App() {
                 </Drawer>
 
                 {/* Content */}
-                <Box sx={{ flexGrow: 1, py: { xs: 3, md: 5 } }}>
-                    <Suspense fallback={<PageLoader />}>
+                <Box sx={{flexGrow: 1, py: {xs: 3, md: 5}}}>
+                    <Suspense fallback={<PageLoader/>}>
                         <Box
                             component={motion.div}
                             key={activePage}
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.28, ease: "easeOut" }}
+                            initial={{opacity: 0, y: 8}}
+                            animate={{opacity: 1, y: 0}}
+                            exit={{opacity: 0}}
+                            transition={{duration: 0.28, ease: "easeOut"}}
                         >
                             {renderContent()}
                         </Box>
@@ -472,20 +472,20 @@ export default function App() {
                 </Box>
 
                 {/* Footer (nicht fixed, wirkt deutlich hochwertiger) */}
-                <Box sx={{ borderTop: `1px solid ${alpha("#0B1B24", 0.08)}`, py: 4 }}>
+                <Box sx={{borderTop: `1px solid ${alpha("#0B1B24", 0.08)}`, py: 4}}>
                     <Container maxWidth="lg">
                         <Stack
-                            direction={{ xs: "column", md: "row" }}
+                            direction={{xs: "column", md: "row"}}
                             spacing={2}
-                            alignItems={{ xs: "flex-start", md: "center" }}
+                            alignItems={{xs: "flex-start", md: "center"}}
                             justifyContent="space-between"
                         >
                             <Box>
-                                <Typography sx={{ fontWeight: 900 }}>TSC Wülfrath e.V.</Typography>
-                                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                                <Typography sx={{fontWeight: 900}}>TSC Wülfrath e.V.</Typography>
+                                <Typography variant="body2" sx={{color: "text.secondary"}}>
                                     Training in der Wülfrather Wasserwelt · Ausbildung nach VDST / i.a.c.
                                 </Typography>
-                                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                <Typography variant="caption" sx={{color: "text.secondary"}}>
                                     © {new Date().getFullYear()} · Alle Rechte vorbehalten
                                 </Typography>
                             </Box>
@@ -495,7 +495,7 @@ export default function App() {
                                     component="a"
                                     href={"mailto:" + links.email}
                                     variant="outlined"
-                                    endIcon={<ArrowOutward />}
+                                    endIcon={<ArrowOutward/>}
                                     sx={{
                                         borderColor: alpha("#0B1B24", 0.16),
                                         "&:hover": {
@@ -507,13 +507,13 @@ export default function App() {
                                     Anfragen
                                 </Button>
                                 <IconButton href={links.instagram} target="_blank">
-                                    <Instagram />
+                                    <Instagram/>
                                 </IconButton>
                                 <IconButton href={links.facebook} target="_blank">
-                                    <Facebook />
+                                    <Facebook/>
                                 </IconButton>
                                 <IconButton href={"mailto:" + links.email}>
-                                    <Email />
+                                    <Email/>
                                 </IconButton>
                             </Stack>
                         </Stack>

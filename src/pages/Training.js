@@ -6,7 +6,7 @@ import { Pool, AccessTime, LocationOn, ScubaDiving, CheckCircle } from "@mui/ico
 
 import KontaktDialog from "../components/KontaktDialog";
 
-export default function Training() {
+export default function Training({onNavigate}) {
     const [openDialog, setOpenDialog] = useState(false);
 
     return (
@@ -169,6 +169,7 @@ export default function Training() {
                 <KontaktDialog
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
+                    onNavigate={onNavigate}
                 />
             </Paper>
         </Container>

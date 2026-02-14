@@ -20,7 +20,7 @@ import {
 } from "@mui/icons-material";
 import KontaktDialog from "../components/KontaktDialog";
 
-export default function Kontakt() {
+export default function Kontakt({ onNavigate }) {
     const [mapEnabled, setMapEnabled] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -170,55 +170,107 @@ export default function Kontakt() {
                     </Box>
                 </Paper>
 
-                {/* Maps Card */}
-                <Paper component={motion.div} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} elevation={0} sx={cardSx}>
-
+                {/* Maps-Card */}
+                <Paper
+                    component={motion.div}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.08 }}
+                    elevation={0}
+                    sx={cardSx}
+                >
                     <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                        <LocationOn />
-                        <Typography sx={{ fontWeight: 950 }}>
-                            {addressLine1}
-                        </Typography>
+                        <Box
+                            sx={{
+                                width: 40,
+                                height: 40,
+                                borderRadius: 999,
+                                display: "grid",
+                                placeItems: "center",
+                                background: alpha("#27C2D3", 0.10),
+                                border: `1px solid ${alpha("#27C2D3", 0.22)}`,
+                            }}
+                        >
+                            <LocationOn />
+                        </Box>
+                        <Box>
+                            <Typography sx={{ fontWeight: 950, lineHeight: 1.15 }}>
+                                Trainingsort
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                                {addressLine1}
+                            </Typography>
+                        </Box>
                     </Stack>
 
-                    <Typography sx={{ color: "text.secondary", mb: 2 }}>
+                    <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
                         {addressLine2}
                     </Typography>
 
-                    <Button
-                        variant="outlined"
-                        onClick={() => setMapEnabled(true)}
-                        sx={{
-                            mb: 2,
-                            borderColor: alpha("#0B1B24", 0.18),
-                            background: alpha("#fff", 0.6),
-                        }}
+                    <Stack
+                        direction={{ xs: "column", sm: "row" }}
+                        spacing={1.1}
+                        sx={{ mt: 1.6 }}
                     >
-                        Karte laden
-                    </Button>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setMapEnabled(true)}
+                            sx={{
+                                borderColor: alpha("#0B1B24", 0.18),
+                                background: alpha("#fff", 0.6),
+                                "&:hover": {
+                                    borderColor: alpha("#0B1B24", 0.30),
+                                    background: alpha("#fff", 0.8),
+                                },
+                            }}
+                        >
+                            Karte laden
+                        </Button>
+
+                        <Button
+                            variant="text"
+                            endIcon={<ArrowOutward />}
+                            href={mapsOpenUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            sx={{ justifyContent: "flex-start" }}
+                        >
+                            In Google Maps öffnen
+                        </Button>
+                    </Stack>
 
                     <Box
                         sx={{
+                            mt: 1.8,
                             borderRadius: 3,
                             overflow: "hidden",
                             border: `1px solid ${alpha("#0B1B24", 0.10)}`,
+                            background: alpha("#0B1B24", 0.03),
                             height: 320,
+                            display: "grid",
+                            placeItems: "center",
                         }}
                     >
-                        {mapEnabled ? (
+                        {!mapEnabled ? (
+                            <Box sx={{ p: 2, textAlign: "center" }}>
+                                <Typography sx={{ fontWeight: 900, mb: 0.6 }}>
+                                    Google Maps wird erst nach Klick geladen
+                                </Typography>
+                                <Typography sx={{ color: "text.secondary", lineHeight: 1.7 }}>
+                                    So werden beim Seitenaufruf keine externen Inhalte nachgeladen.
+                                </Typography>
+                            </Box>
+                        ) : (
                             <iframe
-                                title="Google Maps"
+                                title={`Google Maps: ${addressLine1}`}
                                 src={mapsEmbedUrl}
                                 width="100%"
                                 height="100%"
-                                style={{ border: 0 }}
+                                style={{ border: 0, display: "block" }}
                                 loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                                allowFullScreen
                             />
-                        ) : (
-                            <Box sx={{ p: 3, textAlign: "center" }}>
-                                <Typography sx={{ color: "text.secondary" }}>
-                                    Google Maps wird erst nach Klick geladen.
-                                </Typography>
-                            </Box>
                         )}
                     </Box>
                 </Paper>
@@ -228,6 +280,7 @@ export default function Kontakt() {
             <KontaktDialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
+                onNavigate={onNavigate}
             />
         </Container>
     );
