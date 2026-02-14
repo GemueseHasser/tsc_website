@@ -1,10 +1,14 @@
 // src/pages/Training.js
-import React from "react";
-import { Container, Box, Typography, Paper, Stack, Chip, alpha, Divider } from "@mui/material";
+import { useState, React} from "react";
+import {Container, Box, Typography, Paper, Stack, Chip, alpha, Divider, Button} from "@mui/material";
 import { motion } from "framer-motion";
 import { Pool, AccessTime, LocationOn, ScubaDiving, CheckCircle } from "@mui/icons-material";
 
+import KontaktDialog from "../components/KontaktDialog";
+
 export default function Training() {
+    const [openDialog, setOpenDialog] = useState(false);
+
     return (
         <Container maxWidth="lg">
             {/* Header */}
@@ -119,6 +123,53 @@ export default function Training() {
                         </Typography>
                     </Box>
                 </Box>
+
+                <Box
+                    sx={{
+                        mt: 4,
+                        p: { xs: 3, md: 4 },
+                        borderRadius: 3,
+                        background: alpha("#27C2D3", 0.06),
+                        border: `1px solid ${alpha("#27C2D3", 0.18)}`,
+                        boxShadow: "0 18px 45px rgba(11,27,36,0.10)",
+                    }}
+                >
+                    <Typography variant="h5" sx={{ fontWeight: 900, mb: 1 }}>
+                        Lust bekommen?
+                    </Typography>
+
+                    <Typography sx={{ mb: 3, color: "text.secondary", maxWidth: 600 }}>
+                        Vereinbare jetzt dein Probetraining oder Schnuppertauchen.
+                        Wir freuen uns auf deine Anfrage.
+                    </Typography>
+
+                    <Button
+                        size="large"
+                        variant="contained"
+                        disableElevation
+                        onClick={() => setOpenDialog(true)}
+                        sx={{
+                            px: 4,
+                            py: 1.4,
+                            fontWeight: 800,
+                            borderRadius: 999,
+                            background: "linear-gradient(135deg, #063A52, #27C2D3)",
+                            boxShadow: "0 10px 30px rgba(39,194,211,0.35)",
+                            "&:hover": {
+                                transform: "translateY(-2px)",
+                                boxShadow: "0 14px 40px rgba(39,194,211,0.45)",
+                            },
+                            transition: "all 0.25s ease",
+                        }}
+                    >
+                        Probetraining / Schnuppertauchen vereinbaren
+                    </Button>
+                </Box>
+
+                <KontaktDialog
+                    open={openDialog}
+                    onClose={() => setOpenDialog(false)}
+                />
             </Paper>
         </Container>
     );

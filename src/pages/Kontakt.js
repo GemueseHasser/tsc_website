@@ -1,5 +1,5 @@
 // src/pages/Kontakt.js
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     Container,
     Box,
@@ -18,11 +18,12 @@ import {
     ArrowOutward,
     LocationOn,
 } from "@mui/icons-material";
+import KontaktDialog from "../components/KontaktDialog";
 
 export default function Kontakt() {
-    const [mapEnabled, setMapEnabled] = React.useState(false);
+    const [mapEnabled, setMapEnabled] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
 
-    // Adresse (laut Stadt Wülfrath)
     const addressLine1 = "Wülfrather Wasser Welt";
     const addressLine2 = "Goethestraße 23, 42489 Wülfrath";
     const mapsQuery = encodeURIComponent(`${addressLine1}, ${addressLine2}`);
@@ -46,18 +47,19 @@ export default function Kontakt() {
     useEffect(() => {
         fetch(process.env.PUBLIC_URL + "/content/links.json")
             .then((res) => {
-                if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/links.json`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 return res.json();
             })
             .then(setLinks)
             .catch((e) => setError(String(e)));
     }, []);
 
-    if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
-    if (!links) return <div style={{padding: 16}}>Lade Links…</div>;
+    if (error) return <div style={{ padding: 16 }}>Fehler: {error}</div>;
+    if (!links) return <div style={{ padding: 16 }}>Lade Links…</div>;
 
     return (
         <Container maxWidth="lg">
+            {/* Header */}
             <Box
                 component={motion.div}
                 initial={{ opacity: 0, y: 14 }}
@@ -68,36 +70,22 @@ export default function Kontakt() {
                 <Typography variant="h3" sx={{ mb: 1 }}>
                     Kontakt
                 </Typography>
-                <Typography
-                    sx={{ color: "text.secondary", maxWidth: 760, lineHeight: 1.8 }}
-                >
+                <Typography sx={{ color: "text.secondary", maxWidth: 760, lineHeight: 1.8 }}>
                     Schreib uns kurz — wir melden uns schnellstmöglich zurück.
                 </Typography>
             </Box>
 
-            {/* 2 Spalten: Kontakt + Karte */}
             <Box
                 sx={{
                     display: "grid",
                     gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
                     gap: { xs: 2, md: 3 },
-                    alignItems: "stretch",
                 }}
             >
-                {/* Kontakt-Card */}
-                <Paper
-                    component={motion.div}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.05 }}
-                    elevation={0}
-                    sx={cardSx}
-                >
-                    <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={1.2}
-                        alignItems={{ xs: "stretch", sm: "center" }}
-                    >
+                {/* Kontakt Card */}
+                <Paper component={motion.div} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} elevation={0} sx={cardSx}>
+
+                    <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} alignItems={{ xs: "stretch", sm: "center" }}>
                         <Button
                             variant="contained"
                             disableElevation
@@ -106,39 +94,25 @@ export default function Kontakt() {
                                 background: "linear-gradient(135deg, #063A52, #27C2D3)",
                                 py: 1.1,
                             }}
-                            onClick={() =>
-                                (window.location.href = "mailto:" + links.email)
-                            }
+                            onClick={() => (window.location.href = "mailto:" + links.email)}
                         >
                             Mail an den Vorstand
                         </Button>
 
                         <Stack direction="row" spacing={1}>
-                            <IconButton
-                                href={links.instagram}
-                                target="_blank"
-                                rel="noreferrer"
-                                aria-label="Instagram"
-                            >
+                            <IconButton href={links.instagram} target="_blank">
                                 <Instagram />
                             </IconButton>
-                            <IconButton
-                                href={links.facebook}
-                                target="_blank"
-                                rel="noreferrer"
-                                aria-label="Facebook"
-                            >
+                            <IconButton href={links.facebook} target="_blank">
                                 <Facebook />
                             </IconButton>
-                            <IconButton
-                                href={"mailto:" + links.email}
-                                aria-label="E-Mail"
-                            >
+                            <IconButton href={"mailto:" + links.email}>
                                 <Email />
                             </IconButton>
                         </Stack>
                     </Stack>
 
+                    {/* E-Mail Hinweis */}
                     <Box
                         sx={{
                             mt: 2,
@@ -155,113 +129,106 @@ export default function Kontakt() {
                             Alternativ erreichst du uns über Instagram oder Facebook.
                         </Typography>
                     </Box>
-                </Paper>
 
-                {/* Maps-Card */}
-                <Paper
-                    component={motion.div}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.08 }}
-                    elevation={0}
-                    sx={cardSx}
-                >
-                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                        <Box
-                            sx={{
-                                width: 40,
-                                height: 40,
-                                borderRadius: 999,
-                                display: "grid",
-                                placeItems: "center",
-                                background: alpha("#27C2D3", 0.10),
-                                border: `1px solid ${alpha("#27C2D3", 0.22)}`,
-                            }}
-                        >
-                            <LocationOn />
-                        </Box>
-                        <Box>
-                            <Typography sx={{ fontWeight: 950, lineHeight: 1.15 }}>
-                                Trainingsort
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                                {addressLine1}
-                            </Typography>
-                        </Box>
-                    </Stack>
-
-                    <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
-                        {addressLine2}
-                    </Typography>
-
-                    <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={1.1}
-                        sx={{ mt: 1.6 }}
+                    {/* 🟢 Neues schlichtes Formular-CTA */}
+                    <Box
+                        sx={{
+                            mt: 3,
+                            p: 2.4,
+                            borderRadius: 3,
+                            background: alpha("#27C2D3", 0.05),
+                            border: `1px solid ${alpha("#27C2D3", 0.18)}`,
+                        }}
                     >
+                        <Typography sx={{ fontWeight: 900, mb: 0.8 }}>
+                            Probetraining oder Schnuppertauchen?
+                        </Typography>
+
+                        <Typography sx={{ color: "text.secondary", mb: 2, lineHeight: 1.8 }}>
+                            Nutze unser Formular für eine schnelle und strukturierte Anfrage.
+                        </Typography>
+
                         <Button
-                            variant="outlined"
-                            onClick={() => setMapEnabled(true)}
+                            variant="contained"
+                            disableElevation
+                            onClick={() => setOpenDialog(true)}
                             sx={{
-                                borderColor: alpha("#0B1B24", 0.18),
-                                background: alpha("#fff", 0.6),
+                                px: 3.5,
+                                py: 1.2,
+                                borderRadius: 999,
+                                fontWeight: 800,
+                                background: "linear-gradient(135deg, #063A52, #27C2D3)",
+                                boxShadow: "0 8px 25px rgba(39,194,211,0.25)",
                                 "&:hover": {
-                                    borderColor: alpha("#0B1B24", 0.30),
-                                    background: alpha("#fff", 0.8),
+                                    transform: "translateY(-1px)",
+                                    boxShadow: "0 12px 35px rgba(39,194,211,0.35)",
                                 },
                             }}
                         >
-                            Karte laden
+                            Probetraining / Schnuppertauchen vereinbaren
                         </Button>
+                    </Box>
+                </Paper>
 
-                        <Button
-                            variant="text"
-                            endIcon={<ArrowOutward />}
-                            href={mapsOpenUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            sx={{ justifyContent: "flex-start" }}
-                        >
-                            In Google Maps öffnen
-                        </Button>
+                {/* Maps Card */}
+                <Paper component={motion.div} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} elevation={0} sx={cardSx}>
+
+                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+                        <LocationOn />
+                        <Typography sx={{ fontWeight: 950 }}>
+                            {addressLine1}
+                        </Typography>
                     </Stack>
+
+                    <Typography sx={{ color: "text.secondary", mb: 2 }}>
+                        {addressLine2}
+                    </Typography>
+
+                    <Button
+                        variant="outlined"
+                        onClick={() => setMapEnabled(true)}
+                        sx={{
+                            mb: 2,
+                            borderColor: alpha("#0B1B24", 0.18),
+                            background: alpha("#fff", 0.6),
+                        }}
+                    >
+                        Karte laden
+                    </Button>
 
                     <Box
                         sx={{
-                            mt: 1.8,
                             borderRadius: 3,
                             overflow: "hidden",
                             border: `1px solid ${alpha("#0B1B24", 0.10)}`,
-                            background: alpha("#0B1B24", 0.03),
                             height: 320,
-                            display: "grid",
-                            placeItems: "center",
                         }}
                     >
-                        {!mapEnabled ? (
-                            <Box sx={{ p: 2, textAlign: "center" }}>
-                                <Typography sx={{ fontWeight: 900, mb: 0.6 }}>
-                                    Google Maps wird erst nach Klick geladen
-                                </Typography>
-                                <Typography sx={{ color: "text.secondary", lineHeight: 1.7 }}>
-                                    So werden beim Seitenaufruf keine externen Inhalte nachgeladen.
-                                </Typography>
-                            </Box>
-                        ) : (
+                        {mapEnabled ? (
                             <iframe
-                                title={`Google Maps: ${addressLine1}`}
+                                title="Google Maps"
                                 src={mapsEmbedUrl}
                                 width="100%"
                                 height="100%"
-                                style={{ border: 0, display: "block" }}
+                                style={{ border: 0 }}
                                 loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                                allowFullScreen
                             />
+                        ) : (
+                            <Box sx={{ p: 3, textAlign: "center" }}>
+                                <Typography sx={{ color: "text.secondary" }}>
+                                    Google Maps wird erst nach Klick geladen.
+                                </Typography>
+                            </Box>
                         )}
                     </Box>
                 </Paper>
             </Box>
+
+            {/* Dialog */}
+            <KontaktDialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+            />
         </Container>
     );
 }
