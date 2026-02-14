@@ -1,5 +1,5 @@
 // src/components/KontaktDialog.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -23,12 +23,21 @@ export default function KontaktDialog({ open, onClose }) {
         email: "",
         type: "Probetraining",
         message: "",
+        website: "", // 🔐 Honeypot
     });
 
     const [errors, setErrors] = useState({});
     const [success, setSuccess] = useState(false);
+    const [openedAt, setOpenedAt] = useState(null);
 
     const isAdult = Number(form.age) >= 18;
+
+    // Timestamp setzen wenn Dialog geöffnet wird
+    useEffect(() => {
+        if (open) {
+            setOpenedAt(Date.now());
+        }
+    }, [open]);
 
     const handleChange = (field) => (e) => {
         setForm({ ...form, [field]: e.target.value });
@@ -47,7 +56,21 @@ export default function KontaktDialog({ open, onClose }) {
     const handleSubmit = () => {
         if (!validate()) return;
 
-        // 🔵 Hier später Backend anschließen
+        // Honeypot Check
+        if (form.website) {
+            console.warn("Spam erkannt (Honeypot)");
+            return;
+        }
+
+        // Time Check (mindestens 4 Sekunden)
+        if (openedAt && Date.now() - openedAt < 4000) {
+            console.warn("Spam erkannt (zu schnell abgeschickt)");
+            return;
+        }
+
+        // Hier später Backend anschließen
+        console.log("Form valid:", form);
+
         setSuccess(true);
 
         setTimeout(() => {
@@ -59,6 +82,7 @@ export default function KontaktDialog({ open, onClose }) {
                 email: "",
                 type: "Probetraining",
                 message: "",
+                website: "",
             });
         }, 2200);
     };
@@ -144,6 +168,21 @@ export default function KontaktDialog({ open, onClose }) {
                                     onChange={handleChange("message")}
                                     error={!!errors.message}
                                     helperText={errors.message}
+                                />
+
+                                {/* 🔐 Honeypot Feld (unsichtbar für Nutzer) */}
+                                <TextField
+                                    name="website"
+                                    value={form.website}
+                                    onChange={handleChange("website")}
+                                    sx={{
+                                        position: "absolute",
+                                        left: "-9999px",
+                                        opacity: 0,
+                                        pointerEvents: "none",
+                                    }}
+                                    autoComplete="off"
+                                    tabIndex={-1}
                                 />
 
                                 {!isAdult && form.age && (
