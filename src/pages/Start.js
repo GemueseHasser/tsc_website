@@ -25,7 +25,7 @@ function InstagramAktuelles() {
     <Box
       sx={{
         p: { xs: 2.2, md: 3.5 },
-        borderRadius: 4,
+        borderRadius: 3,
         background: alpha("#FFFFFF", 0.85),
         border: `1px solid ${alpha("#0B1B24", 0.1)}`,
         boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
@@ -207,7 +207,7 @@ export default function Start({ onNavigate }) {
         </Container>
       </Box>
 
-      <Container ref={contentRef} maxWidth="lg" sx={{ mt: { xs: 3, md: 5 }, borderRadius: 6 }}>
+      <Container ref={contentRef} maxWidth="lg" sx={{ mt: { xs: 3, md: 5 }, borderRadius: 3 }}>
         <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "2fr 1fr" }, gap: { xs: 2, md: 3 }, alignItems: "stretch" }}>
           <Box
             component={motion.div}
@@ -216,7 +216,7 @@ export default function Start({ onNavigate }) {
             transition={{ duration: 0.6 }}
             sx={{
               p: { xs: 2.2, md: 3.5 },
-              borderRadius: 4,
+              borderRadius: 3,
               background: alpha("#FFFFFF", 0.85),
               border: `1px solid ${alpha("#0B1B24", 0.1)}`,
               boxShadow: "0 18px 50px rgba(11,27,36,0.10)",

@@ -31,7 +31,7 @@ export default function PdfGallery({ files }) {
             key={file.url}
             sx={{
               overflow: "hidden",
-              borderRadius: 3,
+              borderRadius: 2,
               border: `1px solid ${alpha("#0B1B24", 0.1)}`,
               background: alpha("#fff", 0.8),
               display: "flex",

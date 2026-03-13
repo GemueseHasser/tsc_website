@@ -108,7 +108,7 @@ function GlassCard({ children, sx }) {
             elevation={0}
             sx={{
                 p: { xs: 2.2, md: 3.2 },
-                borderRadius: 4,
+                borderRadius: 3,
                 background: alpha("#FFFFFF", 0.86),
                 border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
                 boxShadow: "0 18px 55px rgba(11,27,36,0.10)",
@@ -378,7 +378,7 @@ export default function About() {
                                 sx={{
                                     width: { xs: "calc(100vw - 32px)", sm: 420 },
                                     maxWidth: 520,
-                                    borderRadius: 4,
+                                    borderRadius: 3,
                                     p: 2,
                                     background: alpha("#FFFFFF", 0.92),
                                     border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
@@ -691,7 +691,7 @@ export default function About() {
 
             case "mitgliedschaft":
                 return (
-                    <Stack spacing={2}>
+                    <Box spacing={2}>
                         <GlassCard>
                             <SectionTitle icon={<Savings />} title="Mitgliedschaft" subtitle="Training, Community & Vorteile" />
                             <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1.2fr 0.8fr" }, gap: 16 }}>
@@ -727,11 +727,18 @@ export default function About() {
                                 Die Aufnahmegebühr entfällt seit Beschluss der Mitgliederversammlung am 22.03.2013.
                             </Typography>
 
-                            <Stack direction="row" rowGap={1} spacing={1} sx={{ flexWrap: "wrap", mt: 1.5 }}>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: 0.75,
+                                    mb: 0.25
+                                }}
+                            >
                                 <Chip label={content.mitgliedschaft.beitraege.erwachsene} />
                                 <Chip label={content.mitgliedschaft.beitraege.kinder} />
                                 <Chip label={content.mitgliedschaft.beitraege.passiv} />
-                            </Stack>
+                            </Box>
 
                             <Box
                                 sx={{
@@ -777,7 +784,7 @@ export default function About() {
                                 />
                             </Box>
                         </GlassCard>
-                    </Stack>
+                    </Box>
                 );
 
             case "presse":

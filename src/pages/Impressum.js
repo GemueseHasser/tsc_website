@@ -45,7 +45,7 @@ export default function Impressum() {
                 elevation={0}
                 sx={{
                     p: { xs: 2.2, md: 3.2 },
-                    borderRadius: 4,
+                    borderRadius: 3,
                     background: alpha("#FFFFFF", 0.86),
                     border: `1px solid ${alpha("#0B1B24", 0.10)}`,
                     boxShadow: "0 18px 55px rgba(11,27,36,0.10)",
