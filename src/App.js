@@ -361,20 +361,6 @@ function AppInner() {
                   </ListItemButton>
                 </ListItem>
               ))}
-
-              <ListItem disablePadding>
-                <ListItemButton
-                    variant="outlined"
-                    endIcon={<ArrowOutward />}
-                    onClick={() => openKontaktDialog("Allgemein")}
-                    sx={{
-                      borderColor: alpha("#0B1B24", 0.16),
-                      "&:hover": { borderColor: alpha("#0B1B24", 0.26), background: alpha("#0B1B24", 0.03) },
-                    }}
-                >
-                  Anfragen
-                </ListItemButton>
-              </ListItem>
             </List>
 
             <Box
@@ -389,6 +375,17 @@ function AppInner() {
               <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 0.5 }}>
                 Schnellkontakt
               </Typography>
+              <Button
+                  variant="outlined"
+                  endIcon={<ArrowOutward />}
+                  onClick={() => openKontaktDialog("Allgemein")}
+                  sx={{
+                    borderColor: alpha("#0B1B24", 0.16),
+                    "&:hover": { borderColor: alpha("#0B1B24", 0.26), background: alpha("#0B1B24", 0.03) },
+                  }}
+              >
+                Anfragen
+              </Button>
               <Stack direction="row" spacing={1}>
                 <IconButton size="small" href={links.instagram} target="_blank" rel="noreferrer">
                   <Instagram fontSize="small" />
