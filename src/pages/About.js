@@ -815,7 +815,7 @@ export default function About() {
                             ) : (
                                 <Box sx={{ p: 2.4, borderRadius: 3, background: alpha(theme.palette.primary.main, 0.04), mb: 2 }}>
                                     <Typography sx={{ color: "text.secondary" }}>
-                                        Aktuell sind noch keine Bilder in <b>public/vereinssee/images.json</b> eingetragen.
+                                        Aktuell sind noch keine Bilder des Sees hinterlegt.
                                     </Typography>
                                 </Box>
                             )}
