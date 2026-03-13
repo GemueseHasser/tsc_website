@@ -1,371 +1,252 @@
-// src/pages/Start.js
-import React, {useEffect, useMemo, useState} from "react";
-import {Container, Box, Typography, Stack, Button, alpha} from "@mui/material";
-import {motion, useScroll, useTransform, useSpring} from "framer-motion";
-import {ArrowOutward} from "@mui/icons-material";
+import React, { useEffect, useMemo, useState } from "react";
+import { Container, Box, Typography, Stack, Button, alpha } from "@mui/material";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import ExternalContentNotice from "../components/ExternalContentNotice";
+import { useCookieConsent } from "../context/CookieConsentContext";
 
 function InstagramAktuelles() {
-    const [enabled, setEnabled] = React.useState(false);
+  const { hasExternalConsent } = useCookieConsent();
 
-    React.useEffect(() => {
-        if (!enabled) return;
+  useEffect(() => {
+    if (!hasExternalConsent) return;
 
-        // Script nur einmal laden
-        if (!window.instgrm) {
-            const script = document.createElement("script");
-            script.src = "https://www.instagram.com/embed.js";
-            script.async = true;
-            script.onload = () => window.instgrm?.Embeds?.process?.();
-            document.body.appendChild(script);
-        } else {
-            window.instgrm?.Embeds?.process?.();
-        }
-    }, [enabled]);
+    if (!window.instgrm) {
+      const script = document.createElement("script");
+      script.src = "https://www.instagram.com/embed.js";
+      script.async = true;
+      script.onload = () => window.instgrm?.Embeds?.process?.();
+      document.body.appendChild(script);
+    } else {
+      window.instgrm?.Embeds?.process?.();
+    }
+  }, [hasExternalConsent]);
 
-    return (
+  return (
+    <Box
+      sx={{
+        p: { xs: 2.2, md: 3.5 },
+        borderRadius: 4,
+        background: alpha("#FFFFFF", 0.85),
+        border: `1px solid ${alpha("#0B1B24", 0.1)}`,
+        boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
+        backdropFilter: "blur(12px)",
+        height: "100%",
+      }}
+    >
+      <Typography variant="h4" sx={{ mb: 1.5 }}>
+        Instagram
+      </Typography>
+
+      {!hasExternalConsent ? (
+        <ExternalContentNotice
+          title="Instagram-Inhalte erst nach Einwilligung"
+          description="Nach deiner Zustimmung wird der Instagram-Feed direkt auf der Startseite geladen."
+        />
+      ) : (
         <Box
-            sx={{
-                p: {xs: 2.2, md: 3.5},
-                borderRadius: 4,
-                background: alpha("#FFFFFF", 0.85),
-                border: `1px solid ${alpha("#0B1B24", 0.10)}`,
-                boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
-                backdropFilter: "blur(12px)",
-                height: "100%",
-            }}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            "& .instagram-media": {
+              margin: "0 !important",
+              maxWidth: "540px",
+              width: "100%",
+            },
+          }}
         >
-            <Typography variant="h4" sx={{mb: 1.5}}>
-                Aktuelles
-            </Typography>
-
-            {!enabled ? (
-                <>
-                    <Typography sx={{color: "text.secondary", mb: 2, lineHeight: 1.8}}>
-                        Neuigkeiten und Eindrücke aus unserem Instagram-Account.
-                    </Typography>
-                    <Button variant="contained" disableElevation onClick={() => setEnabled(true)}>
-                        Instagram-Inhalte laden
-                    </Button>
-                </>
-            ) : (
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        // Instagram-Embed mag fixe Breiten — wir zentrieren und begrenzen
-                        "& .instagram-media": {
-                            margin: "0 !important",
-                            maxWidth: "540px",
-                            width: "100%",
-                        },
-                    }}
-                >
-                    <blockquote
-                        className="instagram-media"
-                        data-instgrm-permalink="https://www.instagram.com/tsc.wuelfrath/"
-                        data-instgrm-version="14"
-                        style={{
-                            background: "#FFF",
-                            border: 0,
-                        }}
-                    />
-                </Box>
-            )}
+          <blockquote
+            className="instagram-media"
+            data-instgrm-permalink="https://www.instagram.com/tsc.wuelfrath/"
+            data-instgrm-version="14"
+            style={{ background: "#FFF", border: 0 }}
+          />
         </Box>
-    );
+      )}
+    </Box>
+  );
 }
 
-export default function Start({onNavigate}) {
-    const [heroImages, setHeroImages] = useState([]);
-    const [currentImage, setCurrentImage] = useState(0);
+export default function Start({ onNavigate }) {
+  const [heroImages, setHeroImages] = useState([]);
+  const [currentImage, setCurrentImage] = useState(0);
+  const contentRef = React.useRef(null);
+  const [content, setContent] = useState(null);
+  const [error, setError] = useState("");
+  const { scrollY } = useScroll();
+  const parallaxRaw = useTransform(scrollY, [0, 700], [0, 80]);
+  const parallaxY = useSpring(parallaxRaw, { stiffness: 120, damping: 20, mass: 0.2 });
 
-    const contentRef = React.useRef(null);
-    const [highlightContent, setHighlightContent] = React.useState(false);
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/resources/start/startImages.json")
+      .then((res) => res.json())
+      .then((data) => setHeroImages(data.map((img) => process.env.PUBLIC_URL + `/resources/start/${img}`)))
+      .catch(() => setHeroImages([]));
+  }, []);
 
-    const [content, setContent] = useState(null);
-    const [error, setError] = useState("");
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/content/start.json")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/start.json`);
+        return res.json();
+      })
+      .then(setContent)
+      .catch((e) => setError(String(e)));
+  }, []);
 
-    const {scrollY} = useScroll();
+  const hasImages = heroImages.length > 0;
 
-    // Parallax: leichte Verschiebung, nicht übertreiben
-    const parallaxRaw = useTransform(scrollY, [0, 700], [0, 80]); // 0px -> 80px
-    const parallaxY = useSpring(parallaxRaw, {stiffness: 120, damping: 20, mass: 0.2});
+  useEffect(() => {
+    if (!hasImages) return undefined;
+    const timer = setInterval(() => setCurrentImage((prev) => (prev + 1) % heroImages.length), 6500);
+    return () => clearInterval(timer);
+  }, [hasImages, heroImages.length]);
 
-    useEffect(() => {
-        fetch(process.env.PUBLIC_URL + "/resources/start/startImages.json")
-            .then((res) => res.json())
-            .then((data) => setHeroImages(data.map((img) => process.env.PUBLIC_URL + `/resources/start/${img}`)))
-            .catch(() => setHeroImages([]));
-    }, []);
+  const bgImage = useMemo(() => (hasImages ? heroImages[currentImage] : null), [hasImages, heroImages, currentImage]);
 
-    useEffect(() => {
-        fetch(process.env.PUBLIC_URL + "/content/start.json")
-            .then((res) => {
-                if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von /content/start.json`);
-                return res.json();
-            })
-            .then(setContent)
-            .catch((e) => setError(String(e)));
-    }, []);
+  if (error) return <div style={{ padding: 16 }}>Fehler: {error}</div>;
+  if (!content) return <div style={{ padding: 16 }}>Lade Inhalte…</div>;
 
-    const hasImages = heroImages.length > 0;
+  return (
+    <Box>
+      <Box
+        sx={{
+          position: "relative",
+          minHeight: { xs: 480, md: 560 },
+          display: "flex",
+          alignItems: "flex-end",
+          overflow: "hidden",
+          borderRadius: { xs: 0, md: 6 },
+          mx: { xs: 0, md: 3 },
+          boxShadow: { xs: "none", md: "0 26px 70px rgba(6,58,82,0.20)" },
+        }}
+      >
+        <Box
+          component={motion.div}
+          key={currentImage}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          style={{ y: parallaxY }}
+          sx={{
+            position: "absolute",
+            inset: 0,
+            transform: "scale(1.06)",
+            background: bgImage ? `url(${bgImage})` : `linear-gradient(135deg, rgba(6,58,82,1), rgba(39,194,211,1))`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            willChange: "transform",
+          }}
+        />
 
-    // Auto-Advance (dezent)
-    useEffect(() => {
-        if (!hasImages) return;
-        const t = setInterval(() => setCurrentImage((p) => (p + 1) % heroImages.length), 6500);
-        return () => clearInterval(t);
-    }, [hasImages, heroImages.length]);
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.62) 78%, rgba(0,0,0,0.72) 100%)",
+            pointerEvents: "none",
+            zIndex: 1,
+          }}
+        />
 
-    const bgImage = useMemo(() => (hasImages ? heroImages[currentImage] : null), [hasImages, heroImages, currentImage]);
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            background: "radial-gradient(700px 400px at 20% 20%, rgba(39,194,211,0.25), transparent 55%)",
+            pointerEvents: "none",
+            zIndex: 2,
+          }}
+        />
 
-    if (error) return <div style={{padding: 16}}>Fehler: {error}</div>;
-    if (!content) return <div style={{padding: 16}}>Lade Inhalte…</div>;
+        <Container maxWidth="lg" sx={{ pb: { xs: 5, md: 7 }, position: "relative", zIndex: 3 }}>
+          <Box sx={{ maxWidth: 820 }}>
+            <Typography variant="h2" sx={{ color: "white", mb: 1.2, lineHeight: 1.05 }}>
+              {content.headline}
+            </Typography>
 
-    return (
-        <Box>
-            {/* Hero */}
-            <Box
+            <Typography variant="h6" sx={{ color: alpha("#fff", 0.86), mb: 2.6, fontWeight: 500 }}>
+              {content.slogan}
+            </Typography>
+
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+              <Button
+                variant="outlined"
                 sx={{
-                    position: "relative",
-                    minHeight: {xs: 480, md: 560},
-                    display: "flex",
-                    alignItems: "flex-end",
-                    overflow: "hidden",
-                    borderRadius: {xs: 0, md: 6},
-                    mx: {xs: 0, md: 3},
-                    boxShadow: {xs: "none", md: "0 26px 70px rgba(6,58,82,0.20)"},
+                  px: 2.2,
+                  py: 1.1,
+                  color: "white",
+                  borderColor: alpha("#fff", 0.28),
+                  background: alpha("#000", 0.12),
+                  "&:hover": { borderColor: alpha("#fff", 0.4), background: alpha("#000", 0.22) },
                 }}
-            >
-                {/* Parallax Background Layer */}
-                <Box
-                    component={motion.div}
-                    key={currentImage}
-                    initial={{opacity: 0}}
-                    animate={{opacity: 1}}
-                    transition={{duration: 0.8}}
-                    style={{
-                        y: parallaxY,
-                    }}
+                onClick={() => onNavigate?.("Kontakt")}
+              >
+                Kontakt aufnehmen
+              </Button>
+            </Stack>
+
+            {hasImages && (
+              <Stack direction="row" spacing={0.8} sx={{ mt: 3 }}>
+                {heroImages.map((_, idx) => (
+                  <Box
+                    key={idx}
+                    onClick={() => setCurrentImage(idx)}
                     sx={{
-                        position: "absolute",
-                        inset: 0,
-                        transform: "scale(1.06)", // verhindert sichtbare Kanten
-                        background: bgImage
-                            ? `url(${bgImage})`
-                            : `linear-gradient(135deg, rgba(6,58,82,1), rgba(39,194,211,1))`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        willChange: "transform",
+                      width: idx === currentImage ? 22 : 9,
+                      height: 9,
+                      borderRadius: 999,
+                      cursor: "pointer",
+                      background: idx === currentImage ? "white" : alpha("#fff", 0.38),
+                      transition: "all 180ms ease",
                     }}
-                />
+                  />
+                ))}
+              </Stack>
+            )}
+          </Box>
+        </Container>
+      </Box>
 
-                {/* Gradient Overlay */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                            "linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.62) 78%, rgba(0,0,0,0.72) 100%)",
-                        pointerEvents: "none",
-                        zIndex: 1,
-                    }}
-                />
+      <Container ref={contentRef} maxWidth="lg" sx={{ mt: { xs: 3, md: 5 }, borderRadius: 6 }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "2fr 1fr" }, gap: { xs: 2, md: 3 }, alignItems: "stretch" }}>
+          <Box
+            component={motion.div}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            sx={{
+              p: { xs: 2.2, md: 3.5 },
+              borderRadius: 4,
+              background: alpha("#FFFFFF", 0.85),
+              border: `1px solid ${alpha("#0B1B24", 0.1)}`,
+              boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
+              backdropFilter: "blur(12px)",
+            }}
+          >
+            <Typography variant="h4" sx={{ mb: 1.5 }}>
+              Willkommen beim TSC Wülfrath
+            </Typography>
 
-                {/* Soft Highlight */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                            "radial-gradient(700px 400px at 20% 20%, rgba(39,194,211,0.25), transparent 55%)",
-                        pointerEvents: "none",
-                        zIndex: 2,
-                    }}
-                />
-
-                {/* Content */}
-                <Container
-                    maxWidth="lg"
-                    sx={{
-                        pb: {xs: 5, md: 7},
-                        position: "relative",
-                        zIndex: 3,
-                    }}
-                >
-                    <Box sx={{maxWidth: 820}}>
-                        <Typography
-                            variant="h2"
-                            sx={{
-                                color: "white",
-                                mb: 1.2,
-                                lineHeight: 1.05,
-                            }}
-                        >
-                            {content.headline}
-                        </Typography>
-
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                color: alpha("#fff", 0.86),
-                                mb: 2.6,
-                                fontWeight: 500,
-                            }}
-                        >
-                            {content.slogan}
-                        </Typography>
-
-                        <Stack direction={{xs: "column", sm: "row"}} spacing={1.2}>
-                            <Button
-                                variant="contained"
-                                disableElevation
-                                endIcon={<ArrowOutward/>}
-                                sx={{
-                                    px: 2.2,
-                                    py: 1.1,
-                                    background: "linear-gradient(135deg, #063A52, #27C2D3)",
-                                }}
-                                onClick={() => {
-                                    contentRef.current?.scrollIntoView({behavior: "smooth"});
-
-                                    setTimeout(() => {
-                                        setHighlightContent(true);
-
-                                        setTimeout(() => {
-                                            setHighlightContent(false);
-                                        }, 900); // Dauer des Glow-Effekts
-                                    }, 400); // leicht verzögert nach Scroll
-                                }}
-                            >
-                                Mehr erfahren
-                            </Button>
-
-                            <Button
-                                variant="outlined"
-                                sx={{
-                                    px: 2.2,
-                                    py: 1.1,
-                                    color: "white",
-                                    borderColor: alpha("#fff", 0.28),
-                                    background: alpha("#000", 0.12),
-                                    "&:hover": {
-                                        borderColor: alpha("#fff", 0.40),
-                                        background: alpha("#000", 0.22),
-                                    },
-                                }}
-                                onClick={() => onNavigate?.("Kontakt")}
-                            >
-                                Kontakt aufnehmen
-                            </Button>
-                        </Stack>
-
-                        {/* Dots */}
-                        {hasImages && (
-                            <Stack direction="row" spacing={0.8} sx={{mt: 3}}>
-                                {heroImages.map((_, idx) => (
-                                    <Box
-                                        key={idx}
-                                        onClick={() => setCurrentImage(idx)}
-                                        sx={{
-                                            width: idx === currentImage ? 22 : 9,
-                                            height: 9,
-                                            borderRadius: 999,
-                                            cursor: "pointer",
-                                            background:
-                                                idx === currentImage
-                                                    ? "white"
-                                                    : alpha("#fff", 0.38),
-                                            transition: "all 180ms ease",
-                                        }}
-                                    />
-                                ))}
-                            </Stack>
-                        )}
-                    </Box>
-                </Container>
-            </Box>
-
-            {/* Content + Aktuelles (Grid 2/3 - 1/3) */}
-            <Container
-                ref={contentRef}
-                maxWidth="lg"
-                component={motion.div}
-                initial={false}
-                animate={{
-                    y: highlightContent ? -2 : 0, // 👈 minimaler Lift
-                    background: highlightContent
-                        ? "radial-gradient(600px 300px at 50% 0%, rgba(39,194,211,0.22), transparent 70%)"
-                        : "radial-gradient(600px 300px at 50% 0%, rgba(39,194,211,0), transparent 70%)",
-                }}
-                transition={{
-                    y: {duration: 0.35, ease: "easeOut"},
-                    background: {duration: 0.6, ease: "easeOut"},
-                }}
-                sx={{
-                    mt: {xs: 3, md: 5},
-                    borderRadius: 6, // etwas runder
-                }}
-            >
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: {xs: "1fr", md: "2fr 1fr"},
-                        gap: {xs: 2, md: 3},
-                        alignItems: "stretch",
-                    }}
-                >
-                    {/* Content */}
-                    <Box
-                        component={motion.div}
-                        initial={{opacity: 0, y: 14}}
-                        animate={{opacity: 1, y: 0}}
-                        transition={{duration: 0.6}}
-                        sx={{
-                            p: {xs: 2.2, md: 3.5},
-                            borderRadius: 4,
-                            background: alpha("#FFFFFF", 0.85),
-                            border: `1px solid ${alpha("#0B1B24", 0.10)}`,
-                            boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
-                            backdropFilter: "blur(12px)",
-                        }}
-                    >
-                        <Typography variant="h4" sx={{mb: 1.5}}>
-                            Willkommen beim TSC Wülfrath
-                        </Typography>
-
-                        <Typography
-                            sx={{
-                                color: "text.secondary",
-                                lineHeight: 1.9,
-                                fontSize: {xs: "1rem", md: "1.05rem"},
-                            }}
-                        >
-                            {content.bodyText.map((line, i) => (
-                                <Box key={i} component="p" sx={{m: 0, mb: 1.2}}>
-                                    {line}
-                                </Box>
-                            ))}
-                        </Typography>
-                    </Box>
-
-                    {/* Instagram */}
-                    <Box
-                        component={motion.div}
-                        initial={{opacity: 0, y: 14}}
-                        animate={{opacity: 1, y: 0}}
-                        transition={{duration: 0.6, delay: 0.06}}
-                        sx={{
-                            height: "100%",
-                            position: {md: "sticky"},
-                            top: {md: 90},
-                            alignSelf: {md: "start"},
-                        }}
-                    >
-                        <InstagramAktuelles/>
-                    </Box>
+            <Typography sx={{ color: "text.secondary", lineHeight: 1.9, fontSize: { xs: "1rem", md: "1.05rem" } }}>
+              {content.bodyText.map((line, index) => (
+                <Box key={index} component="p" sx={{ m: 0, mb: 1.2 }}>
+                  {line}
                 </Box>
-            </Container>
+              ))}
+            </Typography>
+          </Box>
+
+          <Box
+            component={motion.div}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.06 }}
+            sx={{ height: "100%", position: { md: "sticky" }, top: { md: 90 }, alignSelf: { md: "start" } }}
+          >
+            <InstagramAktuelles />
+          </Box>
         </Box>
-    );
+      </Container>
+    </Box>
+  );
 }

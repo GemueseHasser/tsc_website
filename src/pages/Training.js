@@ -1,13 +1,11 @@
 // src/pages/Training.js
-import { useState, React} from "react";
+import React from "react";
 import {Container, Box, Typography, Paper, Stack, Chip, alpha, Divider, Button} from "@mui/material";
 import { motion } from "framer-motion";
 import { Pool, AccessTime, LocationOn, ScubaDiving, CheckCircle } from "@mui/icons-material";
 
-import KontaktDialog from "../components/KontaktDialog";
 
-export default function Training({onNavigate}) {
-    const [openDialog, setOpenDialog] = useState(false);
+export default function Training({ onOpenContactDialog }) {
 
     return (
         <Container maxWidth="lg">
@@ -147,7 +145,7 @@ export default function Training({onNavigate}) {
                         size="large"
                         variant="contained"
                         disableElevation
-                        onClick={() => setOpenDialog(true)}
+                        onClick={() => onOpenContactDialog?.("Probetraining")}
                         sx={{
                             px: 4,
                             py: 1.4,
@@ -166,11 +164,6 @@ export default function Training({onNavigate}) {
                     </Button>
                 </Box>
 
-                <KontaktDialog
-                    open={openDialog}
-                    onClose={() => setOpenDialog(false)}
-                    onNavigate={onNavigate}
-                />
             </Paper>
         </Container>
     );

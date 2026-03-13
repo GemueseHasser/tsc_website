@@ -1,6 +1,5 @@
 // src/pages/About.js
 import React, { useEffect, useMemo, useState } from "react";
-import ReactMarkdown from "react-markdown";
 import {
     Container,
     Box,
@@ -15,17 +14,22 @@ import {
     ListItemIcon,
     ListItemText,
     Chip,
+    Button,
     alpha,
     useTheme, Grow, Popper, ClickAwayListener,
 } from "@mui/material";
 import { motion } from "framer-motion";
+import ImageGallery from "../components/ImageGallery";
+import ImageSlideshow from "../components/ImageSlideshow";
+import ExternalContentNotice from "../components/ExternalContentNotice";
+import { useCookieConsent } from "../context/CookieConsentContext";
 import {
     HistoryEdu,
     Groups,
     Badge,
     Savings,
-    Newspaper,
-    Handshake,
+    PhotoLibrary,
+    Waves,
     CheckCircle,
     Person,
     School,
@@ -139,6 +143,7 @@ export default function About() {
     const [content, setContent] = useState(null);
     const [error, setError] = useState("");
     const theme = useTheme();
+    const { hasExternalConsent } = useCookieConsent();
 
     // Bilder-Mapping laden (wie Start.js)
     const [anspImages, setAnspImages] = useState({});
@@ -452,25 +457,32 @@ export default function About() {
         );
     };
 
+    const [pressImages, setPressImages] = useState([]);
+    const [lakeImages, setLakeImages] = useState([]);
+
     const tabs = useMemo(
         () => [
             { label: "Über uns", key: "about", icon: <HistoryEdu /> },
             { label: "Ansprechpartner", key: "ansprechpartner", icon: <Badge /> },
             { label: "Mitgliedschaft", key: "mitgliedschaft", icon: <Savings /> },
-            { label: "Aktuelles", key: "aktuelles", icon: <Newspaper /> },
-            { label: "Förderung", key: "foerderung", icon: <Handshake /> },
+            { label: "Presse", key: "presse", icon: <PhotoLibrary /> },
+            { label: "Vereinssee", key: "vereinssee", icon: <Waves /> },
         ],
         []
     );
 
     const [currentTab, setCurrentTab] = useState("about");
-    const [markdown, setMarkdown] = useState("");
 
     useEffect(() => {
-        fetch(process.env.PUBLIC_URL + "/content/aktuelles.md")
-            .then((response) => response.text())
-            .then((text) => setMarkdown(text))
-            .catch((error) => console.error("Fehler beim Laden der MD-Datei:", error));
+        fetch(process.env.PUBLIC_URL + "/presse/images.json")
+            .then((res) => (res.ok ? res.json() : []))
+            .then((data) => setPressImages((data || []).map((file) => process.env.PUBLIC_URL + `/presse/${file}`)))
+            .catch(() => setPressImages([]));
+
+        fetch(process.env.PUBLIC_URL + "/vereinssee/images.json")
+            .then((res) => (res.ok ? res.json() : []))
+            .then((data) => setLakeImages((data || []).map((file) => process.env.PUBLIC_URL + `/vereinssee/${file}`)))
+            .catch(() => setLakeImages([]));
     }, []);
 
     if (error) return <div style={{ padding: 16 }}>Fehler: {error}</div>;
@@ -559,7 +571,7 @@ export default function About() {
                                 {[
                                     { year: "1972", text: "Gründung durch zehn Taucher in Wülfrath." },
                                     { year: "1973", text: "Eintragung als TSC Niederberg ins Vereinsregister." },
-                                    { year: "…", text: "Umbenennung zu TSC Wülfrath – klarer Bezug zur Heimatgemeinde." },
+                                    { year: "1974/1975", text: "Umbenennung zu TSC Wülfrath – klarer Bezug zur Heimatgemeinde." },
                                 ].map((t) => (
                                     <Box
                                         key={t.year}
@@ -730,67 +742,128 @@ export default function About() {
                                     Tauchsport-Zeitschrift.
                                 </Typography>
                             </Box>
+
+                            <Box
+                                sx={{
+                                    mt: 2,
+                                    p: 2.2,
+                                    borderRadius: 3,
+                                    background: alpha(theme.palette.secondary.main, 0.08),
+                                    border: `1px solid ${alpha(theme.palette.secondary.main, 0.22)}`,
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: 1.2,
+                                }}
+                            >
+                                <Typography sx={{ color: "text.secondary", lineHeight: 1.8, maxWidth: 620 }}>
+                                    Der Online-Mitgliedsantrag steht dir jederzeit digital zur Verfügung. So kannst du deinen Antrag direkt
+                                    und unkompliziert einreichen.
+                                </Typography>
+                                <Chip
+                                    component="a"
+                                    clickable
+                                    href="https://web.meinverein.de/profile/75580/member-request-application"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    label="Zum Online-Mitgliedsantrag"
+                                    sx={{ fontWeight: 800, px: 0.8 }}
+                                />
+                            </Box>
                         </GlassCard>
                     </Stack>
                 );
 
-            case "aktuelles":
+            case "presse":
                 return (
                     <GlassCard>
-                        <SectionTitle icon={<Newspaper />} title="Aktuelles" subtitle="Neuigkeiten aus dem Verein" />
-                        <Box sx={{ color: "text.secondary", lineHeight: 1.9 }}>
-                            <ReactMarkdown>{markdown}</ReactMarkdown>
-                        </Box>
+                        <SectionTitle icon={<PhotoLibrary />} title="Presse" subtitle="Galerie aus dem Ordner public/presse" />
+                        <Typography sx={{ color: "text.secondary", lineHeight: 1.85, mb: 2 }}>
+                            Hier werden automatisch alle Bilder aus dem Ordner <b>public/presse</b> als Galerie angezeigt.
+                        </Typography>
+                        {pressImages.length > 0 ? (
+                            <ImageGallery images={pressImages} altPrefix="Pressebild" />
+                        ) : (
+                            <Box sx={{ p: 2.4, borderRadius: 3, background: alpha(theme.palette.primary.main, 0.04) }}>
+                                <Typography sx={{ color: "text.secondary" }}>
+                                    Aktuell sind noch keine Pressebilder im Ordner <b>public/presse</b> vorhanden.
+                                </Typography>
+                            </Box>
+                        )}
                     </GlassCard>
                 );
 
-            case "foerderung":
+            case "vereinssee": {
+                const lakeQuery = encodeURIComponent("Gut Widdauen 2, 40764 Langenfeld");
+                const lakeMapUrl = `https://www.google.com/maps?q=${lakeQuery}&output=embed`;
+                const lakeOpenUrl = `https://www.google.com/maps/search/?api=1&query=${lakeQuery}`;
+
                 return (
                     <Stack spacing={2}>
                         <GlassCard>
-                            <SectionTitle icon={<Handshake />} title="Förderung" subtitle="REACT-EU & Digitalisierung" />
-                            <Typography sx={{ color: "text.secondary", lineHeight: 1.95 }}>
-                                Liebe Mitglieder, Unterstützer und Freunde des Vereins,
-                                <br />
-                                <br />
-                                wir freuen uns, Ihnen mitteilen zu können, dass der TSC durch die großzügige Förderung der Europäischen
-                                Union im Rahmen des Programms REACT-EU und der Landesregierung Nordrhein-Westfalen eine bedeutende
-                                Chance erhält, die Digitalisierung in unserem Verein voranzutreiben.
-                                <br />
-                                <br />
-                                Unsere Vision ist es, unseren Verein fit für die Zukunft zu machen und unsere Mitglieder sowie die
-                                Gemeinschaft noch besser zu unterstützen. In Zeiten zunehmender Digitalisierung ist es essentiell, die
-                                modernen Technologien und Möglichkeiten zu nutzen, um unsere Vereinsarbeit effizienter und zugänglicher
-                                zu gestalten.
+                            <SectionTitle icon={<Waves />} title="Vereinssee" subtitle="Tauchgänge am See Gut Widdauen 2" />
+                            <Typography sx={{ color: "text.secondary", lineHeight: 1.85, mb: 2 }}>
+                                Für unsere Mitglieder steht der Vereinssee in Langenfeld zur Verfügung. Die Kosten für die
+                                Jahrestauchgenehmigung am See Gut Widdauen 2 werden zu 50 % vom Verein getragen.
                             </Typography>
+
+                            {lakeImages.length > 0 ? (
+                                <ImageSlideshow images={lakeImages} height={420} altPrefix="Vereinssee" />
+                            ) : (
+                                <Box sx={{ p: 2.4, borderRadius: 3, background: alpha(theme.palette.primary.main, 0.04), mb: 2 }}>
+                                    <Typography sx={{ color: "text.secondary" }}>
+                                        Aktuell sind noch keine Bilder im Ordner <b>public/vereinssee</b> vorhanden.
+                                    </Typography>
+                                </Box>
+                            )}
                         </GlassCard>
 
-                        <GlassCard
-                            sx={{
-                                background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.06)}, ${alpha(
-                                    theme.palette.secondary.main,
-                                    0.10
-                                )})`,
-                            }}
-                        >
-                            <Typography sx={{ fontWeight: 950, mb: 0.8 }}>Was wird konkret verbessert?</Typography>
-                            <BulletList
-                                items={[
-                                    "Verbesserte Finanzorganisation durch digitale Prozesse",
-                                    "Transparente, nachvollziehbare Buchhaltung und Verwaltung",
-                                    "Bessere Unterstützung der Vereinsarbeit durch moderne Ausstattung",
-                                ]}
-                            />
-                            <Divider sx={{ my: 2 }} />
-                            <Typography sx={{ color: "text.secondary", lineHeight: 1.9 }}>
-                                Wir bedanken uns herzlich bei der Europäischen Union und der Landesregierung NRW für diese Möglichkeit.
-                                <br />
-                                <br />
-                                Ihr TSC-Vorstand
-                            </Typography>
+                        <GlassCard sx={{ display: "flex", flexDirection: "column" }}>
+                            <SectionTitle icon={<Waves />} title="Lage des Vereinssees" subtitle="Gut Widdauen 2, Langenfeld" />
+                            <Button
+                                variant="text"
+                                href={lakeOpenUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                sx={{ justifyContent: "flex-start", mb: 1.5 }}
+                            >
+                                In Google Maps öffnen
+                            </Button>
+                            <Box
+                                sx={{
+                                    borderRadius: 3,
+                                    overflow: "hidden",
+                                    border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
+                                    minHeight: { xs: 340, md: 430 },
+                                    flexGrow: 1,
+                                    display: "grid",
+                                    placeItems: "center",
+                                    background: alpha(theme.palette.primary.main, 0.03),
+                                }}
+                            >
+                                {!hasExternalConsent ? (
+                                    <ExternalContentNotice
+                                        title="Google Maps erst nach Einwilligung"
+                                        description="Nach deiner Zustimmung wird auch die Karte des Vereinssees direkt geladen."
+                                    />
+                                ) : (
+                                    <iframe
+                                        title="Google Maps Vereinssee"
+                                        src={lakeMapUrl}
+                                        width="100%"
+                                        height="100%"
+                                        style={{ border: 0, display: "block", minHeight: "100%" }}
+                                        loading="lazy"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                        allowFullScreen
+                                    />
+                                )}
+                            </Box>
                         </GlassCard>
                     </Stack>
                 );
+            }
 
             default:
                 return null;
