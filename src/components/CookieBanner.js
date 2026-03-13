@@ -23,7 +23,7 @@ export default function CookieBanner() {
           mx: "auto",
           maxWidth: 980,
           p: { xs: 2, md: 2.4 },
-          borderRadius: 4,
+          borderRadius: 2,
           background: alpha("#FFFFFF", 0.96),
           border: `1px solid ${alpha("#0B1B24", 0.1)}`,
           boxShadow: "0 28px 60px rgba(11,27,36,0.18)",
