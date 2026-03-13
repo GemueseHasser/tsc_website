@@ -25,10 +25,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "prestart": "node scripts/generateAssetManifests.js",
-    "prebuild": "node scripts/generateAssetManifests.js",
-    "pretest": "node scripts/generateAssetManifests.js"
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [

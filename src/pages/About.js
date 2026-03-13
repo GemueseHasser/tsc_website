@@ -19,8 +19,8 @@ import {
     useTheme, Grow, Popper, ClickAwayListener,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import ImageGallery from "../components/ImageGallery";
 import ImageSlideshow from "../components/ImageSlideshow";
+import PdfGallery from "../components/PdfGallery";
 import ExternalContentNotice from "../components/ExternalContentNotice";
 import { useCookieConsent } from "../context/CookieConsentContext";
 import {
@@ -457,7 +457,7 @@ export default function About() {
         );
     };
 
-    const [pressImages, setPressImages] = useState([]);
+    const [pressArticles, setPressArticles] = useState([]);
     const [lakeImages, setLakeImages] = useState([]);
 
     const tabs = useMemo(
@@ -474,14 +474,19 @@ export default function About() {
     const [currentTab, setCurrentTab] = useState("about");
 
     useEffect(() => {
-        fetch(process.env.PUBLIC_URL + "/presse/images.json")
+        fetch(process.env.PUBLIC_URL + "resources/presse/articles.json")
             .then((res) => (res.ok ? res.json() : []))
-            .then((data) => setPressImages((data || []).map((file) => process.env.PUBLIC_URL + `/presse/${file}`)))
-            .catch(() => setPressImages([]));
+            .then((data) =>
+                setPressArticles((data || []).map((file) => ({
+                    name: file,
+                    url: process.env.PUBLIC_URL + `resources/presse/${file}`,
+                })))
+            )
+            .catch(() => setPressArticles([]));
 
-        fetch(process.env.PUBLIC_URL + "/vereinssee/images.json")
+        fetch(process.env.PUBLIC_URL + "resources/vereinssee/images.json")
             .then((res) => (res.ok ? res.json() : []))
-            .then((data) => setLakeImages((data || []).map((file) => process.env.PUBLIC_URL + `/vereinssee/${file}`)))
+            .then((data) => setLakeImages((data || []).map((file) => process.env.PUBLIC_URL + `resources/vereinssee/${file}`)))
             .catch(() => setLakeImages([]));
     }, []);
 
@@ -778,16 +783,13 @@ export default function About() {
             case "presse":
                 return (
                     <GlassCard>
-                        <SectionTitle icon={<PhotoLibrary />} title="Presse" subtitle="Galerie aus dem Ordner public/presse" />
-                        <Typography sx={{ color: "text.secondary", lineHeight: 1.85, mb: 2 }}>
-                            Hier werden automatisch alle Bilder aus dem Ordner <b>public/presse</b> als Galerie angezeigt.
-                        </Typography>
-                        {pressImages.length > 0 ? (
-                            <ImageGallery images={pressImages} altPrefix="Pressebild" />
+                        <SectionTitle icon={<PhotoLibrary />} title="Presse" subtitle="Eine Galerie von Pressemitteilungen" />
+                        {pressArticles.length > 0 ? (
+                            <PdfGallery files={pressArticles} />
                         ) : (
                             <Box sx={{ p: 2.4, borderRadius: 3, background: alpha(theme.palette.primary.main, 0.04) }}>
                                 <Typography sx={{ color: "text.secondary" }}>
-                                    Aktuell sind noch keine Pressebilder im Ordner <b>public/presse</b> vorhanden.
+                                    Aktuell sind noch keine Presseartikel hinterlegt. Bitte komm bald wieder!
                                 </Typography>
                             </Box>
                         )}
@@ -813,7 +815,7 @@ export default function About() {
                             ) : (
                                 <Box sx={{ p: 2.4, borderRadius: 3, background: alpha(theme.palette.primary.main, 0.04), mb: 2 }}>
                                     <Typography sx={{ color: "text.secondary" }}>
-                                        Aktuell sind noch keine Bilder im Ordner <b>public/vereinssee</b> vorhanden.
+                                        Aktuell sind noch keine Bilder in <b>public/vereinssee/images.json</b> eingetragen.
                                     </Typography>
                                 </Box>
                             )}
