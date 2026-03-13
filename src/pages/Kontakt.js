@@ -68,9 +68,6 @@ export default function Kontakt({ onOpenContactDialog }) {
             <IconButton href={links.facebook} target="_blank" rel="noreferrer">
               <Facebook />
             </IconButton>
-            <IconButton onClick={() => onOpenContactDialog?.("Allgemein")}>
-              <Email />
-            </IconButton>
           </Stack>
 
           <Button

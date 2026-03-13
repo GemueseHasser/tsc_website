@@ -368,7 +368,7 @@ function AppInner() {
                 <IconButton size="small" href={links.facebook} target="_blank" rel="noreferrer">
                   <Facebook fontSize="small" />
                 </IconButton>
-                <IconButton size="small" onClick={() => openKontaktDialog("Allgemein")}>
+                <IconButton size="small" href={"mailto:" + links.email} target="_blank" rel="noreferrer">
                   <Email fontSize="small" />
                 </IconButton>
               </Stack>
@@ -452,7 +452,7 @@ function AppInner() {
                 <IconButton href={links.facebook} target="_blank" rel="noreferrer">
                   <Facebook />
                 </IconButton>
-                <IconButton onClick={() => openKontaktDialog("Allgemein")}>
+                <IconButton href={"mailto:" + links.email} target="_blank" rel="noreferrer">
                   <Email />
                 </IconButton>
               </Stack>
