@@ -474,19 +474,19 @@ export default function About() {
     const [currentTab, setCurrentTab] = useState("about");
 
     useEffect(() => {
-        fetch(process.env.PUBLIC_URL + "resources/presse/articles.json")
+        fetch(process.env.PUBLIC_URL + "/resources/presse/articles.json")
             .then((res) => (res.ok ? res.json() : []))
             .then((data) =>
                 setPressArticles((data || []).map((file) => ({
                     name: file,
-                    url: process.env.PUBLIC_URL + `resources/presse/${file}`,
+                    url: process.env.PUBLIC_URL + `/resources/presse/${file}`,
                 })))
             )
             .catch(() => setPressArticles([]));
 
-        fetch(process.env.PUBLIC_URL + "resources/vereinssee/images.json")
+        fetch(process.env.PUBLIC_URL + "/resources/vereinssee/images.json")
             .then((res) => (res.ok ? res.json() : []))
-            .then((data) => setLakeImages((data || []).map((file) => process.env.PUBLIC_URL + `resources/vereinssee/${file}`)))
+            .then((data) => setLakeImages((data || []).map((file) => process.env.PUBLIC_URL + `/resources/vereinssee/${file}`)))
             .catch(() => setLakeImages([]));
     }, []);
 

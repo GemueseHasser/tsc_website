@@ -98,9 +98,29 @@ function PageLoader() {
 
 function AppInner() {
   const getPageFromHash = () => {
-    const hash = window.location.hash.replace("#", "");
+    const rawHash = window.location.hash.replace(/^#/, "");
+    const hash = decodeURIComponent(rawHash).trim();
+
     if (!hash) return "Startseite";
-    return hash.charAt(0).toUpperCase() + hash.slice(1);
+
+    switch (hash.toLowerCase()) {
+      case "startseite":
+        return "Startseite";
+      case "über uns":
+        return "Über uns";
+      case "training":
+        return "Training";
+      case "ausbildung":
+        return "Ausbildung";
+      case "kontakt":
+        return "Kontakt";
+      case "impressum":
+        return "Impressum";
+      case "datenschutz":
+        return "Datenschutz";
+      default:
+        return "Startseite";
+    }
   };
 
   const [activePage, setActivePage] = useState(() => getPageFromHash());
@@ -168,7 +188,7 @@ function AppInner() {
   const handleNavClick = (item) => {
     if (item !== activePage) setActivePage(item);
     setMobileOpen(false);
-    window.history.pushState(null, "", `#${item.toLowerCase()}`);
+    window.history.pushState(null, "", `#${encodeURIComponent(item.toLowerCase())}`);
   };
 
   const openKontaktDialog = (initialType = "Allgemein") => {
