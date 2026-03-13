@@ -363,8 +363,16 @@ function AppInner() {
               ))}
 
               <ListItem disablePadding>
-                <ListItemButton onClick={() => openKontaktDialog("Allgemein")} sx={{ borderRadius: 2, my: 0.5 }}>
-                  <ListItemText primary="Anfragen" primaryTypographyProps={{ sx: { fontWeight: 700 } }} />
+                <ListItemButton
+                    variant="outlined"
+                    endIcon={<ArrowOutward />}
+                    onClick={() => openKontaktDialog("Allgemein")}
+                    sx={{
+                      borderColor: alpha("#0B1B24", 0.16),
+                      "&:hover": { borderColor: alpha("#0B1B24", 0.26), background: alpha("#0B1B24", 0.03) },
+                    }}
+                >
+                  Anfragen
                 </ListItemButton>
               </ListItem>
             </List>

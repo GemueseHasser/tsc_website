@@ -691,7 +691,7 @@ export default function About() {
 
             case "mitgliedschaft":
                 return (
-                    <Box spacing={2}>
+                    <Stack spacing={2}>
                         <GlassCard>
                             <SectionTitle icon={<Savings />} title="Mitgliedschaft" subtitle="Training, Community & Vorteile" />
                             <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1.2fr 0.8fr" }, gap: 16 }}>
@@ -784,7 +784,7 @@ export default function About() {
                                 />
                             </Box>
                         </GlassCard>
-                    </Box>
+                    </Stack>
                 );
 
             case "presse":
