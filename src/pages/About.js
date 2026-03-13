@@ -465,8 +465,8 @@ export default function About() {
             { label: "Über uns", key: "about", icon: <HistoryEdu /> },
             { label: "Ansprechpartner", key: "ansprechpartner", icon: <Badge /> },
             { label: "Mitgliedschaft", key: "mitgliedschaft", icon: <Savings /> },
-            { label: "Presse", key: "presse", icon: <PhotoLibrary /> },
             { label: "Vereinssee", key: "vereinssee", icon: <Waves /> },
+            { label: "Presse", key: "presse", icon: <PhotoLibrary /> },
         ],
         []
     );
@@ -787,22 +787,6 @@ export default function About() {
                     </Stack>
                 );
 
-            case "presse":
-                return (
-                    <GlassCard>
-                        <SectionTitle icon={<PhotoLibrary />} title="Presse" subtitle="Eine Galerie von Pressemitteilungen" />
-                        {pressArticles.length > 0 ? (
-                            <PdfGallery files={pressArticles} />
-                        ) : (
-                            <Box sx={{ p: 2.4, borderRadius: 3, background: alpha(theme.palette.primary.main, 0.04) }}>
-                                <Typography sx={{ color: "text.secondary" }}>
-                                    Aktuell sind noch keine Presseartikel hinterlegt. Bitte komm bald wieder!
-                                </Typography>
-                            </Box>
-                        )}
-                    </GlassCard>
-                );
-
             case "vereinssee": {
                 const lakeQuery = encodeURIComponent("Gut Widdauen 2, 40764 Langenfeld");
                 const lakeMapUrl = `https://www.google.com/maps?q=${lakeQuery}&output=embed`;
@@ -873,6 +857,22 @@ export default function About() {
                     </Stack>
                 );
             }
+
+            case "presse":
+                return (
+                    <GlassCard>
+                        <SectionTitle icon={<PhotoLibrary />} title="Presse" subtitle="Eine Galerie von Pressemitteilungen" />
+                        {pressArticles.length > 0 ? (
+                            <PdfGallery files={pressArticles} />
+                        ) : (
+                            <Box sx={{ p: 2.4, borderRadius: 3, background: alpha(theme.palette.primary.main, 0.04) }}>
+                                <Typography sx={{ color: "text.secondary" }}>
+                                    Aktuell sind noch keine Presseartikel hinterlegt. Bitte komm bald wieder!
+                                </Typography>
+                            </Box>
+                        )}
+                    </GlassCard>
+                );
 
             default:
                 return null;
