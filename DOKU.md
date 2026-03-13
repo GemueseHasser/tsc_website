@@ -1,4 +1,4 @@
-# Verwaltungsanleitung für die TSC-Wülfrath-Website
+# Dokumentation für die TSC-Wülfrath-Website
 
 Diese Anleitung richtet sich an Personen, die die Website später **inhaltlich pflegen** möchten – auch ohne tiefe React-Kenntnisse.
 
