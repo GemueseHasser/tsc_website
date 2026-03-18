@@ -168,7 +168,7 @@ export default function Start({ onNavigate }) {
               {content.slogan}
             </Typography>
 
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 1, md: 1.2 }}>
               <Button
                 variant="outlined"
                 sx={{

@@ -32,6 +32,8 @@ export default function KontaktDialog({ open, onClose, onNavigate, initialType =
   const [form, setForm] = useState(() => initialForm(initialType));
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [openedAt, setOpenedAt] = useState(null);
 
   const isAdult = Number(form.age) >= 18;
@@ -42,6 +44,8 @@ export default function KontaktDialog({ open, onClose, onNavigate, initialType =
       setOpenedAt(Date.now());
       setErrors({});
       setSuccess(false);
+      setSubmitError("");
+      setIsSubmitting(false);
       setForm(initialForm(initialType));
     }
   }, [open, initialType]);
@@ -68,6 +72,7 @@ export default function KontaktDialog({ open, onClose, onNavigate, initialType =
     if (!form.name.trim()) newErrors.name = "Name erforderlich";
     if (!form.age) newErrors.age = "Alter erforderlich";
     if (!form.email.trim()) newErrors.email = "E-Mail erforderlich";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) newErrors.email = "Ungültige E-Mail-Adresse";
     if (!form.message.trim()) newErrors.message = "Bitte Nachricht eingeben";
     if (!form.consent) newErrors.consent = "Bitte bestätige die Datenschutzerklärung.";
 
@@ -77,21 +82,58 @@ export default function KontaktDialog({ open, onClose, onNavigate, initialType =
 
   const resetAndClose = () => {
     setSuccess(false);
+    setSubmitError("");
+    setIsSubmitting(false);
     setForm(initialForm(initialType));
     onClose?.();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validate()) return;
     if (form.website) return;
-    if (openedAt && Date.now() - openedAt < 4000) return;
+    if (openedAt && Date.now() - openedAt < 4000) {
+      setSubmitError("Bitte warte einen Moment und versuche es dann erneut.");
+      return;
+    }
 
-    console.log("Form valid:", form);
-    setSuccess(true);
+    setIsSubmitting(true);
+    setSubmitError("");
 
-    window.setTimeout(() => {
-      resetAndClose();
-    }, 2200);
+    try {
+      const response = await fetch(`${window.location.origin}/api/send-email.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          ...form,
+          name: form.name.trim(),
+          age: String(form.age).trim(),
+          email: form.email.trim(),
+          message: form.message.trim(),
+          startedAt: openedAt,
+        }),
+      });
+
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        if (payload?.errors && typeof payload.errors === "object") {
+          setErrors(payload.errors);
+        }
+        throw new Error(payload?.message || "Die Anfrage konnte nicht versendet werden.");
+      }
+
+      setSuccess(true);
+      window.setTimeout(() => {
+        resetAndClose();
+      }, 2200);
+    } catch (error) {
+      setSubmitError(error.message || "Die Anfrage konnte nicht versendet werden.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -210,6 +252,12 @@ export default function KontaktDialog({ open, onClose, onNavigate, initialType =
                         </Typography>
                     )}
 
+                    {submitError && (
+                        <Typography variant="body2" sx={{ color: "error.main" }}>
+                          {submitError}
+                        </Typography>
+                    )}
+
                     <TextField
                         name="website"
                         value={form.website}
@@ -227,9 +275,10 @@ export default function KontaktDialog({ open, onClose, onNavigate, initialType =
                       variant="contained"
                       disableElevation
                       onClick={handleSubmit}
+                      disabled={isSubmitting}
                       sx={{ background: "linear-gradient(135deg, #063A52, #27C2D3)", px: 3 }}
                   >
-                    Anfrage senden
+                    {isSubmitting ? "Wird gesendet…" : "Anfrage senden"}
                   </Button>
                 </DialogActions>
               </motion.div>

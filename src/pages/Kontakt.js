@@ -50,7 +50,7 @@ export default function Kontakt({ onOpenContactDialog }) {
         </Typography>
       </Box>
 
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", lg: "1.05fr 0.95fr" }, gap: 3, alignItems: "stretch" }}>
+      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", lg: "1.05fr 0.95fr" }, gap: { xs: 2, lg: 3 }, alignItems: "stretch" }}>
         <Paper component={motion.div} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} elevation={0} sx={cardSx}>
           <Typography variant="h4" sx={{ mb: 1.5 }}>
             Direkt erreichbar
@@ -61,7 +61,7 @@ export default function Kontakt({ onOpenContactDialog }) {
             oder per E-Mail. Alternativ erreichst du uns über Instagram oder Facebook.
           </Typography>
 
-          <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+          <Stack direction="row" spacing={{ xs: 0.75, md: 1 }} sx={{ mb: 2 }}>
             <IconButton href={links.instagram} target="_blank" rel="noreferrer">
               <Instagram />
             </IconButton>
@@ -146,7 +146,7 @@ export default function Kontakt({ onOpenContactDialog }) {
           elevation={0}
           sx={{ ...cardSx, display: "flex", flexDirection: "column" }}
         >
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+          <Stack direction="row" spacing={{ xs: 0.75, md: 1 }} alignItems="center" sx={{ mb: 1 }}>
             <Box
               sx={{
                 width: 40,

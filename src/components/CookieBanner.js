@@ -39,7 +39,7 @@ export default function CookieBanner() {
             </Typography>
           </Box>
 
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.1}>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 1, md: 1.1 }}>
             <Button variant="outlined" onClick={saveNecessaryOnly} sx={{ borderColor: alpha("#0B1B24", 0.18) }}>
               Nur notwendige Cookies
             </Button>

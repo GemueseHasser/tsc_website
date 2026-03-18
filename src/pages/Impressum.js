@@ -52,7 +52,7 @@ export default function Impressum() {
                     backdropFilter: "blur(12px)",
                 }}
             >
-                <Stack direction={{ xs: "column", md: "row" }} spacing={1.1} sx={{ mb: 2 }}>
+                <Stack direction={{ xs: "column", md: "row" }} spacing={{ xs: 1, md: 1.1 }} sx={{ mb: 2 }}>
                     <Chip icon={<Groups />} label="Verein" />
                     <Chip icon={<Gavel />} label="Rechtliche Angaben" />
                     <Chip icon={<AccountBalance />} label="Bankverbindung" />

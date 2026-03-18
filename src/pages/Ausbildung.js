@@ -66,7 +66,7 @@ function PillTabs({ value, onChange, tabs }) {
                         overflowX: "auto !important",
                         WebkitOverflowScrolling: "touch",
                     },
-                    "& .MuiTabs-flexContainer": { gap: 6, flexWrap: "nowrap" },
+                    "& .MuiTabs-flexContainer": { gap: { xs: 1, md: 2 }, flexWrap: "nowrap" },
                 }}
             >
                 {tabs.map((t) => (
@@ -150,12 +150,12 @@ export default function Ausbildung() {
     const SectionTitle = ({ icon, title, chips }) => (
         <Stack
             direction={{ xs: "column", sm: "row" }}
-            spacing={1.2}
+            spacing={{ xs: 1, md: 1.2 }}
             alignItems={{ xs: "flex-start", sm: "center" }}
             justifyContent="space-between"
             sx={{ mb: 1 }}
         >
-            <Stack direction="row" spacing={1.1} alignItems="center">
+            <Stack direction="row" spacing={{ xs: 1, md: 1.1 }} alignItems="center">
                 <Box
                     sx={{
                         width: 42,
@@ -175,7 +175,7 @@ export default function Ausbildung() {
             </Stack>
 
             {chips && (
-                <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
+                <Stack direction="row" spacing={{ xs: 0.75, md: 1 }} sx={{ flexWrap: "wrap" }}>
                     {chips.map((c, idx) => (
                         <Chip key={idx} size="small" variant="outlined" label={c} />
                     ))}
@@ -196,7 +196,7 @@ export default function Ausbildung() {
                                 hin zu anspruchsvollen CMAS-Stufen inklusive Spezialkursen. Theorie und Praxis planen unsere
                                 Tauchlehrerinnen und Tauchlehrer individuell und nach hohen Standards.
                             </Typography>
-                            <Stack direction="row" spacing={1} rowGap={1} sx={{ flexWrap: "wrap", mt: 2 }}>
+                            <Stack direction="row" spacing={{ xs: 0.75, md: 1 }} rowGap={1} sx={{ flexWrap: "wrap", mt: 2 }}>
                                 <Chip icon={<ChildCare />} label="ab 8 Jahren" />
                                 <Chip icon={<ScubaDiving />} label="CMAS* bis ***" />
                                 <Chip icon={<AutoAwesome />} label="Sonderbrevets" />
@@ -298,7 +298,7 @@ export default function Ausbildung() {
                             </List>
                         </GlassCard>
 
-                        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 16 }}>
+                        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: { xs: 2, md: 3 } }}>
                             <GlassCard>
                                 <SectionTitle icon={<School />} title="Theorie" />
                                 <List dense>
@@ -375,7 +375,7 @@ export default function Ausbildung() {
                             </List>
                         </GlassCard>
 
-                        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 16 }}>
+                        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: { xs: 2, md: 3 } }}>
                             <GlassCard>
                                 <SectionTitle icon={<School />} title="Theorie" />
                                 <List dense>

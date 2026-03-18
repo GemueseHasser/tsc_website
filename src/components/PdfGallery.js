@@ -65,7 +65,7 @@ export default function PdfGallery({ files }) {
               />
             </Box>
 
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={1} sx={{ p: 2 }}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 0.75, md: 1 }} sx={{ p: 2 }}>
               <Button
                 component="a"
                 href={viewerUrl}

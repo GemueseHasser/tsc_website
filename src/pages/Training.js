@@ -42,13 +42,13 @@ export default function Training({ onOpenContactDialog }) {
                     backdropFilter: "blur(12px)",
                 }}
             >
-                <Stack direction={{ xs: "column", md: "row" }} spacing={1.2} sx={{ mb: 2 }}>
+                <Stack direction={{ xs: "column", md: "row" }} spacing={{ xs: 1, md: 1.2 }} sx={{ mb: 2 }}>
                     <Chip icon={<Pool />} label="Wülfrather Wasserwelt" />
                     <Chip icon={<LocationOn />} label="Wülfrath" />
                     <Chip icon={<AccessTime />} label="Wasserzeiten" />
                 </Stack>
 
-                <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 16 }}>
+                <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: { xs: 2, md: 3 } }}>
                     <Box
                         sx={{
                             p: 2.2,
@@ -96,7 +96,7 @@ export default function Training({ onOpenContactDialog }) {
                         Ausrüstung stellen wir kostenlos.
                     </Typography>
 
-                    <Stack direction={{ xs: "column", md: "row" }} spacing={1.1} sx={{ mb: 2 }}>
+                    <Stack direction={{ xs: "column", md: "row" }} spacing={{ xs: 1, md: 1.1 }} sx={{ mb: 2 }}>
                         <Chip icon={<ScubaDiving />} label="Kostenlose Ausrüstung" />
                         <Chip icon={<CheckCircle />} label="Fachkundige Begleitung" />
                         <Chip icon={<AccessTime />} label="Zu Trainingszeiten möglich" />

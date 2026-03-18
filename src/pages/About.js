@@ -68,7 +68,7 @@ function PillTabs({ value, onChange, tabs }) {
                         overflowX: "auto !important",
                         WebkitOverflowScrolling: "touch",
                     },
-                    "& .MuiTabs-flexContainer": { gap: 6, flexWrap: "nowrap" },
+                    "& .MuiTabs-flexContainer": { gap: { xs: 1, md: 2 }, flexWrap: "nowrap" },
                 }}
             >
                 {tabs.map((t) => (
@@ -302,7 +302,7 @@ export default function About() {
                             outline: "none",
                         }}
                     >
-                        <Stack direction="row" spacing={1.2} alignItems="center">
+                        <Stack direction="row" spacing={{ xs: 1, md: 1.2 }} alignItems="center">
                             <AvatarCircle
                                 src={src}
                                 alt={name}
@@ -412,7 +412,7 @@ export default function About() {
 
                                         {/* Chips oder Rolle */}
                                         {chips.length > 0 ? (
-                                            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ mt: 0.7 }}>
+                                            <Stack direction="row" spacing={{ xs: 0.75, md: 1 }} useFlexGap flexWrap="wrap" sx={{ mt: 0.7 }}>
                                                 {chips.map((c) => (
                                                     <Chip
                                                         key={c}
@@ -494,7 +494,7 @@ export default function About() {
     if (!content) return <div style={{ padding: 16 }}>Lade Inhalte…</div>;
 
     const SectionTitle = ({ icon, title, subtitle }) => (
-        <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1.2 }}>
+        <Stack direction="row" spacing={{ xs: 1, md: 1.2 }} alignItems="center" sx={{ mb: 1.2 }}>
             <Box
                 sx={{
                     width: 42,
@@ -538,7 +538,7 @@ export default function About() {
                                 fundierte Ausbildung, Spaß am Sport und respektvollen Umgang mit der Natur steht.
                             </Typography>
                             <Divider sx={{ my: 2 }} />
-                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 16 }}>
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: { xs: 2, md: 3 } }}>
                                 <Box
                                     sx={{
                                         p: 2.2,
@@ -572,7 +572,7 @@ export default function About() {
 
                         <GlassCard>
                             <SectionTitle icon={<HistoryEdu />} title="Kurzchronik" subtitle="Ein paar Meilensteine" />
-                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 16 }}>
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: { xs: 2, md: 3 } }}>
                                 {[
                                     { year: "1972", text: "Gründung durch zehn Taucher in Wülfrath." },
                                     { year: "1973", text: "Eintragung als TSC Niederberg ins Vereinsregister." },
@@ -655,7 +655,7 @@ export default function About() {
                     <Stack spacing={2}>
                         <GlassCard>
                             <SectionTitle icon={<Badge />} title="Vorstand" subtitle="Deine Ansprechpartner im Verein" />
-                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 16 }}>
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: { xs: 2, md: 3 } }}>
                                 {vorstand.map((p) => (
                                     <PersonCard key={p.key} name={p.name} role={p.role} imgKey={p.key} icon={p.icon} />
                                 ))}
@@ -668,7 +668,7 @@ export default function About() {
                                 sx={{
                                     display: "grid",
                                     gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-                                    gap: 16,
+                                    gap: { xs: 2, md: 3 },
                                 }}
                             >
                                 {trainer.map((p) => (
@@ -679,7 +679,7 @@ export default function About() {
                             <Divider sx={{ my: 2.4 }} />
 
                             <SectionTitle icon={<Build />} title="Gerätewarte" subtitle="Technik & Material" />
-                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 16 }}>
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: { xs: 2, md: 3 } }}>
                                 {geraetewarte.map((p) => (
                                     <PersonCard key={p.key} name={p.name} role={p.role} imgKey={p.key} icon={p.icon} />
                                 ))}
@@ -694,7 +694,7 @@ export default function About() {
                     <Stack spacing={2}>
                         <GlassCard>
                             <SectionTitle icon={<Savings />} title="Mitgliedschaft" subtitle="Training, Community & Vorteile" />
-                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1.2fr 0.8fr" }, gap: 16 }}>
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1.2fr 0.8fr" }, gap: { xs: 2, md: 3 } }}>
                                 <Box
                                     sx={{
                                         p: 2.2,
