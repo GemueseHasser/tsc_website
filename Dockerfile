@@ -7,6 +7,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY public ./public
+COPY scripts ./scripts
 COPY src ./src
 
 ARG REACT_APP_HOST_IP=126.0.82.200
@@ -15,10 +16,17 @@ ENV REACT_APP_HOST_IP=$REACT_APP_HOST_IP
 RUN npm run build
 
 # --- runtime stage ---
-FROM nginx:1.27-alpine
+FROM php:8.2-apache
 
-COPY --from=build /app/build /usr/share/nginx/html
+WORKDIR /var/www/html
 
-RUN printf 'server {\n  listen 80;\n  server_name _;\n  root /usr/share/nginx/html;\n  index index.html;\n  location / {\n    try_files $uri $uri/ /index.html;\n  }\n}\n' > /etc/nginx/conf.d/default.conf
+# Apache Rewrite aktivieren für React-Routing
+RUN a2enmod rewrite
+
+# Build-Dateien ins Webroot
+COPY --from=build /app/build/ /var/www/html/
+
+# Falls du eine .htaccess nutzt, wird sie mitkopiert,
+# sofern sie im build/public enthalten ist.
 
 EXPOSE 80
