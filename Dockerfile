@@ -7,6 +7,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY public ./public
+COPY deploy ./deploy
 COPY scripts ./scripts
 COPY src ./src
 
