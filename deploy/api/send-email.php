@@ -20,25 +20,32 @@ function load_env_file(string $path): array {
 
     $vars = [];
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
     foreach ($lines as $line) {
         $line = trim($line);
+
         if ($line === '' || strpos($line, '#') === 0) {
             continue;
         }
+
         $parts = explode('=', $line, 2);
         if (count($parts) !== 2) {
             continue;
         }
+
         $key = trim($parts[0]);
         $value = trim($parts[1]);
         $value = trim($value, "\"'");
+
         $vars[$key] = $value;
     }
+
     return $vars;
 }
 
 function env_value(string $key, ?string $default = null): ?string {
     static $vars = null;
+
     if ($vars === null) {
         $baseDir = dirname(__DIR__);
         $vars = [];
@@ -64,6 +71,7 @@ function env_value(string $key, ?string $default = null): ?string {
     if ($value !== false) {
         return $value;
     }
+
     return $vars[$key] ?? $default;
 }
 
@@ -75,18 +83,43 @@ function sanitize_header_value(string $value): string {
     return trim(str_replace(["\r", "\n"], ' ', $value));
 }
 
+function e(string $value): string {
+    return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
+function format_message_html(string $message): string {
+    $safe = e(normalize_line_breaks($message));
+    return nl2br($safe, false);
+}
+
+function build_subject(string $type, string $name): string {
+    $typeMap = [
+        'Allgemein' => 'Neue allgemeine Anfrage',
+        'Probetraining' => 'Neue Anfrage zum Probetraining',
+        'Schnuppertauchen' => 'Neue Anfrage zum Schnuppertauchen',
+    ];
+
+    $prefix = $typeMap[$type] ?? 'Neue Anfrage';
+    return $prefix . ' von ' . $name;
+}
+
 function smtp_expect($socket, array $expectedCodes): string {
     $response = '';
+
     while (($line = fgets($socket, 515)) !== false) {
         $response .= $line;
+
         if (preg_match('/^([0-9]{3})\s/', $line, $matches)) {
             $code = (int)$matches[1];
+
             if (in_array($code, $expectedCodes, true)) {
                 return $response;
             }
+
             throw new RuntimeException('SMTP-Fehler: ' . trim($response));
         }
     }
+
     throw new RuntimeException('Keine gültige SMTP-Antwort erhalten.');
 }
 
@@ -105,6 +138,7 @@ function smtp_send_mail(array $config, string $fromEmail, string $toEmail, strin
 
     $remoteHost = ($encryption === 'ssl' ? 'ssl://' : '') . $host;
     $socket = @stream_socket_client($remoteHost . ':' . $port, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT);
+
     if (!$socket) {
         throw new RuntimeException('SMTP-Verbindung fehlgeschlagen: ' . $errstr . ' (' . $errno . ')');
     }
@@ -114,13 +148,16 @@ function smtp_send_mail(array $config, string $fromEmail, string $toEmail, strin
     try {
         smtp_expect($socket, [220]);
         $hostname = gethostname() ?: 'localhost';
+
         smtp_command($socket, 'EHLO ' . $hostname, [250]);
 
         if ($encryption === 'tls') {
             smtp_command($socket, 'STARTTLS', [220]);
+
             if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
                 throw new RuntimeException('TLS konnte nicht aktiviert werden.');
             }
+
             smtp_command($socket, 'EHLO ' . $hostname, [250]);
         }
 
@@ -136,6 +173,7 @@ function smtp_send_mail(array $config, string $fromEmail, string $toEmail, strin
 
         $messageData = preg_replace("/(?<!\r)\n/", "\r\n", $rawMessage) ?? $rawMessage;
         $messageData = str_replace("\r\n.", "\r\n..", $messageData);
+
         fwrite($socket, $messageData . "\r\n.\r\n");
         smtp_expect($socket, [250]);
         smtp_command($socket, 'QUIT', [221]);
@@ -146,6 +184,7 @@ function smtp_send_mail(array $config, string $fromEmail, string $toEmail, strin
 
 $rawInput = file_get_contents('php://input');
 $data = json_decode($rawInput, true);
+
 if (!is_array($data)) {
     json_response(400, ['ok' => false, 'message' => 'Ungültige Anfrage.']);
 }
@@ -165,27 +204,34 @@ if ($honeypot !== '') {
 
 $minSeconds = max(2, (int)(env_value('MIN_FORM_FILL_SECONDS', '4') ?? '4'));
 $nowMillis = (int)round(microtime(true) * 1000);
+
 if ($startedAt <= 0 || (($nowMillis - $startedAt) / 1000) < $minSeconds) {
     json_response(429, ['ok' => false, 'message' => 'Das Formular wurde zu schnell abgesendet. Bitte versuche es erneut.']);
 }
 
 $errors = [];
+
 if ($name === '' || mb_strlen($name) > 120) {
     $errors['name'] = 'Bitte einen gültigen Namen eingeben.';
 }
+
 if ($age === '' || !ctype_digit($age) || (int)$age < 8 || (int)$age > 120) {
     $errors['age'] = 'Bitte ein gültiges Alter eingeben.';
 }
+
 if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 190) {
     $errors['email'] = 'Bitte eine gültige E-Mail-Adresse eingeben.';
 }
+
 $allowedTypes = ['Allgemein', 'Probetraining', 'Schnuppertauchen'];
 if (!in_array($type, $allowedTypes, true)) {
     $errors['type'] = 'Ungültige Anfrageart.';
 }
+
 if ($message === '' || mb_strlen($message) < 10 || mb_strlen($message) > 5000) {
     $errors['message'] = 'Bitte eine Nachricht mit mindestens 10 Zeichen eingeben.';
 }
+
 if (!$consent) {
     $errors['consent'] = 'Die Datenschutzerklärung muss bestätigt werden.';
 }
@@ -203,7 +249,6 @@ $config = [
     'from_address' => env_value('MAIL_FROM_ADDRESS', ''),
     'from_name' => env_value('MAIL_FROM_NAME', 'Website Kontaktformular'),
     'to_address' => env_value('MAIL_TO_ADDRESS', ''),
-    'subject_prefix' => env_value('MAIL_SUBJECT_PREFIX', '[Kontaktformular]'),
 ];
 
 foreach (['host', 'port', 'from_address', 'to_address'] as $requiredKey) {
@@ -219,29 +264,132 @@ if (($config['username'] ?? '') !== '' && ($config['password'] ?? '') === '') {
 $fromAddress = sanitize_header_value($config['from_address']);
 $toAddress = sanitize_header_value($config['to_address']);
 $fromName = sanitize_header_value($config['from_name']);
-$subject = sanitize_header_value(trim($config['subject_prefix'] . ' ' . $type . ' von ' . $name));
 $replyTo = sanitize_header_value($email);
+$subject = sanitize_header_value(build_subject($type, $name));
 
-$bodyLines = [
-    'Neue Anfrage über das Kontaktformular der Website',
+$textBody = implode("\n", [
+    $subject,
+    str_repeat('=', mb_strlen($subject)),
+    '',
+    'Es ist eine neue Anfrage über das Kontaktformular eingegangen.',
     '',
     'Name: ' . $name,
     'Alter: ' . $age,
     'E-Mail: ' . $email,
-    'Art der Anfrage: ' . $type,
+    'Anfrageart: ' . $type,
     '',
     'Nachricht:',
     normalize_line_breaks($message),
-];
+    '',
+    'Direkt antworten: ' . $email,
+]);
 
-$textBody = implode("\n", $bodyLines);
+$replyMailTo = 'mailto:' . e($email);
+$replyButtonMailTo = 'mailto:' . e($email) . '?subject=' . rawurlencode('Re: ' . $subject);
+
+$htmlBody = '<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>' . e($subject) . '</title>
+</head>
+<body style="margin:0; padding:0; background:#eaf1f4; font-family:Arial, Helvetica, sans-serif; color:#16313a;">
+  <div style="margin:0; padding:32px 16px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+      <tr>
+        <td align="center">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:720px; border-collapse:collapse;">
+            <tr>
+              <td style="padding:0 0 14px 0; text-align:center; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#4d6a73;">
+                TSC Wülfrath
+              </td>
+            </tr>
+
+            <tr>
+              <td style="background:linear-gradient(135deg, #0f5f67 0%, #0a7c86 100%); border-radius:22px 22px 0 0; padding:34px 32px 28px 32px; color:#ffffff;">
+                <div style="font-size:13px; line-height:1.4; letter-spacing:0.08em; text-transform:uppercase; opacity:0.9;">
+                  Kontaktformular
+                </div>
+                <h1 style="margin:10px 0 0 0; font-size:28px; line-height:1.25; font-weight:700; color:#ffffff;">
+                  ' . e($subject) . '
+                </h1>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="background:#ffffff; border-left:1px solid #d8e4e8; border-right:1px solid #d8e4e8; padding:30px 32px 8px 32px;">
+                <p style="margin:0 0 24px 0; font-size:16px; line-height:1.7; color:#29454d;">
+                  Über das Kontaktformular der Website ist eine neue Anfrage eingegangen.
+                </p>
+
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate; border-spacing:0; background:#f7fafb; border:1px solid #dbe7ea; border-radius:16px; overflow:hidden;">
+                  <tr>
+                    <td style="padding:14px 18px; width:165px; font-size:14px; font-weight:700; color:#486169; border-bottom:1px solid #dbe7ea;">Name</td>
+                    <td style="padding:14px 18px; font-size:15px; color:#16313a; border-bottom:1px solid #dbe7ea;">' . e($name) . '</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:14px 18px; width:165px; font-size:14px; font-weight:700; color:#486169; border-bottom:1px solid #dbe7ea;">Alter</td>
+                    <td style="padding:14px 18px; font-size:15px; color:#16313a; border-bottom:1px solid #dbe7ea;">' . e($age) . '</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:14px 18px; width:165px; font-size:14px; font-weight:700; color:#486169; border-bottom:1px solid #dbe7ea;">E-Mail</td>
+                    <td style="padding:14px 18px; font-size:15px; color:#16313a; border-bottom:1px solid #dbe7ea;">
+                      <a href="' . $replyMailTo . '" style="color:#0a7c86; text-decoration:none; font-weight:700;">' . e($email) . '</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding:14px 18px; width:165px; font-size:14px; font-weight:700; color:#486169;">Anfrageart</td>
+                    <td style="padding:14px 18px; font-size:15px; color:#16313a;">' . e($type) . '</td>
+                  </tr>
+                </table>
+
+                <div style="height:26px; line-height:26px;">&nbsp;</div>
+
+                <div style="margin:0 0 10px 0; font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#5b747c;">
+                  Nachricht
+                </div>
+
+                <div style="background:#fcfefe; border:1px solid #dbe7ea; border-left:5px solid #0a7c86; border-radius:16px; padding:20px 22px; font-size:16px; line-height:1.75; color:#18343c;">
+                  ' . format_message_html($message) . '
+                </div>
+
+                <div style="height:28px; line-height:28px;">&nbsp;</div>
+
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                  <tr>
+                    <td style="border-radius:12px; background:#0a7c86;">
+                      <a href="' . $replyButtonMailTo . '" style="display:inline-block; padding:14px 22px; font-size:15px; font-weight:700; color:#ffffff; text-decoration:none; border-radius:12px;">
+                        Direkt auf diese Anfrage antworten
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+
+                <div style="height:26px; line-height:26px;">&nbsp;</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="background:#f7fafb; border:1px solid #d8e4e8; border-top:none; border-radius:0 0 22px 22px; padding:18px 32px 22px 32px; font-size:13px; line-height:1.6; color:#66818a;">
+                Diese Nachricht wurde automatisch über das Kontaktformular der Website versendet.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>';
+
+$boundary = '=_Part_' . bin2hex(random_bytes(12));
 
 $headers = [
     'From: ' . mb_encode_mimeheader($fromName, 'UTF-8') . ' <' . $fromAddress . '>',
     'Reply-To: ' . $replyTo,
     'MIME-Version: 1.0',
-    'Content-Type: text/plain; charset=UTF-8',
-    'Content-Transfer-Encoding: 8bit',
+    'Content-Type: multipart/alternative; boundary="' . $boundary . '"',
     'Date: ' . date(DATE_RFC2822),
 ];
 
@@ -249,7 +397,15 @@ $rawMessage = 'Subject: ' . mb_encode_mimeheader($subject, 'UTF-8') . "\r\n"
     . 'To: <' . $toAddress . ">\r\n"
     . implode("\r\n", $headers)
     . "\r\n\r\n"
-    . $textBody;
+    . '--' . $boundary . "\r\n"
+    . "Content-Type: text/plain; charset=UTF-8\r\n"
+    . "Content-Transfer-Encoding: 8bit\r\n\r\n"
+    . $textBody . "\r\n\r\n"
+    . '--' . $boundary . "\r\n"
+    . "Content-Type: text/html; charset=UTF-8\r\n"
+    . "Content-Transfer-Encoding: 8bit\r\n\r\n"
+    . $htmlBody . "\r\n\r\n"
+    . '--' . $boundary . '--';
 
 try {
     smtp_send_mail($config, $fromAddress, $toAddress, $rawMessage);
