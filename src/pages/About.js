@@ -5,8 +5,6 @@ import {
     Box,
     Typography,
     Paper,
-    Tabs,
-    Tab,
     Stack,
     Divider,
     List,
@@ -22,6 +20,7 @@ import { motion } from "framer-motion";
 import ImageSlideshow from "../components/ImageSlideshow";
 import PdfGallery from "../components/PdfGallery";
 import ExternalContentNotice from "../components/ExternalContentNotice";
+import ResponsiveSectionNav from "../components/ResponsiveSectionNav";
 import { useCookieConsent } from "../context/CookieConsentContext";
 import {
     HistoryEdu,
@@ -35,67 +34,6 @@ import {
     School,
     Build,
 } from "@mui/icons-material";
-
-function PillTabs({ value, onChange, tabs }) {
-    const theme = useTheme();
-    return (
-        <Box
-            sx={{
-                display: "flex",
-                width: "100%",
-                maxWidth: "100%",
-                p: 0.6,
-                borderRadius: 999,
-                border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
-                background: alpha("#fff", 0.75),
-                backdropFilter: "blur(12px)",
-                boxShadow: "0 10px 24px rgba(11,27,36,0.07)",
-                overflow: "hidden",
-            }}
-        >
-            <Tabs
-                value={value}
-                onChange={onChange}
-                variant="scrollable"
-                scrollButtons="auto"
-                allowScrollButtonsMobile
-                TabIndicatorProps={{ style: { display: "none" } }}
-                sx={{
-                    width: "100%",
-                    minWidth: 0,
-                    minHeight: 44,
-                    "& .MuiTabs-scroller": {
-                        overflowX: "auto !important",
-                        WebkitOverflowScrolling: "touch",
-                    },
-                    "& .MuiTabs-flexContainer": { gap: { xs: 1, md: 2 }, flexWrap: "nowrap" },
-                }}
-            >
-                {tabs.map((t) => (
-                    <Tab
-                        key={t.key}
-                        value={t.key}
-                        label={t.label}
-                        icon={t.icon}
-                        iconPosition="start"
-                        sx={{
-                            minHeight: 44,
-                            px: 1.6,
-                            borderRadius: 999,
-                            fontWeight: 750,
-                            color: "text.primary",
-                            "&.Mui-selected": {
-                                color: "white",
-                                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                                boxShadow: `0 14px 34px ${alpha(theme.palette.primary.main, 0.22)}`,
-                            },
-                        }}
-                    />
-                ))}
-            </Tabs>
-        </Box>
-    );
-}
 
 function GlassCard({ children, sx }) {
     const theme = useTheme();
@@ -462,11 +400,11 @@ export default function About() {
 
     const tabs = useMemo(
         () => [
-            { label: "Über uns", key: "about", icon: <HistoryEdu /> },
-            { label: "Ansprechpartner", key: "ansprechpartner", icon: <Badge /> },
-            { label: "Mitgliedschaft", key: "mitgliedschaft", icon: <Savings /> },
-            { label: "Vereinssee", key: "vereinssee", icon: <Waves /> },
-            { label: "Presse", key: "presse", icon: <PhotoLibrary /> },
+            { label: "Über uns", key: "about", icon: <HistoryEdu />, mobileDescription: "Geschichte, Haltung und die wichtigsten Infos zum Verein." },
+            { label: "Ansprechpartner", key: "ansprechpartner", icon: <Badge />, mobileDescription: "Vorstand, Trainer und weitere Kontakte auf einen Blick." },
+            { label: "Mitgliedschaft", key: "mitgliedschaft", icon: <Savings />, mobileDescription: "Mitglied werden, Beiträge und Vorteile kompakt erklärt." },
+            { label: "Vereinssee", key: "vereinssee", icon: <Waves />, mobileDescription: "Alles rund um den See, Bilder und die Lage in Langenfeld." },
+            { label: "Presse", key: "presse", icon: <PhotoLibrary />, mobileDescription: "Presseartikel und Veröffentlichungen des Vereins." },
         ],
         []
     );
@@ -896,7 +834,13 @@ export default function About() {
                 </Typography>
 
                 <Box sx={{ mt: 2.2 }}>
-                    <PillTabs value={currentTab} onChange={(_, v) => setCurrentTab(v)} tabs={tabs} />
+                    <ResponsiveSectionNav
+                        value={currentTab}
+                        onChange={setCurrentTab}
+                        tabs={tabs}
+                        mobileTitle="Über uns"
+                        mobileSubtitle="Finde Kontakte, Mitgliedschaft, See und weitere Vereinsinfos mit einem Tap."
+                    />
                 </Box>
             </Box>
 

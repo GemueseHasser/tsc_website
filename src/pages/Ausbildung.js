@@ -5,8 +5,6 @@ import {
     Box,
     Paper,
     Typography,
-    Tabs,
-    Tab,
     List,
     ListItem,
     ListItemIcon,
@@ -30,70 +28,7 @@ import {
     Water,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
-
-function PillTabs({ value, onChange, tabs }) {
-    const theme = useTheme();
-    return (
-        <Box
-            sx={{
-                // Auf Mobile darf die Tab-Leiste nie die Seite breiter machen.
-                // Deshalb: volle Breite + Inhalt innerhalb der Leiste horizontal scrollen.
-                display: "flex",
-                width: "100%",
-                maxWidth: "100%",
-                p: 0.6,
-                borderRadius: 999,
-                border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
-                background: alpha("#fff", 0.75),
-                backdropFilter: "blur(12px)",
-                boxShadow: "0 10px 24px rgba(11,27,36,0.07)",
-                overflow: "hidden",
-            }}
-        >
-            <Tabs
-                value={value}
-                onChange={onChange}
-                variant="scrollable"
-                scrollButtons="auto"
-                allowScrollButtonsMobile
-                TabIndicatorProps={{ style: { display: "none" } }}
-                sx={{
-                    width: "100%",
-                    minWidth: 0,
-                    minHeight: 44,
-                    // sorgt dafür, dass die Tabs auf Mobile innerhalb der Leiste scrollen
-                    "& .MuiTabs-scroller": {
-                        overflowX: "auto !important",
-                        WebkitOverflowScrolling: "touch",
-                    },
-                    "& .MuiTabs-flexContainer": { gap: { xs: 1, md: 2 }, flexWrap: "nowrap" },
-                }}
-            >
-                {tabs.map((t) => (
-                    <Tab
-                        key={t.key}
-                        value={t.key}
-                        label={t.label}
-                        icon={t.icon}
-                        iconPosition="start"
-                        sx={{
-                            minHeight: 44,
-                            px: 1.6,
-                            borderRadius: 999,
-                            fontWeight: 750,
-                            color: "text.primary",
-                            "&.Mui-selected": {
-                                color: "white",
-                                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                                boxShadow: `0 14px 34px ${alpha(theme.palette.primary.main, 0.22)}`,
-                            },
-                        }}
-                    />
-                ))}
-            </Tabs>
-        </Box>
-    );
-}
+import ResponsiveSectionNav from "../components/ResponsiveSectionNav";
 
 function GlassCard({ children, sx }) {
     const theme = useTheme();
@@ -450,7 +385,13 @@ export default function Ausbildung() {
                 </Typography>
 
                 <Box sx={{ mt: 2.2 }}>
-                    <PillTabs value={currentTab} onChange={(_, v) => setCurrentTab(v)} tabs={tabs} />
+                    <ResponsiveSectionNav
+                        value={currentTab}
+                        onChange={setCurrentTab}
+                        tabs={tabs}
+                        mobileTitle="Ausbildungsbereich"
+                        mobileSubtitle="Wähle mobil einfach den Kurs oder das Brevet, das dich interessiert."
+                    />
                 </Box>
             </Box>
 
