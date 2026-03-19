@@ -417,9 +417,7 @@ export default function Ausbildung() {
                             <Bullet>HLW / O₂ / AED</Bullet>
                             <Bullet>Gruppenführung</Bullet>
                             <Bullet>Orientierung</Bullet>
-                            <Bullet>
-                                Nachttauchen <Nightlight sx={{ ml: 0.5, fontSize: 18 }} />
-                            </Bullet>
+                            <Bullet>Nachttauchen</Bullet>
                             <Bullet>Tauchsicherheit & Rettung</Bullet>
                             <Bullet>Trockentauchen</Bullet>
                             <Bullet>Tieftauchen</Bullet>
