@@ -21,7 +21,7 @@ export default function ImageSlideshow({ images, height = 380, altPrefix = "Slid
     <Box
       sx={{
         position: "relative",
-        borderRadius: 3,
+        borderRadius: { xs: 2, md: 3 },
         overflow: "hidden",
         minHeight: height,
         border: `1px solid ${alpha("#0B1B24", 0.1)}`,

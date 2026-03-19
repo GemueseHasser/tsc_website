@@ -26,7 +26,7 @@ export default function CookieBanner() {
           borderRadius: 2,
           background: alpha("#FFFFFF", 0.96),
           border: `1px solid ${alpha("#0B1B24", 0.1)}`,
-          boxShadow: "0 28px 60px rgba(11,27,36,0.18)",
+          boxShadow: { xs: "0 12px 28px rgba(11,27,36,0.10)", md: "0 20px 44px rgba(11,27,36,0.14)" },
           backdropFilter: "blur(18px)",
         }}
       >

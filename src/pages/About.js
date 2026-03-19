@@ -49,7 +49,7 @@ function PillTabs({ value, onChange, tabs }) {
                 border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
                 background: alpha("#fff", 0.75),
                 backdropFilter: "blur(12px)",
-                boxShadow: "0 14px 40px rgba(11,27,36,0.08)",
+                boxShadow: "0 10px 24px rgba(11,27,36,0.07)",
                 overflow: "hidden",
             }}
         >
@@ -108,10 +108,10 @@ function GlassCard({ children, sx }) {
             elevation={0}
             sx={{
                 p: { xs: 2.2, md: 3.2 },
-                borderRadius: 3,
+                borderRadius: { xs: 2, md: 3 },
                 background: alpha("#FFFFFF", 0.86),
                 border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
-                boxShadow: "0 18px 55px rgba(11,27,36,0.10)",
+                boxShadow: { xs: "0 10px 24px rgba(11,27,36,0.07)", md: "0 16px 38px rgba(11,27,36,0.08)" },
                 backdropFilter: "blur(12px)",
                 ...sx,
             }}
@@ -289,7 +289,7 @@ export default function About() {
                             cursor: "pointer",
                             userSelect: "none",
                             p: 2.2,
-                            borderRadius: 3,
+                            borderRadius: { xs: 2, md: 3 },
                             border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
                             background: alpha("#fff", 0.65),
                             height: "100%",
@@ -378,7 +378,7 @@ export default function About() {
                                 sx={{
                                     width: { xs: "calc(100vw - 32px)", sm: 420 },
                                     maxWidth: 520,
-                                    borderRadius: 3,
+                                    borderRadius: { xs: 2, md: 3 },
                                     p: 2,
                                     background: alpha("#FFFFFF", 0.92),
                                     border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
@@ -542,7 +542,7 @@ export default function About() {
                                 <Box
                                     sx={{
                                         p: 2.2,
-                                        borderRadius: 3,
+                                        borderRadius: { xs: 2, md: 3 },
                                         background: alpha(theme.palette.primary.main, 0.04),
                                         border: `1px solid ${alpha(theme.palette.primary.main, 0.10)}`,
                                     }}
@@ -556,7 +556,7 @@ export default function About() {
                                 <Box
                                     sx={{
                                         p: 2.2,
-                                        borderRadius: 3,
+                                        borderRadius: { xs: 2, md: 3 },
                                         background: alpha(theme.palette.secondary.main, 0.08),
                                         border: `1px solid ${alpha(theme.palette.secondary.main, 0.22)}`,
                                     }}
@@ -582,7 +582,7 @@ export default function About() {
                                         key={t.year}
                                         sx={{
                                             p: 2.2,
-                                            borderRadius: 3,
+                                            borderRadius: { xs: 2, md: 3 },
                                             border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
                                             background: alpha("#fff", 0.6),
                                         }}
@@ -698,7 +698,7 @@ export default function About() {
                                 <Box
                                     sx={{
                                         p: 2.2,
-                                        borderRadius: 3,
+                                        borderRadius: { xs: 2, md: 3 },
                                         background: alpha(theme.palette.secondary.main, 0.08),
                                         border: `1px solid ${alpha(theme.palette.secondary.main, 0.22)}`,
                                     }}
@@ -710,7 +710,7 @@ export default function About() {
                                 <Box
                                     sx={{
                                         p: 2.2,
-                                        borderRadius: 3,
+                                        borderRadius: { xs: 2, md: 3 },
                                         background: alpha(theme.palette.primary.main, 0.04),
                                         border: `1px solid ${alpha(theme.palette.primary.main, 0.10)}`,
                                     }}
@@ -735,23 +735,22 @@ export default function About() {
                                     mb: 0.25
                                 }}
                             >
-                                <Chip label={content.mitgliedschaft.beitraege.erwachsene} />
-                                <Chip label={content.mitgliedschaft.beitraege.kinder} />
-                                <Chip label={content.mitgliedschaft.beitraege.passiv} />
+                                <Chip label={content.mitgliedschaft.beitraege.erwachsene} sx={{ height: "auto", "& .MuiChip-label": { display: "block", whiteSpace: "normal", py: 0.75 } }} />
+                                <Chip label={content.mitgliedschaft.beitraege.kinder} sx={{ height: "auto", "& .MuiChip-label": { display: "block", whiteSpace: "normal", py: 0.75 } }} />
+                                <Chip label={content.mitgliedschaft.beitraege.passiv} sx={{ height: "auto", "& .MuiChip-label": { display: "block", whiteSpace: "normal", py: 0.75 } }} />
                             </Box>
 
                             <Box
                                 sx={{
                                     mt: 2,
                                     p: 2,
-                                    borderRadius: 3,
+                                    borderRadius: { xs: 2, md: 3 },
                                     border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
                                     background: alpha("#fff", 0.65),
                                 }}
                             >
                                 <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
-                                    Im Beitrag enthalten: Nutzung des Schwimmbads zweimal pro Woche, Versicherungsschutz sowie ein Abo der
-                                    Tauchsport-Zeitschrift.
+                                    Im Beitrag enthalten: Versicherungsschutz sowie ein Abo der Tauchsport-Zeitschrift.
                                 </Typography>
                             </Box>
 
@@ -759,7 +758,7 @@ export default function About() {
                                 sx={{
                                     mt: 2,
                                     p: 2.2,
-                                    borderRadius: 3,
+                                    borderRadius: { xs: 2, md: 3 },
                                     background: alpha(theme.palette.secondary.main, 0.08),
                                     border: `1px solid ${alpha(theme.palette.secondary.main, 0.22)}`,
                                     display: "flex",
@@ -804,7 +803,7 @@ export default function About() {
                             {lakeImages.length > 0 ? (
                                 <ImageSlideshow images={lakeImages} height={420} altPrefix="Vereinssee" />
                             ) : (
-                                <Box sx={{ p: 2.4, borderRadius: 3, background: alpha(theme.palette.primary.main, 0.04), mb: 2 }}>
+                                <Box sx={{ p: 2.4, borderRadius: { xs: 2, md: 3 }, background: alpha(theme.palette.primary.main, 0.04), mb: 2 }}>
                                     <Typography sx={{ color: "text.secondary" }}>
                                         Aktuell sind noch keine Bilder des Sees hinterlegt.
                                     </Typography>
@@ -825,7 +824,7 @@ export default function About() {
                             </Button>
                             <Box
                                 sx={{
-                                    borderRadius: 3,
+                                    borderRadius: { xs: 2, md: 3 },
                                     overflow: "hidden",
                                     border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
                                     minHeight: { xs: 340, md: 430 },
@@ -865,7 +864,7 @@ export default function About() {
                         {pressArticles.length > 0 ? (
                             <PdfGallery files={pressArticles} />
                         ) : (
-                            <Box sx={{ p: 2.4, borderRadius: 3, background: alpha(theme.palette.primary.main, 0.04) }}>
+                            <Box sx={{ p: 2.4, borderRadius: { xs: 2, md: 3 }, background: alpha(theme.palette.primary.main, 0.04) }}>
                                 <Typography sx={{ color: "text.secondary" }}>
                                     Aktuell sind noch keine Presseartikel hinterlegt. Bitte komm bald wieder!
                                 </Typography>

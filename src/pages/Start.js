@@ -325,7 +325,7 @@ export default function Start({ onNavigate }) {
                 maxWidth="lg"
                 sx={{
                     mt: { xs: 2, sm: 2.5, md: 5 },
-                    borderRadius: 3,
+                    borderRadius: { xs: 2, md: 3 },
                     px: { xs: 1.5, sm: 2, md: 3 },
                 }}
             >

@@ -55,13 +55,28 @@ export default function PdfGallery({ files }) {
               </Typography>
             </Box>
 
-            <Box sx={{ flex: 1, minHeight: 320, background: alpha("#0B1B24", 0.03) }}>
+            <Box
+              component="a"
+              href={viewerUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`${title || `Zeitungsartikel ${index + 1}`} öffnen`}
+              sx={{
+                flex: 1,
+                minHeight: 320,
+                background: alpha("#0B1B24", 0.03),
+                display: "block",
+                position: "relative",
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
               <Box
                 component="iframe"
                 src={previewUrl}
                 title={title || `Zeitungsartikel ${index + 1}`}
                 loading="lazy"
-                sx={{ width: "100%", height: "100%", minHeight: 320, border: 0, display: "block" }}
+                sx={{ width: "100%", height: "100%", minHeight: 320, border: 0, display: "block", pointerEvents: "none" }}
               />
             </Box>
 

@@ -35,10 +35,10 @@ export default function Training({ onOpenContactDialog }) {
                 elevation={0}
                 sx={{
                     p: { xs: 2.2, md: 3.2 },
-                    borderRadius: 3,
+                    borderRadius: { xs: 2, md: 3 },
                     background: alpha("#FFFFFF", 0.86),
                     border: `1px solid ${alpha("#0B1B24", 0.10)}`,
-                    boxShadow: "0 18px 55px rgba(11,27,36,0.10)",
+                    boxShadow: { xs: "0 10px 24px rgba(11,27,36,0.07)", md: "0 16px 38px rgba(11,27,36,0.08)" },
                     backdropFilter: "blur(12px)",
                 }}
             >
@@ -52,7 +52,7 @@ export default function Training({ onOpenContactDialog }) {
                     <Box
                         sx={{
                             p: 2.2,
-                            borderRadius: 3,
+                            borderRadius: { xs: 2, md: 3 },
                             background: alpha("#063A52", 0.04),
                             border: `1px solid ${alpha("#063A52", 0.10)}`,
                         }}
@@ -66,7 +66,7 @@ export default function Training({ onOpenContactDialog }) {
                     <Box
                         sx={{
                             p: 2.2,
-                            borderRadius: 3,
+                            borderRadius: { xs: 2, md: 3 },
                             background: alpha("#27C2D3", 0.08),
                             border: `1px solid ${alpha("#27C2D3", 0.22)}`,
                         }}
@@ -105,7 +105,7 @@ export default function Training({ onOpenContactDialog }) {
                     <Box
                         sx={{
                             p: 2.2,
-                            borderRadius: 3,
+                            borderRadius: { xs: 2, md: 3 },
                             background: alpha("#0B1B24", 0.03),
                             border: `1px solid ${alpha("#0B1B24", 0.08)}`,
                         }}
@@ -126,10 +126,10 @@ export default function Training({ onOpenContactDialog }) {
                     sx={{
                         mt: 4,
                         p: { xs: 3, md: 4 },
-                        borderRadius: 3,
+                        borderRadius: { xs: 2, md: 3 },
                         background: alpha("#27C2D3", 0.06),
                         border: `1px solid ${alpha("#27C2D3", 0.18)}`,
-                        boxShadow: "0 18px 45px rgba(11,27,36,0.10)",
+                        boxShadow: { xs: "0 10px 24px rgba(11,27,36,0.07)", md: "0 16px 34px rgba(11,27,36,0.08)" },
                     }}
                 >
                     <Typography variant="h5" sx={{ fontWeight: 900, mb: 1 }}>
@@ -152,10 +152,10 @@ export default function Training({ onOpenContactDialog }) {
                             fontWeight: 800,
                             borderRadius: 999,
                             background: "linear-gradient(135deg, #063A52, #27C2D3)",
-                            boxShadow: "0 10px 30px rgba(39,194,211,0.35)",
+                            boxShadow: "0 8px 20px rgba(39,194,211,0.22)",
                             "&:hover": {
                                 transform: "translateY(-2px)",
-                                boxShadow: "0 14px 40px rgba(39,194,211,0.45)",
+                                boxShadow: "0 10px 28px rgba(39,194,211,0.28)",
                             },
                             transition: "all 0.25s ease",
                         }}

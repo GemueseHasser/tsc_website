@@ -145,10 +145,10 @@ export default function KontaktDialog({ open, onClose, onNavigate, initialType =
           scroll="paper"
           PaperProps={{
             sx: {
-              borderRadius: 3,
+              borderRadius: { xs: 2, md: 3 },
               background: alpha("#FFFFFF", 0.96),
               backdropFilter: "blur(16px)",
-              boxShadow: "0 35px 80px rgba(11,27,36,0.25)",
+              boxShadow: { xs: "0 14px 32px rgba(11,27,36,0.12)", md: "0 24px 60px rgba(11,27,36,0.18)" },
               maxHeight: "90vh",
               display: "flex",
               flexDirection: "column",
@@ -214,7 +214,7 @@ export default function KontaktDialog({ open, onClose, onNavigate, initialType =
                         sx={{
                           mt: 0.5,
                           p: 1.4,
-                          borderRadius: 3,
+                          borderRadius: { xs: 2, md: 3 },
                           background: alpha("#0B1B24", 0.03),
                           border: `1px solid ${alpha("#0B1B24", 0.08)}`,
                         }}

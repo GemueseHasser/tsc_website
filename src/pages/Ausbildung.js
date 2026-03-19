@@ -46,7 +46,7 @@ function PillTabs({ value, onChange, tabs }) {
                 border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
                 background: alpha("#fff", 0.75),
                 backdropFilter: "blur(12px)",
-                boxShadow: "0 14px 40px rgba(11,27,36,0.08)",
+                boxShadow: "0 10px 24px rgba(11,27,36,0.07)",
                 overflow: "hidden",
             }}
         >
@@ -106,10 +106,10 @@ function GlassCard({ children, sx }) {
             elevation={0}
             sx={{
                 p: { xs: 2.2, md: 3.2 },
-                borderRadius: 3,
+                borderRadius: { xs: 2, md: 3 },
                 background: alpha("#FFFFFF", 0.86),
                 border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
-                boxShadow: "0 18px 55px rgba(11,27,36,0.10)",
+                boxShadow: { xs: "0 10px 24px rgba(11,27,36,0.07)", md: "0 16px 38px rgba(11,27,36,0.08)" },
                 backdropFilter: "blur(12px)",
                 ...sx,
             }}

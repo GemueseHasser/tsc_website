@@ -45,10 +45,10 @@ function PageLoader() {
           width: "90%",
           maxWidth: 720,
           p: { xs: 2.5, md: 3.5 },
-          borderRadius: 4,
+          borderRadius: { xs: 2.5, md: 4 },
           background: "rgba(255,255,255,0.88)",
           border: "1px solid rgba(11,27,36,0.10)",
-          boxShadow: "0 22px 60px rgba(11,27,36,0.12)",
+          boxShadow: { xs: "0 10px 24px rgba(11,27,36,0.08)", md: "0 18px 44px rgba(11,27,36,0.10)" },
           backdropFilter: "blur(14px)",
         }}
       >
@@ -143,7 +143,7 @@ function AppInner() {
           background: { default: "#F6FAFC", paper: "#FFFFFF" },
           text: { primary: "#0B1B24", secondary: alpha("#0B1B24", 0.72) },
         },
-        shape: { borderRadius: 18 },
+        shape: { borderRadius: 16 },
         typography: {
           fontFamily: `"Inter", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif`,
           h1: { fontFamily: `"Playfair Display", "Inter", serif`, fontWeight: 700, letterSpacing: -0.6 },
@@ -179,7 +179,8 @@ function AppInner() {
             },
           },
           MuiPaper: { styleOverrides: { root: { backgroundImage: "none" } } },
-          MuiButton: { styleOverrides: { root: { borderRadius: 999 } } },
+          MuiButton: { styleOverrides: { root: { borderRadius: 999, boxShadow: "none" } } },
+          MuiCard: { styleOverrides: { root: { boxShadow: "0 10px 24px rgba(11,27,36,0.08)" } } },
         },
       }),
     []
@@ -248,13 +249,28 @@ function AppInner() {
       <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <AppBar position="sticky" elevation={0} color="transparent">
           <Toolbar sx={{ py: 1, justifyContent: "space-between", color: "text.primary" }}>
-            <Stack direction="row" spacing={1.2} alignItems="center">
+            <Stack
+              direction="row"
+              spacing={1.2}
+              alignItems="center"
+              component="button"
+              onClick={() => handleNavClick("Startseite")}
+              sx={{
+                p: 0,
+                m: 0,
+                border: 0,
+                background: "transparent",
+                cursor: "pointer",
+                textAlign: "left",
+                color: "inherit",
+              }}
+            >
               <Box
                 sx={{
                   width: 50,
                   height: 50,
                   borderRadius: 999,
-                  boxShadow: "0 10px 26px rgba(6,58,82,0.18)",
+                  boxShadow: "0 8px 20px rgba(6,58,82,0.12)",
                   border: "1px solid rgba(11,27,36,0.10)",
                   background: "white",
                   display: "grid",
@@ -367,7 +383,7 @@ function AppInner() {
               sx={{
                 mt: 2,
                 p: 2,
-                borderRadius: 3,
+                borderRadius: { xs: 2, md: 3 },
                 border: `1px solid ${alpha("#0B1B24", 0.1)}`,
                 background: alpha("#FFFFFF", 0.8),
               }}

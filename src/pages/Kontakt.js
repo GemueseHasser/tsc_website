@@ -18,10 +18,10 @@ export default function Kontakt({ onOpenContactDialog }) {
 
   const cardSx = {
     p: { xs: 2.2, md: 3.2 },
-    borderRadius: 3,
+    borderRadius: { xs: 2, md: 3 },
     background: alpha("#FFFFFF", 0.86),
     border: `1px solid ${alpha("#0B1B24", 0.1)}`,
-    boxShadow: "0 18px 55px rgba(11,27,36,0.10)",
+    boxShadow: { xs: "0 10px 24px rgba(11,27,36,0.07)", md: "0 16px 38px rgba(11,27,36,0.08)" },
     backdropFilter: "blur(12px)",
     height: "100%",
   };
@@ -83,7 +83,7 @@ export default function Kontakt({ onOpenContactDialog }) {
             sx={{
               mt: 1,
               p: 2.4,
-              borderRadius: 3,
+              borderRadius: { xs: 2, md: 3 },
               background: alpha("#27C2D3", 0.05),
               border: `1px solid ${alpha("#27C2D3", 0.18)}`,
             }}
@@ -113,10 +113,10 @@ export default function Kontakt({ onOpenContactDialog }) {
             sx={{
               mt: 4,
               p: { xs: 2.5, md: 3.5 },
-              borderRadius: 3,
+              borderRadius: { xs: 2, md: 3 },
               background: "rgba(255,255,255,0.85)",
               border: "1px solid rgba(11,27,36,0.10)",
-              boxShadow: "0 18px 50px rgba(11,27,36,0.10)",
+              boxShadow: { xs: "0 10px 24px rgba(11,27,36,0.07)", md: "0 16px 38px rgba(11,27,36,0.08)" },
               backdropFilter: "blur(12px)",
             }}
           >
@@ -176,7 +176,7 @@ export default function Kontakt({ onOpenContactDialog }) {
 
           <Box
             sx={{
-              borderRadius: 3,
+              borderRadius: { xs: 2, md: 3 },
               overflow: "hidden",
               border: `1px solid ${alpha("#0B1B24", 0.1)}`,
               background: alpha("#0B1B24", 0.03),
