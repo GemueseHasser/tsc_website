@@ -278,12 +278,12 @@ function AppInner() {
                   overflow: "hidden",
                 }}
               >
-                <Box
-                  component="img"
-                  src="https://www.tsc-wuelfrath.de/s/misc/logo.png?t=1766401057"
-                  alt="TSC Wülfrath Logo"
-                  sx={{ width: "78%", height: "78%", objectFit: "contain", display: "block" }}
-                />
+                  <Box
+                      component="img"
+                      src={process.env.PUBLIC_URL + "/logo_256x256.png"}
+                      alt="TSC Wülfrath Logo"
+                      sx={{ width: "78%", height: "78%", objectFit: "contain", display: "block" }}
+                  />
               </Box>
               <Box>
                 <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.1 }}>
