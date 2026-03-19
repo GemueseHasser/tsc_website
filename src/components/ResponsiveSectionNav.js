@@ -2,6 +2,7 @@ import React from "react";
 import {
   Box,
   ButtonBase,
+  Chip,
   Dialog,
   List,
   ListItemButton,
@@ -98,33 +99,42 @@ export default function ResponsiveSectionNav({ value, onChange, tabs, mobileTitl
         <Box
           sx={{
             position: "relative",
-            p: 1.75,
+            p: 1.9,
             borderRadius: 4,
-            border: `1px solid ${alpha(theme.palette.text.primary, 0.10)}`,
-            background: `linear-gradient(135deg, ${alpha("#FFFFFF", 0.92)}, ${alpha(theme.palette.secondary.main, 0.10)})`,
-            boxShadow: "0 14px 38px rgba(11,27,36,0.10)",
-            backdropFilter: "blur(16px)",
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.22)}`,
+            background: `linear-gradient(145deg, ${alpha("#FFFFFF", 0.96)} 0%, ${alpha(theme.palette.primary.main, 0.08)} 48%, ${alpha(theme.palette.secondary.main, 0.16)} 100%)`,
+            boxShadow: `0 18px 44px ${alpha(theme.palette.primary.main, 0.16)}`,
+            backdropFilter: "blur(18px)",
           }}
         >
           <Box
             sx={{
               position: "absolute",
               inset: 0,
-              background: `radial-gradient(circle at top right, ${alpha(theme.palette.secondary.main, 0.18)}, transparent 38%)`,
+              background: `radial-gradient(circle at top right, ${alpha(theme.palette.secondary.main, 0.22)}, transparent 36%)`,
+              pointerEvents: "none",
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 1,
+              borderRadius: "inherit",
+              border: `1px solid ${alpha("#FFFFFF", 0.55)}`,
               pointerEvents: "none",
             }}
           />
           <Box sx={{ position: "relative", display: "flex", alignItems: "center", gap: 1.4 }}>
             <Box
               sx={{
-                width: 48,
-                height: 48,
+                width: 52,
+                height: 52,
                 borderRadius: 3,
                 display: "grid",
                 placeItems: "center",
                 color: "white",
                 background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                boxShadow: `0 12px 28px ${alpha(theme.palette.primary.main, 0.28)}`,
+                boxShadow: `0 14px 30px ${alpha(theme.palette.primary.main, 0.30)}`,
                 flex: "0 0 auto",
               }}
             >
@@ -132,27 +142,42 @@ export default function ResponsiveSectionNav({ value, onChange, tabs, mobileTitl
             </Box>
 
             <Box sx={{ minWidth: 0, flex: 1 }}>
-              <Typography variant="caption" sx={{ color: "text.secondary", letterSpacing: 0.3 }}>
+              <Chip
+                label="Aktiver Bereich"
+                size="small"
+                sx={{
+                  height: 24,
+                  mb: 0.9,
+                  borderRadius: 999,
+                  fontWeight: 800,
+                  letterSpacing: 0.2,
+                  color: theme.palette.primary.main,
+                  background: alpha(theme.palette.primary.main, 0.10),
+                  border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
+                }}
+              />
+              <Typography variant="caption" sx={{ display: "block", color: "text.secondary", letterSpacing: 0.35, mb: 0.15 }}>
                 {mobileTitle}
               </Typography>
-              <Typography sx={{ fontWeight: 900, lineHeight: 1.2 }}>
+              <Typography sx={{ fontWeight: 900, lineHeight: 1.15, fontSize: "1.08rem" }}>
                 {activeTab?.label}
               </Typography>
-              <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.35, lineHeight: 1.5 }}>
+              <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.45, lineHeight: 1.55, pr: 0.5 }}>
                 {activeTab?.mobileDescription || mobileSubtitle || "Tippe, um zwischen den Bereichen zu wechseln."}
               </Typography>
             </Box>
 
             <Box
               sx={{
-                width: 38,
-                height: 38,
+                width: 42,
+                height: 42,
                 borderRadius: 999,
                 display: "grid",
                 placeItems: "center",
-                background: alpha("#fff", 0.82),
-                border: `1px solid ${alpha(theme.palette.text.primary, 0.08)}`,
-                color: "text.secondary",
+                background: alpha("#fff", 0.9),
+                border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
+                color: theme.palette.primary.main,
+                boxShadow: `0 8px 18px ${alpha(theme.palette.primary.main, 0.12)}`,
                 flex: "0 0 auto",
               }}
             >
@@ -172,6 +197,7 @@ export default function ResponsiveSectionNav({ value, onChange, tabs, mobileTitl
             m: 0,
             width: "100%",
             maxWidth: "100%",
+            maxHeight: "min(82vh, 720px)",
             alignSelf: "flex-end",
             borderTopLeftRadius: 28,
             borderTopRightRadius: 28,
@@ -181,10 +207,19 @@ export default function ResponsiveSectionNav({ value, onChange, tabs, mobileTitl
             backdropFilter: "blur(18px)",
             boxShadow: "0 -10px 45px rgba(11,27,36,0.18)",
             overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
           },
         }}
       >
-        <Box sx={{ p: 2 }}>
+        <Box
+          sx={{
+            p: 2,
+            overflowY: "auto",
+            overscrollBehavior: "contain",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
           <Box
             sx={{
               width: 56,
@@ -203,7 +238,7 @@ export default function ResponsiveSectionNav({ value, onChange, tabs, mobileTitl
             {mobileSubtitle || "Wähle den Bereich, den du dir ansehen möchtest."}
           </Typography>
 
-          <List sx={{ p: 0, display: "grid", gap: 1 }}>
+          <List sx={{ p: 0, display: "grid", gap: 1, pb: 1 }}>
             <AnimatePresence initial={false}>
               {tabs.map((tab, index) => {
                 const selected = tab.key === value;
