@@ -31,28 +31,23 @@ const initialForm = (type = "Probetraining") => ({
   consent: false,
 });
 
-function OptionCard({ title, description, selected, disabled, onClick }) {
+function OptionCard({ title, description, selected, onClick }) {
   return (
       <Paper
-          onClick={!disabled ? onClick : undefined}
+          onClick={onClick}
           elevation={0}
           sx={{
             p: 1.6,
-            borderRadius: 3,
-            cursor: disabled ? "not-allowed" : "pointer",
+            borderRadius: 1.5,
+            cursor: "pointer",
             border: "1px solid",
             borderColor: selected ? "#27C2D3" : alpha("#0B1B24", 0.12),
-            background: selected
-                ? alpha("#27C2D3", 0.08)
-                : disabled
-                    ? alpha("#0B1B24", 0.03)
-                    : "#fff",
-            opacity: disabled ? 0.65 : 1,
+            background: selected ? alpha("#27C2D3", 0.08) : "#fff",
             transition: "all 0.2s ease",
             "&:hover": {
-              borderColor: disabled ? alpha("#0B1B24", 0.12) : "#27C2D3",
-              transform: disabled ? "none" : "translateY(-1px)",
-              boxShadow: disabled ? "none" : "0 10px 24px rgba(11,27,36,0.08)",
+              borderColor: "#27C2D3",
+              transform: "translateY(-1px)",
+              boxShadow: "0 10px 24px rgba(11,27,36,0.08)",
             },
           }}
       >
@@ -82,7 +77,9 @@ export default function KontaktDialog({
   const [step, setStep] = useState(0);
 
   const isAdult = Number(form.age) >= 18;
+  const isMinor = form.age !== "" && Number(form.age) < 18;
   const isGeneralRequest = form.type === "Allgemein";
+  const showMinorDivingNotice = form.type === "Schnuppertauchen" && isMinor;
 
   useEffect(() => {
     if (open) {
@@ -95,12 +92,6 @@ export default function KontaktDialog({
       setForm(initialForm(initialType));
     }
   }, [open, initialType]);
-
-  useEffect(() => {
-    if (!isAdult && form.type === "Schnuppertauchen") {
-      setForm((prev) => ({ ...prev, type: "Probetraining" }));
-    }
-  }, [isAdult, form.type]);
 
   const handleChange = (field) => (event) => {
     const value = field === "consent" ? event.target.checked : event.target.value;
@@ -125,10 +116,8 @@ export default function KontaktDialog({
 
   const validateStepOne = () => {
     const newErrors = {};
-    if (!form.age) newErrors.age = "Alter erforderlich";
-
     setErrors((prev) => ({ ...prev, ...newErrors }));
-    return Object.keys(newErrors).length === 0;
+    return true;
   };
 
   const validateAll = () => {
@@ -272,20 +261,6 @@ export default function KontaktDialog({
                   {step === 0 ? (
                       <Stack spacing={2.2} sx={{ mt: 1 }}>
                         <Box>
-                          <Typography sx={{ fontWeight: 800, mb: 1 }}>Dein Alter</Typography>
-                          <TextField
-                              label="Alter"
-                              type="number"
-                              fullWidth
-                              value={form.age}
-                              onChange={handleChange("age")}
-                              error={!!errors.age}
-                              helperText={errors.age || "Für die passende Anfrageoption"}
-                              inputProps={{ min: 1 }}
-                          />
-                        </Box>
-
-                        <Box>
                           <Typography sx={{ fontWeight: 800, mb: 1 }}>
                             Worum geht es?
                           </Typography>
@@ -300,29 +275,18 @@ export default function KontaktDialog({
 
                             <OptionCard
                                 title="Probetraining"
-                                description="Ideal zum Kennenlernen – besonders für Einsteiger oder Minderjährige."
+                                description="Ideal zum Kennenlernen – besonders für Einsteiger und Minderjährige."
                                 selected={form.type === "Probetraining"}
                                 onClick={() => handleTypeChange("Probetraining")}
                             />
 
                             <OptionCard
                                 title="Schnuppertauchen"
-                                description={
-                                  isAdult
-                                      ? "Ein erster direkter Einblick ins Tauchen."
-                                      : "Nur ab 18 Jahren möglich. Minderjährige werden zunächst zu einem Probetraining eingeladen."
-                                }
+                                description="Ein erster direkter Einblick ins Tauchen."
                                 selected={form.type === "Schnuppertauchen"}
-                                disabled={!isAdult}
                                 onClick={() => handleTypeChange("Schnuppertauchen")}
                             />
                           </Stack>
-
-                          {!isAdult && form.age && (
-                              <Typography variant="caption" sx={{ mt: 1.2, display: "block", color: "text.secondary" }}>
-                                Direktes Schnuppertauchen ohne vorheriges Probetraining ist nur ab 18 Jahren möglich.
-                              </Typography>
-                          )}
                         </Box>
                       </Stack>
                   ) : (
@@ -330,7 +294,7 @@ export default function KontaktDialog({
                         <Box
                             sx={{
                               p: 1.5,
-                              borderRadius: 3,
+                              borderRadius: 1.5,
                               background: alpha("#27C2D3", 0.08),
                               border: `1px solid ${alpha("#27C2D3", 0.18)}`,
                             }}
@@ -351,6 +315,41 @@ export default function KontaktDialog({
                             error={!!errors.name}
                             helperText={errors.name}
                         />
+
+                        <TextField
+                            label="Alter"
+                            type="number"
+                            fullWidth
+                            value={form.age}
+                            onChange={handleChange("age")}
+                            error={!!errors.age}
+                            helperText={errors.age || "Damit wir deine Anfrage passend einordnen können."}
+                            inputProps={{ min: 1 }}
+                        />
+
+                        {showMinorDivingNotice && (
+                            <Box
+                                sx={{
+                                  p: 1.5,
+                                  borderRadius: 1.5,
+                                  background: alpha("#ED6C02", 0.1),
+                                  border: `1px solid ${alpha("#ED6C02", 0.35)}`,
+                                }}
+                            >
+                              <Typography
+                                  variant="body2"
+                                  sx={{
+                                    color: "#B54708",
+                                    fontWeight: 700,
+                                    lineHeight: 1.5,
+                                  }}
+                              >
+                                Bei Minderjährigen kann ein Schnuppertauchen erst nach einem
+                                vorangegangenen Probetraining stattfinden, bei dem alle
+                                Einzelheiten geklärt werden.
+                              </Typography>
+                            </Box>
+                        )}
 
                         <TextField
                             label="E-Mail"
@@ -378,7 +377,7 @@ export default function KontaktDialog({
                             sx={{
                               mt: 0.5,
                               p: 1.4,
-                              borderRadius: 3,
+                              borderRadius: 1.5,
                               background: alpha("#0B1B24", 0.03),
                               border: `1px solid ${alpha("#0B1B24", 0.08)}`,
                             }}
