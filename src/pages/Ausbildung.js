@@ -390,7 +390,7 @@ export default function Ausbildung() {
                         onChange={setCurrentTab}
                         tabs={tabs}
                         mobileTitle="Ausbildungsbereich"
-                        mobileSubtitle="Wähle mobil einfach den Kurs oder das Brevet, das dich interessiert."
+                        mobileSubtitle="Wähle einfach den Kurs oder das Brevet, das dich interessiert."
                     />
                 </Box>
             </Box>
