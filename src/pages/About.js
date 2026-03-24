@@ -18,7 +18,6 @@ import {
 } from "@mui/material";
 import { motion } from "framer-motion";
 import ImageSlideshow from "../components/ImageSlideshow";
-import PdfGallery from "../components/PdfGallery";
 import ExternalContentNotice from "../components/ExternalContentNotice";
 import ResponsiveSectionNav from "../components/ResponsiveSectionNav";
 import { useCookieConsent } from "../context/CookieConsentContext";
@@ -27,7 +26,6 @@ import {
     Groups,
     Badge,
     Savings,
-    PhotoLibrary,
     Waves,
     CheckCircle,
     Person,
@@ -395,7 +393,6 @@ export default function About() {
         );
     };
 
-    const [pressArticles, setPressArticles] = useState([]);
     const [lakeImages, setLakeImages] = useState([]);
 
     const tabs = useMemo(
@@ -404,7 +401,6 @@ export default function About() {
             { label: "Ansprechpartner", key: "ansprechpartner", icon: <Badge />, mobileDescription: "Vorstand, Trainer und weitere Kontakte auf einen Blick." },
             { label: "Mitgliedschaft", key: "mitgliedschaft", icon: <Savings />, mobileDescription: "Mitglied werden, Beiträge und Vorteile kompakt erklärt." },
             { label: "Vereinssee", key: "vereinssee", icon: <Waves />, mobileDescription: "Alles rund um den See, Bilder und die Lage in Langenfeld." },
-            { label: "Presse", key: "presse", icon: <PhotoLibrary />, mobileDescription: "Presseartikel und Veröffentlichungen des Vereins." },
         ],
         []
     );
@@ -412,16 +408,6 @@ export default function About() {
     const [currentTab, setCurrentTab] = useState("about");
 
     useEffect(() => {
-        fetch(process.env.PUBLIC_URL + "/resources/presse/articles.json")
-            .then((res) => (res.ok ? res.json() : []))
-            .then((data) =>
-                setPressArticles((data || []).map((file) => ({
-                    name: file,
-                    url: process.env.PUBLIC_URL + `/resources/presse/${file}`,
-                })))
-            )
-            .catch(() => setPressArticles([]));
-
         fetch(process.env.PUBLIC_URL + "/resources/vereinssee/images.json")
             .then((res) => (res.ok ? res.json() : []))
             .then((data) => setLakeImages((data || []).map((file) => process.env.PUBLIC_URL + `/resources/vereinssee/${file}`)))
@@ -794,22 +780,6 @@ export default function About() {
                     </Stack>
                 );
             }
-
-            case "presse":
-                return (
-                    <GlassCard>
-                        <SectionTitle icon={<PhotoLibrary />} title="Presse" subtitle="Eine Galerie von Pressemitteilungen" />
-                        {pressArticles.length > 0 ? (
-                            <PdfGallery files={pressArticles} />
-                        ) : (
-                            <Box sx={{ p: 2.4, borderRadius: { xs: 2, md: 3 }, background: alpha(theme.palette.primary.main, 0.04) }}>
-                                <Typography sx={{ color: "text.secondary" }}>
-                                    Aktuell sind noch keine Presseartikel hinterlegt. Bitte komm bald wieder!
-                                </Typography>
-                            </Box>
-                        )}
-                    </GlassCard>
-                );
 
             default:
                 return null;
