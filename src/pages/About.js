@@ -736,7 +736,7 @@ export default function About() {
                         </GlassCard>
 
                         <GlassCard sx={{ display: "flex", flexDirection: "column" }}>
-                            <SectionTitle icon={<Waves />} title="Lage des Vereinssees" subtitle="Gut Widdauen 2, Langenfeld" />
+                            <SectionTitle icon={<Waves />} title="Lage des Vereinssees" subtitle="Gut Widdauen, See 2, Langenfeld" />
                             <Button
                                 variant="text"
                                 href={lakeOpenUrl}
