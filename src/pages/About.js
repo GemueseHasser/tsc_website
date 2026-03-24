@@ -711,7 +711,7 @@ export default function About() {
                 );
 
             case "vereinssee": {
-                const lakeQuery = encodeURIComponent("Gut Widdauen 2, 40764 Langenfeld");
+                const lakeQuery = encodeURIComponent("Gut Widdauen 4, 40764 Langenfeld");
                 const lakeMapUrl = `https://www.google.com/maps?q=${lakeQuery}&output=embed`;
                 const lakeOpenUrl = `https://www.google.com/maps/search/?api=1&query=${lakeQuery}`;
 

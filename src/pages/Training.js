@@ -79,7 +79,7 @@ export default function Training({ onOpenContactDialog }) {
                 </Box>
 
                 <Typography sx={{ mt: 2.2, color: "text.secondary", lineHeight: 1.8 }}>
-                    Tipp: Bitte ca. <b>30 Minuten vorher</b> da sein, damit wir entspannt starten können.
+                    Tipp: Bitte ca. <b>15 Minuten vorher</b> da sein, damit wir entspannt starten können.
                 </Typography>
 
                 {/* Divider / Übergang zu Schnuppertauchen */}
