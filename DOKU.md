@@ -398,80 +398,7 @@ Beispielstruktur:
 
 ---
 
-# 5. Pressebereich pflegen
-
-Ordner:
-
-```text
-public/resources/presse/
-```
-
-Steuerdatei:
-
-```text
-public/resources/presse/articles.json
-```
-
-Aktueller Aufbau:
-
-```json
-[
-  "article1.pdf",
-  "article2.pdf",
-  "article3.pdf"
-]
-```
-
-## So fügst du einen neuen Presseartikel hinzu
-
-### Schritt 1
-
-Neue PDF in den Ordner legen:
-
-```text
-public/resources/presse/
-```
-
-Beispiel:
-
-```text
-public/resources/presse/vereinsbericht_2026.pdf
-```
-
-### Schritt 2
-
-Dateiname in `articles.json` ergänzen:
-
-```json
-[
-  "article1.pdf",
-  "article2.pdf",
-  "article3.pdf",
-  "vereinsbericht_2026.pdf"
-]
-```
-
-## Wichtig
-
-- Der Dateiname muss **exakt** stimmen
-- Groß-/Kleinschreibung beachten
-- Keine Pfade eintragen, nur den Dateinamen
-
-Richtig:
-
-```json
-"vereinsbericht_2026.pdf"
-```
-
-Falsch:
-
-```json
-"/public/resources/presse/vereinsbericht_2026.pdf"
-```
-
----
-
-# 6. Vereinssee-Bilder pflegen
+# 5. Vereinssee-Bilder pflegen
 
 Ordner:
 
@@ -524,7 +451,7 @@ Die Reihenfolge in der JSON-Datei ist die Anzeigereihenfolge der Slideshow.
 
 ---
 
-# 7. Social-Media-Links und E-Mail ändern
+# 6. Social-Media-Links und E-Mail ändern
 
 Datei:
 
@@ -561,7 +488,7 @@ Aktueller Aufbau:
 
 ---
 
-# 8. Impressum ändern
+# 7. Impressum ändern
 
 Datei:
 
@@ -611,28 +538,28 @@ Aktueller Aufbau:
 
 ---
 
-# 9. Typische Arbeitsabläufe
+# 8. Typische Arbeitsabläufe
 
-## 9.1 Neues Startbild hinzufügen
+## 8.1 Neues Startbild hinzufügen
 
 1. Bild nach `public/resources/start/` kopieren
 2. Dateiname in `startImages.json` ergänzen
 3. Seite neu bauen/veröffentlichen
 
-## 9.2 Neuen Trainer ergänzen
+## 8.2 Neuen Trainer ergänzen
 
 1. Namen in `public/content/about.json` unter `trainerUndTl` ergänzen
 2. Bild in `public/resources/ansprechpartner/` ablegen
 3. Bild-Mapping in `ansprechpartnerImages.json` ergänzen
 4. Seite neu bauen/veröffentlichen
 
-## 9.3 Neuen Presseartikel veröffentlichen
+## 8.3 Neuen Presseartikel veröffentlichen
 
 1. PDF nach `public/resources/presse/` kopieren
 2. Dateiname in `articles.json` ergänzen
 3. Seite neu bauen/veröffentlichen
 
-## 9.4 E-Mail-Adresse überall ändern
+## 8.4 E-Mail-Adresse überall ändern
 
 1. `public/content/links.json` anpassen
 2. bei Bedarf zusätzlich `public/content/impressum.json` anpassen
@@ -640,7 +567,7 @@ Aktueller Aufbau:
 
 ---
 
-# 10. JSON-Fehler vermeiden
+# 9. JSON-Fehler vermeiden
 
 Typische Fehler in JSON-Dateien:
 
