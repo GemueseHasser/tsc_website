@@ -45,7 +45,7 @@ export default function Kontakt({ onOpenContactDialog }) {
         <Typography variant="h3" sx={{ mb: 1 }}>
           Kontakt
         </Typography>
-        <Typography sx={{ color: "text.secondary", maxWidth: 760, lineHeight: 1.8 }}>
+        <Typography sx={{ color: "text.secondary", maxWidth: "100%", lineHeight: 1.8 }}>
           Schreib uns bei Fragen, für ein Probetraining oder für ein Schnuppertauchen. Wir freuen uns auf deine Nachricht.
         </Typography>
       </Box>

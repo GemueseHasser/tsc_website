@@ -20,7 +20,7 @@ export default function Training({ onOpenContactDialog }) {
                 <Typography variant="h3" sx={{ mb: 1 }}>
                     Training
                 </Typography>
-                <Typography sx={{ color: "text.secondary", maxWidth: 780, lineHeight: 1.8 }}>
+                <Typography sx={{ color: "text.secondary", maxWidth: "100%", lineHeight: 1.8 }}>
                     Kondition, Technik und Sicherheit – wir trainieren regelmäßig in der Wülfrather Wasserwelt.
                     Neue Gesichter sind jederzeit willkommen.
                 </Typography>

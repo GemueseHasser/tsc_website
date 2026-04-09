@@ -799,7 +799,7 @@ export default function About() {
                 <Typography variant="h3" sx={{ mb: 1 }}>
                     Über uns
                 </Typography>
-                <Typography sx={{ color: "text.secondary", maxWidth: 860, lineHeight: 1.8 }}>
+                <Typography sx={{ color: "text.secondary", maxWidth: "100%", lineHeight: 1.8 }}>
                     Ein Verein mit Tradition – und mit modernem Anspruch an Ausbildung, Sicherheit und Gemeinschaft.
                 </Typography>
 

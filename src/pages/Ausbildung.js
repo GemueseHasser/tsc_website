@@ -380,7 +380,7 @@ export default function Ausbildung() {
                 <Typography variant="h3" sx={{ mb: 1 }}>
                     Ausbildung
                 </Typography>
-                <Typography sx={{ color: "text.secondary", maxWidth: 900, lineHeight: 1.8 }}>
+                <Typography sx={{ color: "text.secondary", maxWidth: "100%", lineHeight: 1.8 }}>
                     Modern, sicher und strukturiert – vom ersten Atemzug unter Wasser bis zu höheren Brevets und Spezialkursen.
                 </Typography>
 
